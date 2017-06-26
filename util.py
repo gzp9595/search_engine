@@ -1,4 +1,5 @@
 import datetime
+import time
 
 
 def check_date(year, month, day):
@@ -6,7 +7,10 @@ def check_date(year, month, day):
         return False
 
     try:
-        datetime.datetime.strftime(year + "-" + month + "-" + day, "%Y-%m-%d")
+        print year,month,day
+        time.strptime(str(year) + "-" + str(month) + "-" + str(day), "%Y-%m-%d")
+        print "Accepted"
         return True
-    except ValueError:
+    except Exception as e:
+        print e
         return False
