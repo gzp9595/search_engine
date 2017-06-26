@@ -75,8 +75,24 @@ def search():
         else:
             body["query"]["match"]["content"] = request.args["content"]
 
-        if util.check_date(body["from_year"], body["from_month"], body["from_day"]):
-            gg
+        if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
+                request.args["from_year"], request.args["from_month"], request.args["from_day"]):
+            if not ("range" in body["query"]):
+                body["query"]["range"] = {}
+            if not ("PubDate" in body["query"]["range"]):
+                body["query"]["range"]["PubDate"] = {}
+            body["query"]["range"]["PubDate"]["gte"] = request.args["from_year"] + "-" + request.args[
+                "from_month"] + "-" + request.args["from_day"]
+
+        if "to_year" in request.args and "to_month" in request.args and "to_day" in request.args and util.check_date(
+                request.args["to_year"], request.args["to_month"], request.args["to_day"]):
+            if not ("range" in body["query"]):
+                body["query"]["range"] = {}
+            if not ("PubDate" in body["query"]["range"]):
+                body["query"]["range"]["PubDate"] = {}
+            body["query"]["range"]["PubDate"]["lte"] = request.args["to_year"] + "-" + request.args[
+                "to_month"] + "-" + request.args["to_day"]
+
         print body
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps(body))["hits"]
         # res = [request.args["content"]]

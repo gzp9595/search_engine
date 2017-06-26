@@ -1,8 +1,8 @@
-import pycurl
+import os
 
-curl = pycurl.Curl()
 
-curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
+os.system("curl -XPUT http://localhost:9200/law")
+os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
 {
     "small_data": {
              "_all": {
@@ -28,5 +28,5 @@ curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
             }
         }
     }
-}'
+}'""")
 
