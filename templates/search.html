@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+    <form>
+        Search index
+        <input type="text" name="index" value={% if args["index"] %} "{{ args["index"] }}" {% else %} "law" {% endif %}>
+        <br>
+        Search type
+        <input type="text" name="doc_type" value={% if args["doc_type"] %} "{{ args["doc_type"] }}" {% else %} "small_data" {% endif %}>
+        <br>
+        Search content
+        <input type="text" name="content" {% if content %} value = "{{ content }}" {% endif %}>
+        <br>
+        <input type="radio" name="type" value="title" {% if args["type"] != 'content' %}checked {% endif %}>Title
+        <input type="radio" name="type" value="content" {% if args["type"] == 'content' %} checked {% endif %}> Content
+        <br>
+        From <input type="number" name="from_year" placeholder="year" {% if args["from_year"] %} value={{ args["from_year"] }} {% endif %}> -
+        <input type="number" name="from_month" placeholder="month" {% if args["from_month"] %} value={{ args["from_month"] }} {% endif %}> -
+        <input type="number" name="from_day" placeholder="day" {% if args["from_day"] %} value={{ args["from_day"] }} {% endif %}>
+        <br>
+        To <input type="number" name="to_year" placeholder="year" {% if args["to_year"] %} value={{ args["to_year"] }} {% endif %}> -
+        <input type="number" name="to_month" placeholder="month" {% if args["to_month"] %} value={{ args["to_month"] }} {% endif %}> -
+        <input type="number" name="to_day" placeholder="day" {% if args["to_day"] %} value={{ args["to_day"] }} {% endif %}>
+        <br>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if result %}
+        {% for data in result %}
+            <a href="/doc?index=law&doc_type=small_data&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
+            <br>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
