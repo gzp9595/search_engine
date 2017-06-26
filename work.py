@@ -61,20 +61,16 @@ def search():
     result = []
     if "content" in request.args and "type" in request.args and "doc_type" in request.args and "index" in request.args:
         body = {}
-        if "size" in request.args:
-            body["size"] = int(request.args["size"])
-        else:
-            body["size"] = 100
 
-        body["query"] = {}
+        body["must"]={};
         body["filter"] = {}
         if True:
-            body["query"]["match"] = {}
+            body["must"]["match"] = {}
 
         if request.args["type"] == "title":
-            body["query"]["match"]["Title"] = request.args["content"]
+            body["must"]["match"]["Title"] = request.args["content"]
         else:
-            body["query"]["match"]["content"] = request.args["content"]
+            body["must"]["match"]["content"] = request.args["content"]
 
         if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
                 request.args["from_year"], request.args["from_month"], request.args["from_day"]):
@@ -95,7 +91,7 @@ def search():
                 "to_month"] + "-" + request.args["to_day"]
 
         print body
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps({"query": {"filtered": body}}))[
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps({"query": {"bool": body},"size":100}))[
             "hits"]
         # res = [request.args["content"]]
         # print request.args["content"]
