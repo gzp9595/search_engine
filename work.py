@@ -17,12 +17,16 @@ def hello_world():
 
 @app.route('/insert_all')
 def insert_all():
+    if not ("index" in request.args) or not ("doc_type" in request.args):
+        return "No specific data"
     count = 0
     cnt = 0
-    for x in os.listdir(config.DATA_DIR):
+    index = request.args["index"]
+    doc_type = request.args["doc_type"]
+    for x in os.listdir(config.DATA_DIR + index + "/" + doc_type + "/"):
         cnt += 1
         print cnt
-        f = open(config.DATA_DIR + x, 'r')
+        f = open(config.DATA_DIR + index + "/" + doc_type + "/" + x, 'r')
         content = ''
         for line in f:
             content = json.loads(line)
@@ -30,7 +34,7 @@ def insert_all():
         try:
             # content["splitTitle"] = ' '.join(list(jieba.cut_for_search(content["Title"])))
             # content["splitContent"] = ' '.join(list(jieba.cut_for_search(content["content"])))
-            elastic.insert_doc('law', 'small_data', json.dumps(content))
+            elastic.insert_doc(index, doc_type, json.dumps(content))
             # print x + " Succeed"
         except Exception as e:
             count += 1
@@ -71,7 +75,7 @@ def search():
         else:
             body["query"]["match"]["content"] = request.args["content"]
 
-        if util.check_date(body["from_year"],body["from_month"],body["from_day"]):
+        if util.check_date(body["from_year"], body["from_month"], body["from_day"]):
             gg
         print body
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps(body))["hits"]

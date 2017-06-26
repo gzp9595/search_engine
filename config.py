@@ -1,4 +1,4 @@
-DATA_DIR = "data/small/contentjson/"
+DATA_DIR = "data/"
 ElASTIC_SEARCH_ADDRESS = "localhost"
 ELASTIC_SEARCH_PORT = 9200
 

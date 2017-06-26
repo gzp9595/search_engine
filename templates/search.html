@@ -29,6 +29,10 @@
         <input type="submit" value="Search">
     </form>
 
+    {% if error_inf %}
+    <p>{{ error_inf }}</p>
+    {% endif %}
+
     {% if result %}
         {% for data in result %}
             <a href="/doc?index=law&doc_type=small_data&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
