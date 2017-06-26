@@ -67,6 +67,7 @@ def search():
             body["size"] = 100
 
         body["query"] = {}
+        body["filter"] = {}
         if True:
             body["query"]["match"] = {}
 
@@ -77,33 +78,34 @@ def search():
 
         if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
                 request.args["from_year"], request.args["from_month"], request.args["from_day"]):
-            if not ("range" in body["query"]):
-                body["query"]["range"] = {}
-            if not ("PubDate" in body["query"]["range"]):
-                body["query"]["range"]["PubDate"] = {}
-            body["query"]["range"]["PubDate"]["gte"] = request.args["from_year"] + "-" + request.args[
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("PubDate" in body["filter"]["range"]):
+                body["filter"]["range"]["PubDate"] = {}
+            body["filter"]["range"]["PubDate"]["gte"] = request.args["from_year"] + "-" + request.args[
                 "from_month"] + "-" + request.args["from_day"]
 
         if "to_year" in request.args and "to_month" in request.args and "to_day" in request.args and util.check_date(
                 request.args["to_year"], request.args["to_month"], request.args["to_day"]):
-            if not ("range" in body["query"]):
-                body["query"]["range"] = {}
-            if not ("PubDate" in body["query"]["range"]):
-                body["query"]["range"]["PubDate"] = {}
-            body["query"]["range"]["PubDate"]["lte"] = request.args["to_year"] + "-" + request.args[
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("PubDate" in body["filter"]["range"]):
+                body["filter"]["range"]["PubDate"] = {}
+            body["filter"]["range"]["PubDate"]["lte"] = request.args["to_year"] + "-" + request.args[
                 "to_month"] + "-" + request.args["to_day"]
 
         print body
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps(body))["hits"]
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps({"query": {"filtered": body}}))[
+            "hits"]
         # res = [request.args["content"]]
         # print request.args["content"]
         for x in query_result:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
-            # print res
+        # print res
 
-    if "content" in request.args:
-        content = request.args["content"]
+        if "content" in request.args:
+            content = request.args["content"]
     return render_template("search.html", content=content, result=result, args=request.args)
 
 
@@ -118,4 +120,4 @@ def get_doc_byid():
 
 
 if __name__ == '__main__':
-    app.run(host='115.28.106.67',port=8000)
+    app.run(host='115.28.106.67', port=8000)
