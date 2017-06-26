@@ -118,4 +118,4 @@ def get_doc_byid():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='115.28.106.67',port=8000)
