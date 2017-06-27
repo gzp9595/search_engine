@@ -32,8 +32,6 @@ def insert_all():
             content = json.loads(line)
             break
         try:
-            # content["splitTitle"] = ' '.join(list(jieba.cut_for_search(content["Title"])))
-            # content["splitContent"] = ' '.join(list(jieba.cut_for_search(content["content"])))
             elastic.insert_doc(index, doc_type, json.dumps(content))
             # print x + " Succeed"
         except Exception as e:
@@ -52,6 +50,7 @@ def get_count():
 
 @app.route('/remove_all')
 def remove_all():
+    return "I won't allow you to do this"
     return "Succeed delete " + str(elastic.remove_all(request.args["index"], request.args["doc_type"])["deleted"])
 
 
@@ -62,15 +61,12 @@ def search():
     if "content" in request.args and "type" in request.args and "doc_type" in request.args and "index" in request.args:
         body = {}
 
-        body["must"]={};
+        body["must"] = {}
         body["filter"] = {}
         if True:
             body["must"]["match"] = {}
 
-        if request.args["type"] == "title":
-            body["must"]["match"]["Title"] = request.args["content"]
-        else:
-            body["must"]["match"]["content"] = request.args["content"]
+        body["must"]["match"][request.args["type"]] = request.args["content"]
 
         if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
                 request.args["from_year"], request.args["from_month"], request.args["from_day"]):
@@ -91,17 +87,18 @@ def search():
                 "to_month"] + "-" + request.args["to_day"]
 
         print body
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], json.dumps({"query": {"bool": body},"size":100}))[
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
+                                          json.dumps({"query": {"bool": body}, "size": 100}))[
             "hits"]
         # res = [request.args["content"]]
         # print request.args["content"]
         for x in query_result:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
-            #for y in x["_source"]:
+            # for y in x["_source"]:
             #    if y != "content":
             #        print y,x["_source"][y]
-            #break
+            # break
         # print res
 
         if "content" in request.args:
@@ -113,10 +110,14 @@ def search():
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
-        #print query_result["_source"]["content"]
-        return render_template("news.html", content=query_result["_source"]["content"].replace('\b','<br/>'),
+        # print query_result["_source"]["content"]
+        return render_template("news.html", content=query_result["_source"]["content"].replace('\b', '<br/>'),
                                Title=query_result["_source"]["Title"], PubDate=query_result["_source"]["PubDate"])
     return "Error"
+
+
+def click(id, perform):
+    print id, perform
 
 
 if __name__ == '__main__':
