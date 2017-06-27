@@ -98,6 +98,10 @@ def search():
         for x in query_result:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
+            #for y in x["_source"]:
+            #    if y != "content":
+            #        print y,x["_source"][y]
+            #break
         # print res
 
         if "content" in request.args:
@@ -109,8 +113,8 @@ def search():
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
-        print query_result["_source"]["content"]
-        return render_template("news.html", content=query_result["_source"]["content"],
+        #print query_result["_source"]["content"]
+        return render_template("news.html", content=query_result["_source"]["content"].replace('\b','<br/>'),
                                Title=query_result["_source"]["Title"], PubDate=query_result["_source"]["PubDate"])
     return "Error"
 
