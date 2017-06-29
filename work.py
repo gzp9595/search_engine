@@ -66,7 +66,7 @@ def search():
         if True:
             body["must"]["match"] = {}
 
-        body["must"]["match"][request.args["type"]] = request.args["content"]
+        body["must"]["match"][request.args["type"]] = "\""+request.args["content"]+"\""
 
         if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
                 request.args["from_year"], request.args["from_month"], request.args["from_day"]):
@@ -111,8 +111,8 @@ def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
         # print query_result["_source"]["content"]
-        return render_template("news.html", content=query_result["_source"]["content"].replace('\b', '<br/>'),
-                               Title=query_result["_source"]["Title"], PubDate=query_result["_source"]["PubDate"])
+        return render_template("news.html", content=unicode(query_result["_source"]["content"]),
+                               Title=query_result["_source"]["Title"], PubDate=query_result["_source"]["PubDate"]).replace('\b','<br/>')
     return "Error"
 
 

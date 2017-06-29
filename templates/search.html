@@ -41,8 +41,8 @@
     {% if result %}
         {% for data in result %}
             <a href="/doc?index=law&doc_type=small_data&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
-            <button action="{{ click(data["id"],1) }}">Good</button>
-            <button action="{{ click(data["id"],0) }}">Bad</button>
+            <button {% if click %}action="{{ click(data["id"],1) }}"{% endif %}>Good</button>
+            <button {% if click %}action="{{ click(data["id"],0) }}"{% endif %}>Bad</button>
             <br>
         {% endfor %}
     {% endif %}
