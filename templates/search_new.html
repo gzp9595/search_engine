@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+    <form>
+        数据集:
+        <input type="text" name="index" value={% if args["index"] %} "{{ args["index"] }}" {% else %} "law" {% endif %}>
+        <br>
+
+        数据类型:
+        <input type="text" name="doc_type" value={% if args["doc_type"] %} "{{ args["doc_type"] }}" {% else %} "small_data" {% endif %} >
+        <br>
+
+        全文检索:
+        <input type="text" name="search_content" {% if args["search_content"] %} value="{{ args["search_content"] }}" {% endif %}>
+        <select name="where_to_search">
+            <option value="0" {% if (args["where_to_search"] and args["where_to_search"] == "0") or not("where_to_search" in args) %}selected{% endif %}>全文</option>
+            <option value="1" {% if args["where_to_search"] and args["where_to_search"] == "1" %}selected{% endif %}>首部</option>
+            <option value="2" {% if args["where_to_search"] and args["where_to_search"] == "2" %}selected{% endif %}>事实</option>
+            <option value="3" {% if args["where_to_search"] and args["where_to_search"] == "3" %}selected{% endif %}>理由</option>
+            <option value="4" {% if args["where_to_search"] and args["where_to_search"] == "4" %}selected{% endif %}>判决结果</option>
+            <option value="5" {% if args["where_to_search"] and args["where_to_search"] == "5" %}selected{% endif %}>尾部</option>
+        </select>
+        <br>
+
+        法院名称:
+        <input type="text" name="name_of_case" {% if args["name_of_case"] %}value="{{ args["name_of_case"] }}"{% endif %}>
+        <br>
+
+        案件名称:
+        <input type="text" name="name_of_court" {% if args["name_of_court"] %}value="{{ args["name_of_court"] }}"{% endif %}>
+        <br>
+
+        案件类型:
+        <select name="type_of_case">
+            <option value="0" {% if (args["type_of_case"] and args["type_of_case"] == "0") or not("type_of_case" in args) %}selected{% endif %}>请选择</option>
+            <option value="1" {% if args["type_of_case"] and args["type_of_case"] == "1" %}selected{% endif %}>刑事案件</option>
+            <option value="2" {% if args["type_of_case"] and args["type_of_case"] == "2" %}selected{% endif %}>民事案件</option>
+            <option value="3" {% if args["type_of_case"] and args["type_of_case"] == "3" %}selected{% endif %}>行政案件</option>
+            <option value="4" {% if args["type_of_case"] and args["type_of_case"] == "4" %}selected{% endif %}>赔偿案件</option>
+            <option value="5" {% if args["type_of_case"] and args["type_of_case"] == "5" %}selected{% endif %}>执行案件</option>
+        </select>
+        <br>
+
+        <input type="submit" value="Search">
+    </form>
+
+    {% if error_inf %}
+    <p>{{ error_inf }}</p>
+    {% endif %}
+
+    {% if result %}
+        {% for data in result %}
+            <a href="/doc?index=law&doc_type=small_data&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
+            <button {% if click %}action="{{ click(data["id"],1) }}"{% endif %}>Good</button>
+            <button {% if click %}action="{{ click(data["id"],0) }}"{% endif %}>Bad</button>
+            <br>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

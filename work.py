@@ -5,6 +5,7 @@ import os
 import json
 import jieba
 import util
+import platform
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -66,7 +67,7 @@ def search():
         if True:
             body["must"]["match"] = {}
 
-        body["must"]["match"][request.args["type"]] = "\""+request.args["content"]+"\""
+        body["must"]["match"][request.args["type"]] = "\"" + request.args["content"] + "\""
 
         if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
                 request.args["from_year"], request.args["from_month"], request.args["from_day"]):
@@ -106,13 +107,52 @@ def search():
     return render_template("search.html", content=content, result=result, args=request.args)
 
 
+@app.route('/search_new')
+def search_new():
+    result = []
+
+    if "type" in request.args and "doc_type" in request.args and "index" in request.args:
+        body = {}
+        body["must"] = {}
+        body["must"]["match"] = {}
+        body["filter"] = {}
+
+        args = request.args
+
+        search_type = "content"
+        if "where_to_search" in args:
+            match_type = {
+                "0": "content",
+                "1": "WBSB",
+                "2": "AJJBQK",
+                "3": "CPYZ",
+                "4": "PJJG",
+                "5": "WBWB"
+            }
+            search_type = match_type[args["where_to_search"]]
+
+        body["must"]["match"][search_type] = args["search_content"]
+
+        if "name_of_case" in args and args["name_of_case"]!="":
+            body["must"]["match"]["Title"]=args["name_of_case"]
+
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
+                                          json.dumps({"query": {"bool": body}, "size": 100}))
+        for x in query_result["hits"]:
+            # res.append(x["_source"]["Title"])
+            result.append({"title": x["_source"]["Title"], "id": x["_id"]})
+
+    return render_template("search_new.html", args=request.args, result=result)
+
+
 @app.route('/doc')
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
         # print query_result["_source"]["content"]
         return render_template("news.html", content=unicode(query_result["_source"]["content"]),
-                               Title=query_result["_source"]["Title"], PubDate=query_result["_source"]["PubDate"]).replace('\b','<br/>')
+                               Title=query_result["_source"]["Title"],
+                               PubDate=query_result["_source"]["PubDate"]).replace('\b', '<br/>')
     return "Error"
 
 
@@ -121,4 +161,7 @@ def click(id, perform):
 
 
 if __name__ == '__main__':
-    app.run(host='115.28.106.67', port=8000)
+    if platform.system() == "Windows":
+        app.run(host='127.0.0.1', port=8000)
+    else:
+        app.run(host='115.28.106.67', port=8000)
