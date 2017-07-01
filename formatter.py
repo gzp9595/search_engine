@@ -67,7 +67,6 @@ def parse(obj):
     try:
         obj["AJLX"] = get_type_of_case(obj)
     except Exception as e:
-        print e
         bb
 
     try:

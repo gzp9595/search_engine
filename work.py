@@ -34,15 +34,14 @@ def insert_all():
             content = json.loads(line)
             break
         try:
-            print formatter.parse(content)
-            break
-            #elastic.insert_doc(index, doc_type, json.dumps(formatter.parse(content)))
+            #print formatter.parse(content)
+            elastic.insert_doc(index, doc_type, json.dumps(formatter.parse(content)))
             # print x + " Succeed"
         except Exception as e:
             print e
             count += 1
             f = open('fail_list.txt', 'a')
-            print >> f, x
+            print >> f, x, e
             f.close()
             # print x + " Failed"
     return "Failed:" + str(count)
