@@ -35,7 +35,10 @@ def insert_all():
             break
         try:
             #print formatter.parse(content)
-            elastic.insert_doc(index, doc_type, json.dumps(formatter.parse(content)))
+            data = formatter.parse(content)
+            if data["content"] == "":
+                continue
+            elastic.insert_doc(index, doc_type, json.dumps(data))
             # print x + " Succeed"
         except Exception as e:
             print e

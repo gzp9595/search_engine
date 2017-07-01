@@ -58,28 +58,40 @@ def parse(obj):
     if "" in obj and not ("WBSB" in obj):
         obj["WBSB"] = obj[""]
 
+    if not("AJJBQK" in obj) and "SSJL" in obj:
+        obj["AJJBQK"]=obj["SSJL"]
+
     try:
         if "WBSB" in obj:
             obj["FYMC"] = get_name_of_court(obj)
+        else:
+            obj["FYMC"] = ""
     except Exception:
-        aa
+        obj["FYMC"] = ""
 
     try:
         obj["AJLX"] = get_type_of_case(obj)
     except Exception as e:
+        obj["AJLX"] = 0
         bb
 
     try:
         obj["AJAH"] = get_number_of_case(obj)
     except Exception:
+        obj["AJAH"] = ""
         cc
 
     try:
         obj["FYCJ"] = get_level_of_court(obj)
     except Exception:
+        obj["FYCJ"] = 5
         dd
 
-    keylist = ["WBWB","DSRXX","PubDate","Title","CPYZ","AJJBQK","PJJG","content","SSJL","WBSB",]
+    keylist = ["WBWB","DSRXX","PubDate","Title","CPYZ","AJJBQK","PJJG","content","SSJL","WBSB","AJJBQK"]
+
+    for key in keylist:
+        if not(key in obj):
+            obj[key]=""
 
     return obj
 
