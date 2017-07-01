@@ -77,29 +77,22 @@ def parse(obj):
         obj["AJLX"] = get_type_of_case(obj)
     except Exception as e:
         obj["AJLX"] = 0
-        bb
 
     try:
         obj["AJAH"] = get_number_of_case(obj)
     except Exception:
         obj["AJAH"] = ""
-        cc
 
     try:
         obj["FYCJ"] = get_level_of_court(obj)
     except Exception:
         obj["FYCJ"] = 5
-        dd
 
     keylist = ["WBWB","DSRXX","PubDate","Title","CPYZ","AJJBQK","PJJG","content","SSJL","WBSB","AJJBQK"]
 
     for key in keylist:
         if not(key in obj):
             obj[key]=""
-
-    for x in obj:
-        print x
-    print "" in obj
 
     return obj
 
