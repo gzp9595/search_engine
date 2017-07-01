@@ -148,6 +148,11 @@ def search_new():
             except ValueError:
                 pass
 
+        if "judgement" in args and args["judgement"] != "":
+            if not("WBWB" in body["must"]["match"]):
+                body["must"]["match"]["WBWB"] = ""
+            body["must"]["match"]["WBWB"] += " " + args["judgement"]
+
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": body}, "size": 100}))
         for x in query_result["hits"]:

@@ -52,6 +52,44 @@
         <input type="text" name="judgement" {% if args["judgement"] %} value="{{ args["judgement"] }}"{% endif %}>
         <br>
 
+        律所:
+        <input type="text" name="law_firm" {% if args["law_firm"] %} value="{{ args["law_firm"] }}"{% endif %}>
+        Unsupported
+        <br>
+
+        案由:
+        Unsupported
+        <br>
+
+        案号:
+        <input type="text" name="case_number" {% if args["case_number"] %} value="{{ args["case_number"] }}"{% endif %}>
+        <br>
+
+        法院层级:
+        <select name="level_of_court">
+            <option value="0" {% if (args["level_of_court"] and args["level_of_court"] == "0") or not("type_of_case" in args) %}selected{% endif %}>请选择</option>
+            <option value="1" {% if args["level_of_court"] and args["level_of_court"] == "1" %}selected{% endif %}>最高法院</option>
+            <option value="2" {% if args["level_of_court"] and args["level_of_court"] == "2" %}selected{% endif %}>高级法院</option>
+            <option value="3" {% if args["level_of_court"] and args["level_of_court"] == "3" %}selected{% endif %}>中级法院</option>
+            <option value="4" {% if args["level_of_court"] and args["level_of_court"] == "4" %}selected{% endif %}>基层法院</option>
+        </select>
+        <br>
+
+        审判程序:Unsupported
+        <br>
+
+        裁判日期:Unsupported
+        <br>
+
+        当事人:Unsupported
+        <br>
+
+        律师:Unsupported
+        <br>
+
+        法律依据:Unsuppored
+        <br>
+
         <input type="submit" value="Search">
     </form>
 

@@ -39,6 +39,13 @@ def get_type_of_case(obj):
 
     return opt
 
+def get_number_of_case(obj):
+    if obj["content"] == "":
+        gg
+
+    result = re.search(u'([\(（]\d+[\)）][\u4e00-\u9fa5\d]*\d+号)',obj["content"])
+    print result.group()
+
 
 def test():
     fout = open('test.log', 'w')
@@ -49,11 +56,24 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
+        print >> fout,x
         for y in content:
             print >> fout, y, content[y].encode('utf8')
         print >> fout
+
+        #if "WBSB" in content or "" in content:
+        #    continue
+        #    print >> fout,content["WBSB"].encode('utf8')
+        #    print >> fout
+        #else:
+        #    print >> fout,x
+        #    for y in content:
+        #        print >> fout, y, content[y].encode('utf8')
+        #    print >> fout
         # if "WBSB" in content:
         #    print get_name_of_court(content)
+        #if content["content"]!="":
+        #    get_number_of_case(content)
         cnt += 1
         if cnt >= 20:
             break
