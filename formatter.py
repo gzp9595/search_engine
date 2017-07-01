@@ -27,7 +27,7 @@ def get_number_of_case(obj):
     if obj["content"] == "":
         gg
 
-    result = re.search(u'([\(（]\d+[\)）][\u4e00-\u9fa5\d]*\d+号)', obj["content"])
+    result = re.search(u'([\(（]\d+[\)）][\u4e00-\u9fa5\d]*\d+[-\d+]?[号]?)', obj["content"])
     return result.group()
 
 
@@ -79,6 +79,8 @@ def parse(obj):
         obj["FYCJ"] = get_level_of_court(obj)
     except Exception:
         dd
+
+    keylist = ["WBWB","DSRXX","PubDate","Title","CPYZ","AJJBQK","PJJG","content","SSJL","WBSB",]
 
     return obj
 
