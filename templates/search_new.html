@@ -7,11 +7,11 @@
 <body>
     <form>
         数据集:
-        <input type="text" name="index" value="{% if args["index"] %} {{ args["index"] }} {% else %} law {% endif %}">
+        <input type="text" name="index" {% if args["index"] %} value="{{ args["index"] }}" {% else %} value="law" {% endif %}>
         <br>
 
         数据类型:
-        <input type="text" name="doc_type" value="{% if args["doc_type"] %} {{ args["doc_type"] }} {% else %} small_data {% endif %}" >
+        <input type="text" name="doc_type" {% if args["doc_type"] %} value="{{ args["doc_type"] }}" {% else %} value="small_data" {% endif %} >
         <br>
 
         全文检索:
