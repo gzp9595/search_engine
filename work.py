@@ -116,6 +116,8 @@ def search_new():
         body["must"] = {}
         body["must"]["match"] = {}
         body["filter"] = {}
+        body["filter"]["range"] = {}
+        body["filter"]["term"] = {}
 
         args = request.args
 
@@ -133,8 +135,18 @@ def search_new():
 
         body["must"]["match"][search_type] = args["search_content"]
 
-        if "name_of_case" in args and args["name_of_case"]!="":
-            body["must"]["match"]["Title"]=args["name_of_case"]
+        if "name_of_case" in args and args["name_of_case"] != "":
+            body["must"]["match"]["Title"] = args["name_of_case"]
+
+        if "name_of_court" in args and args["name_of_court"] != "":
+            body["must"]["match"]["FYMC"] = args["name_of_court"]
+
+        if "type_of_case" in args and args["type_of_case"] != "0":
+            try:
+                value = int(args["type_of_case"])
+                body["filter"]["term"]["AJLX"] = value
+            except ValueError:
+                pass
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": body}, "size": 100}))

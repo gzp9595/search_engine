@@ -26,11 +26,11 @@
         </select>
         <br>
 
-        法院名称:
+        案件名称:
         <input type="text" name="name_of_case" {% if args["name_of_case"] %}value="{{ args["name_of_case"] }}"{% endif %}>
         <br>
 
-        案件名称:
+        法院名称:
         <input type="text" name="name_of_court" {% if args["name_of_court"] %}value="{{ args["name_of_court"] }}"{% endif %}>
         <br>
 
@@ -43,6 +43,13 @@
             <option value="4" {% if args["type_of_case"] and args["type_of_case"] == "4" %}selected{% endif %}>赔偿案件</option>
             <option value="5" {% if args["type_of_case"] and args["type_of_case"] == "5" %}selected{% endif %}>执行案件</option>
         </select>
+        <br>
+
+        文书类型:Unsupported
+        <br>
+
+        审判人员:
+        <input type="text" name="judgement" {% if args["judgement"] %} value="{{ args["judgement"] }}"{% endif %}>
         <br>
 
         <input type="submit" value="Search">
