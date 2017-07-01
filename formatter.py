@@ -95,6 +95,10 @@ def parse(obj):
         if not(key in obj):
             obj[key]=""
 
+    for x in obj:
+        print x
+    print "" in obj
+
     return obj
 
 

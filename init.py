@@ -10,7 +10,7 @@ os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
             "search_analyzer": "ik_smart",
             "term_vector": "no",
             "store": "false"
-        },
+        },  
         "properties": {
             "content": {
                 "type": "text",
