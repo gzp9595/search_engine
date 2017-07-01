@@ -57,6 +57,8 @@ def parse(obj):
 
     if "" in obj and not ("WBSB" in obj):
         obj["WBSB"] = obj[""]
+
+    if "" in obj:
         obj.pop("",None)
 
 
