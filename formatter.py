@@ -12,36 +12,15 @@ def get_name_of_court(obj):
 def get_type_of_case(obj):
     if obj["content"] == "":
         return
-    match1 = re.search(u"(([\u4e00-\u9fa5])\s([\u4e00-\u9fa5])\s裁\s定\s书)", obj["content"])
-    match2 = re.search(u"(([\u4e00-\u9fa5])\s([\u4e00-\u9fa5])\s判\s决\s书)", obj["content"])
-    #print match1
-    #print match2
-    result = ""
-    #print match1 is None
-    #print match2 is None
-    if not (match1 is None):
-        result = match1.group(2) + match1.group(3)
-    elif not (match2 is None):
-        result = match2.group(2) + match2.group(3)
-    else:
-        gg
-    #print result
 
-    opt = 0
-    if result == u"刑事":
-        opt = 1
-    elif result == u"民事":
-        opt = 2
-    elif result == u"行政":
-        opt = 3
-    elif result == u"赔偿":
-        opt = 4
-    elif result == u"执行":
-        opt = 5
-    else:
-        gg
+    word_list = [u"刑\s事",u"民\s事",u"行\s政",u"赔\s偿",u"执\s行"]
 
-    return opt
+    for a in range(0,len(word_list)):
+        match = re.search(word_list[a],obj["content"])
+        if not(match is None):
+            return a+1
+
+    gg
 
 
 def get_number_of_case(obj):
@@ -80,7 +59,8 @@ def parse(obj):
         obj["WBSB"] = obj[""]
 
     try:
-        obj["FYMC"] = get_name_of_court(obj)
+        if "WBSB" in obj:
+            obj["FYMC"] = get_name_of_court(obj)
     except Exception:
         aa
 
