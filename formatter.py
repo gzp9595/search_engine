@@ -14,18 +14,18 @@ def get_type_of_case(obj):
         return
     match1 = re.search(u"(([\u4e00-\u9fa5])\s([\u4e00-\u9fa5])\s裁\s定\s书)", obj["content"])
     match2 = re.search(u"(([\u4e00-\u9fa5])\s([\u4e00-\u9fa5])\s判\s决\s书)", obj["content"])
-    print match1
-    print match2
+    #print match1
+    #print match2
     result = ""
-    print match1 is None
-    print match2 is None
+    #print match1 is None
+    #print match2 is None
     if not (match1 is None):
         result = match1.group(2) + match1.group(3)
     elif not (match2 is None):
         result = match2.group(2) + match2.group(3)
     else:
         gg
-    print result
+    #print result
 
     opt = 0
     if result == u"刑事":
@@ -87,7 +87,6 @@ def parse(obj):
     try:
         obj["AJLX"] = get_type_of_case(obj)
     except Exception as e:
-        print e
         bb
 
     try:
