@@ -2,7 +2,7 @@ import json
 import formatter
 
 
-file_name = "data/law/small_data/" + "f6110808-45f9-4e7b-901a-a74a01869b15_content.json"
+file_name = "data/law/small_data/" + "010cdb54-374f-47df-ba6e-a74a01869990_content.json"
 
 f = open(file_name, "r")
 
