@@ -7,11 +7,11 @@
 <body>
     <form>
         数据集:
-        <input type="text" name="index" value={% if args["index"] %} "{{ args["index"] }}" {% else %} "law" {% endif %}>
+        <input type="text" name="index" value="{% if args["index"] %} {{ args["index"] }} {% else %} law {% endif %}">
         <br>
 
         数据类型:
-        <input type="text" name="doc_type" value={% if args["doc_type"] %} "{{ args["doc_type"] }}" {% else %} "small_data" {% endif %} >
+        <input type="text" name="doc_type" value="{% if args["doc_type"] %} {{ args["doc_type"] }} {% else %} small_data {% endif %}" >
         <br>
 
         全文检索:
@@ -87,7 +87,7 @@
         律师:Unsupported
         <br>
 
-        法律依据:Unsuppored
+        法律依据:Unsupported
         <br>
 
         <input type="submit" value="Search">

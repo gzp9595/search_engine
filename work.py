@@ -6,6 +6,7 @@ import json
 import jieba
 import util
 import platform
+import formatter
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -33,9 +34,12 @@ def insert_all():
             content = json.loads(line)
             break
         try:
-            elastic.insert_doc(index, doc_type, json.dumps(content))
+            print formatter.parse(content)
+            break
+            #elastic.insert_doc(index, doc_type, json.dumps(formatter.parse(content)))
             # print x + " Succeed"
         except Exception as e:
+            print e
             count += 1
             f = open('fail_list.txt', 'a')
             print >> f, x
@@ -149,12 +153,23 @@ def search_new():
                 pass
 
         if "judgement" in args and args["judgement"] != "":
-            if not("WBWB" in body["must"]["match"]):
+            if not ("WBWB" in body["must"]["match"]):
                 body["must"]["match"]["WBWB"] = ""
             body["must"]["match"]["WBWB"] += " " + args["judgement"]
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": body}, "size": 100}))
+
+        if "case_number" in args and args["case_number"] != "":
+            body["must"]["match"]["AJAH"] = args["case_number"]
+
+        if "level_of_court" in args and args["level_of_court"] != "0":
+            try:
+                value = int(args["level_of_court"])
+                body["filter"]["term"]["FYCJ"] = value
+            except ValueError:
+                pass
+
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
