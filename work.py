@@ -119,13 +119,11 @@ def search_new():
 
     if "doc_type" in request.args and "index" in request.args:
         body = {}
-        body["must"] = {}
-        body["must"]["match"] = {}
 
         args = request.args
 
         search_type = "content"
-        if "where_to_search" in args:
+        if "where_to_search" in args and args["content"] != "":
             match_type = {
                 "0": "content",
                 "1": "WBSB",
@@ -136,27 +134,51 @@ def search_new():
             }
             search_type = match_type[args["where_to_search"]]
 
-        body["must"]["match"][search_type] = args["search_content"]
+            if not ("must" in body):
+                body["must"] = {}
+            if not ("match" in body["must"]):
+                body["must"]["match"] = {}
+            body["must"]["match"][search_type] = args["search_content"]
 
         if "name_of_case" in args and args["name_of_case"] != "":
+            if not ("must" in body):
+                body["must"] = {}
+            if not ("match" in body["must"]):
+                body["must"]["match"] = {}
             body["must"]["match"]["Title"] = args["name_of_case"]
 
         if "name_of_court" in args and args["name_of_court"] != "":
+            if not ("must" in body):
+                body["must"] = {}
+            if not ("match" in body["must"]):
+                body["must"]["match"] = {}
             body["must"]["match"]["FYMC"] = args["name_of_court"]
 
         if "type_of_case" in args and args["type_of_case"] != "0":
             try:
                 value = int(args["type_of_case"])
+                if not ("filter" in body):
+                    body["filter"] = {}
+                if not ("term" in body["filter"]):
+                    body["filter"]["term"] = {}
                 body["filter"]["term"]["AJLX"] = value
             except ValueError:
                 pass
 
         if "judgement" in args and args["judgement"] != "":
+            if not ("must" in body):
+                body["must"] = {}
+            if not ("match" in body["must"]):
+                body["must"]["match"] = {}
             if not ("WBWB" in body["must"]["match"]):
                 body["must"]["match"]["WBWB"] = ""
             body["must"]["match"]["WBWB"] += " " + args["judgement"]
 
         if "case_number" in args and args["case_number"] != "":
+            if not ("must" in body):
+                body["must"] = {}
+            if not ("match" in body["must"]):
+                body["must"]["match"] = {}
             body["must"]["match"]["AJAH"] = args["case_number"]
 
         if "level_of_court" in args and args["level_of_court"] != "0":

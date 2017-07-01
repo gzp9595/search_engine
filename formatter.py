@@ -13,12 +13,12 @@ def get_type_of_case(obj):
     if obj["content"] == "":
         return
 
-    word_list = [u"刑\s事",u"民\s事",u"行\s政",u"赔\s偿",u"执\s行"]
+    word_list = [u"刑\s事", u"民\s事", u"行\s政", u"赔\s偿", u"执\s行"]
 
-    for a in range(0,len(word_list)):
-        match = re.search(word_list[a],obj["content"])
-        if not(match is None):
-            return a+1
+    for a in range(0, len(word_list)):
+        match = re.search(word_list[a], obj["content"])
+        if not (match is None):
+            return a + 1
 
     gg
 
@@ -32,13 +32,13 @@ def get_number_of_case(obj):
 
 
 def get_level_of_court(obj):
-    if not("WBSB" in obj) or obj["WBSB"] == "":
+    if not ("WBSB" in obj) or obj["WBSB"] == "":
         return 5
 
-    if re.search(u"最高",obj["WBSB"] )is None:
-        if re.search(u"高级",obj["WBSB"]) is None:
-            if re.search(u"中级",obj["WBSB"]) is None:
-                if re.search(u"法院",obj["WBSB"]) is None:
+    if re.search(u"最高", obj["WBSB"]) is None:
+        if re.search(u"高级", obj["WBSB"]) is None:
+            if re.search(u"中级", obj["WBSB"]) is None:
+                if re.search(u"法院", obj["WBSB"]) is None:
                     return 5
                 else:
                     return 4
@@ -51,6 +51,7 @@ def get_level_of_court(obj):
 
     gg
 
+
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
         return obj
@@ -59,11 +60,10 @@ def parse(obj):
         obj["WBSB"] = obj[""]
 
     if "" in obj:
-        obj.pop("",None)
+        obj.pop("", None)
 
-
-    if not("AJJBQK" in obj) and "SSJL" in obj:
-        obj["AJJBQK"]=obj["SSJL"]
+    if not ("AJJBQK" in obj) and "SSJL" in obj:
+        obj["AJJBQK"] = obj["SSJL"]
 
     try:
         if "WBSB" in obj:
@@ -88,11 +88,11 @@ def parse(obj):
     except Exception:
         obj["FYCJ"] = 5
 
-    keylist = ["WBWB","DSRXX","PubDate","Title","CPYZ","AJJBQK","PJJG","content","SSJL","WBSB","AJJBQK"]
+    keylist = ["WBWB", "DSRXX", "PubDate", "Title", "CPYZ", "AJJBQK", "PJJG", "content", "SSJL", "WBSB", "AJJBQK"]
 
     for key in keylist:
-        if not(key in obj):
-            obj[key]=""
+        if not (key in obj):
+            obj[key] = ""
 
     return obj
 
