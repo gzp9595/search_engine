@@ -34,7 +34,7 @@ def insert_all():
             content = json.loads(line)
             break
         try:
-            #print formatter.parse(content)
+            # print formatter.parse(content)
             data = formatter.parse(content)
             if data["content"] == "":
                 continue
@@ -121,9 +121,6 @@ def search_new():
         body = {}
         body["must"] = {}
         body["must"]["match"] = {}
-        body["filter"] = {}
-        body["filter"]["range"] = {}
-        body["filter"]["term"] = {}
 
         args = request.args
 
@@ -165,10 +162,14 @@ def search_new():
         if "level_of_court" in args and args["level_of_court"] != "0":
             try:
                 value = int(args["level_of_court"])
+                if not ("filter" in body):
+                    body["filter"] = {}
+                if not ("term" in body["filter"]):
+                    body["filter"]["term"] = {}
                 body["filter"]["term"]["FYCJ"] = value
             except ValueError:
                 pass
-        
+
         print body
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
