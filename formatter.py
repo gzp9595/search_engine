@@ -6,8 +6,37 @@ import re
 import util
 
 
+def get_number_of_case(obj):
+    if obj["content"] == "":
+        gg
+
+    result = re.search(u'([\(（]\d+[\)）][\u4e00-\u9fa5\d]*\d+[-\d+]?[号]?)', obj["content"])
+    return result.group()
+
+
 def get_name_of_court(obj):
     return re.search(u"([\u4e00-\u9fa5]*法院[\u4e00-\u9fa5]*)", obj["WBSB"]).group()
+
+
+def get_level_of_court(obj):
+    if not ("WBSB" in obj) or obj["WBSB"] == "":
+        return 5
+
+    if re.search(u"最高人民法院  ", obj["WBSB"]) is None:
+        if re.search(u"高级", obj["WBSB"]) is None:
+            if re.search(u"中级", obj["WBSB"]) is None:
+                if re.search(u"法院", obj["WBSB"]) is None:
+                    return 5
+                else:
+                    return 4
+            else:
+                return 3
+        else:
+            return 2
+    else:
+        return 1
+
+    gg
 
 
 def get_type_of_case(obj):
@@ -30,43 +59,14 @@ def get_type_of_doc(obj):
 
     word_list = [u"判决书", u"裁定书", u"调解书", u"决定书", u"通知书", u"批复", u"答复", u"函", u"令"]
 
-    for a in range(0,len(word_list)):
+    for a in range(0, len(word_list)):
         match = re.search(word_list[a], obj["Title"])
         if not (match is None):
             return a + 1
 
-    #print obj["Title"]
+    # print obj["Title"]
 
     return 10
-
-
-def get_number_of_case(obj):
-    if obj["content"] == "":
-        gg
-
-    result = re.search(u'([\(（]\d+[\)）][\u4e00-\u9fa5\d]*\d+[-\d+]?[号]?)', obj["content"])
-    return result.group()
-
-
-def get_level_of_court(obj):
-    if not ("WBSB" in obj) or obj["WBSB"] == "":
-        return 5
-
-    if re.search(u"最高人民法院  ", obj["WBSB"]) is None:
-        if re.search(u"高级", obj["WBSB"]) is None:
-            if re.search(u"中级", obj["WBSB"]) is None:
-                if re.search(u"法院", obj["WBSB"]) is None:
-                    return 5
-                else:
-                    return 4
-            else:
-                return 3
-        else:
-            return 2
-    else:
-        return 1
-
-    gg
 
 
 def get_date_of_judgement(obj):
@@ -160,6 +160,9 @@ def get_date_of_judgement(obj):
     return year_str + "-" + month_str + "-" + day_str
 
 
+def get_reason(obj):
+    pass
+
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
         return obj
@@ -174,12 +177,22 @@ def parse(obj):
         obj["AJJBQK"] = obj["SSJL"]
 
     try:
+        obj["AJAH"] = get_number_of_case(obj)
+    except Exception:
+        obj["AJAH"] = ""
+
+    try:
         if "WBSB" in obj:
             obj["FYMC"] = get_name_of_court(obj)
         else:
             obj["FYMC"] = ""
     except Exception:
         obj["FYMC"] = ""
+
+    try:
+        obj["FYCJ"] = get_level_of_court(obj)
+    except Exception:
+        obj["FYCJ"] = 5
 
     try:
         obj["AJLX"] = get_type_of_case(obj)
@@ -190,16 +203,6 @@ def parse(obj):
         obj["WSLX"] = get_type_of_doc(obj)
     except Exception:
         obj["WSLX"] = 10
-
-    try:
-        obj["AJAH"] = get_number_of_case(obj)
-    except Exception:
-        obj["AJAH"] = ""
-
-    try:
-        obj["FYCJ"] = get_level_of_court(obj)
-    except Exception:
-        obj["FYCJ"] = 5
 
     try:
         if "WBWB" in obj:
@@ -227,11 +230,11 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
-        #print >> fout, x
-        #for y in content:
-        #    print >> fout, y, content[y].encode('utf8')
-        #print >> fout
-        get_type_of_doc(content)
+        print >> fout, x
+        for y in content:
+            print >> fout, y, content[y].encode('utf8')
+        print >> fout
+        # get_type_of_doc(content)
         # try:
         #    get_date_of_judgement(content)
         # except AttributeError:
@@ -252,7 +255,6 @@ def test():
         #    get_number_of_case(content)
         cnt += 1
         if cnt >= 20:
-            continue
             break
     fout.close()
 

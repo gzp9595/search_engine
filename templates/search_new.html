@@ -26,12 +26,30 @@
         </select>
         <br>
 
+        案由:
+        Unsupported
+        <br>
+
         案件名称:
         <input type="text" name="name_of_case" {% if args["name_of_case"] %}value="{{ args["name_of_case"] }}"{% endif %}>
         <br>
 
+        案号:
+        <input type="text" name="case_number" {% if args["case_number"] %} value="{{ args["case_number"] }}"{% endif %}>
+        <br>
+
         法院名称:
         <input type="text" name="name_of_court" {% if args["name_of_court"] %}value="{{ args["name_of_court"] }}"{% endif %}>
+        <br>
+
+        法院层级:
+        <select name="level_of_court">
+            <option value="0" {% if (args["level_of_court"] and args["level_of_court"] == "0") or not("type_of_case" in args) %}selected{% endif %}>请选择</option>
+            <option value="1" {% if args["level_of_court"] and args["level_of_court"] == "1" %}selected{% endif %}>最高法院</option>
+            <option value="2" {% if args["level_of_court"] and args["level_of_court"] == "2" %}selected{% endif %}>高级法院</option>
+            <option value="3" {% if args["level_of_court"] and args["level_of_court"] == "3" %}selected{% endif %}>中级法院</option>
+            <option value="4" {% if args["level_of_court"] and args["level_of_court"] == "4" %}selected{% endif %}>基层法院</option>
+        </select>
         <br>
 
         案件类型:
@@ -43,6 +61,9 @@
             <option value="4" {% if args["type_of_case"] and args["type_of_case"] == "4" %}selected{% endif %}>赔偿案件</option>
             <option value="5" {% if args["type_of_case"] and args["type_of_case"] == "5" %}selected{% endif %}>执行案件</option>
         </select>
+        <br>
+
+        审判程序:Unsupported
         <br>
 
         文书类型:
@@ -61,36 +82,6 @@
         </select>
         <br>
 
-        审判人员:
-        <input type="text" name="judgement" {% if args["judgement"] %} value="{{ args["judgement"] }}"{% endif %}>
-        <br>
-
-        律所:
-        <input type="text" name="law_firm" {% if args["law_firm"] %} value="{{ args["law_firm"] }}"{% endif %}>
-        Unsupported
-        <br>
-
-        案由:
-        Unsupported
-        <br>
-
-        案号:
-        <input type="text" name="case_number" {% if args["case_number"] %} value="{{ args["case_number"] }}"{% endif %}>
-        <br>
-
-        法院层级:
-        <select name="level_of_court">
-            <option value="0" {% if (args["level_of_court"] and args["level_of_court"] == "0") or not("type_of_case" in args) %}selected{% endif %}>请选择</option>
-            <option value="1" {% if args["level_of_court"] and args["level_of_court"] == "1" %}selected{% endif %}>最高法院</option>
-            <option value="2" {% if args["level_of_court"] and args["level_of_court"] == "2" %}selected{% endif %}>高级法院</option>
-            <option value="3" {% if args["level_of_court"] and args["level_of_court"] == "3" %}selected{% endif %}>中级法院</option>
-            <option value="4" {% if args["level_of_court"] and args["level_of_court"] == "4" %}selected{% endif %}>基层法院</option>
-        </select>
-        <br>
-
-        审判程序:Unsupported
-        <br>
-
         裁判日期:
         From <input type="number" name="caipan_from_year" placeholder="year" {% if args["caipan_from_year"] %} value={{ args["caipan_from_year"] }} {% endif %}> -
         <input type="number" name="caipan_from_month" placeholder="month" {% if args["caipan_from_month"] %} value={{ args["caipan_from_month"] }} {% endif %}> -
@@ -101,7 +92,14 @@
         <input type="number" name="caipan_to_day" placeholder="day" {% if args["caipan_to_day"] %} value={{ args["caipan_to_day"] }} {% endif %}>
         <br>
 
+        审判人员:
+        <input type="text" name="judgement" {% if args["judgement"] %} value="{{ args["judgement"] }}"{% endif %}>
+        <br>
+
         当事人:Unsupported
+        <br>
+
+        律所:Unsupported
         <br>
 
         律师:Unsupported

@@ -139,8 +139,18 @@ def search_new():
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
 
+        if "case_number" in args and args["case_number"] != "":
+            body.append({"match": {"AJAH": args["case_number"]}})
+
         if "name_of_court" in args and args["name_of_court"] != "":
             body.append({"match": {"FYMC": args["name_of_court"]}})
+
+        if "level_of_court" in args and args["level_of_court"] != "0":
+            try:
+                value = int(args["level_of_court"])
+                body.append({"term": {"FYCJ": value}})
+            except ValueError:
+                pass
 
         if "type_of_case" in args and args["type_of_case"] != "0":
             try:
@@ -156,19 +166,6 @@ def search_new():
             except ValueError:
                 pass
 
-        if "judgement" in args and args["judgement"] != "":
-            body.append({"match": {"WBWB": args["judgement"]}})
-
-        if "case_number" in args and args["case_number"] != "":
-            body.append({"match": {"AJAH": args["case_number"]}})
-
-        if "level_of_court" in args and args["level_of_court"] != "0":
-            try:
-                value = int(args["level_of_court"])
-                body.append({"term": {"FYCJ": value}})
-            except ValueError:
-                pass
-
         if "caipan_from_year" in request.args and "caipan_from_month" in request.args and "caipan_from_day" in request.args and util.check_date(
                 request.args["caipan_from_year"], request.args["caipan_from_month"], request.args["caipan_from_day"]):
             body.append({"range": {"CPRQ": {"gte": request.args["caipan_from_year"] + "-" + request.args[
@@ -178,6 +175,9 @@ def search_new():
                 request.args["caipan_to_year"], request.args["caipan_to_month"], request.args["caipan_to_day"]):
             body.append({"range": {"CPRQ": {"lte": request.args["caipan_to_year"] + "-" + request.args[
                 "caipan_to_month"] + "-" + request.args["caipan_to_day"]}}})
+
+        if "judgement" in args and args["judgement"] != "":
+            body.append({"match": {"WBWB": args["judgement"]}})
 
         if "fabu_from_year" in request.args and "fabu_from_month" in request.args and "fabu_from_day" in request.args and util.check_date(
                 request.args["fabu_from_year"], request.args["fabu_from_month"], request.args["fabu_from_day"]):
