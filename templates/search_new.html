@@ -78,7 +78,14 @@
         审判程序:Unsupported
         <br>
 
-        裁判日期:Unsupported
+        裁判日期:
+        From <input type="number" name="caipan_from_year" placeholder="year" {% if args["caipan_from_year"] %} value={{ args["caipan_from_year"] }} {% endif %}> -
+        <input type="number" name="caipan_from_month" placeholder="month" {% if args["caipan_from_month"] %} value={{ args["caipan_from_month"] }} {% endif %}> -
+        <input type="number" name="caipan_from_day" placeholder="day" {% if args["caipan_from_day"] %} value={{ args["caipan_from_day"] }} {% endif %}>
+        <br>
+        To <input type="number" name="caipan_to_year" placeholder="year" {% if args["caipan_to_year"] %} value={{ args["caipan_to_year"] }} {% endif %}> -
+        <input type="number" name="caipan_to_month" placeholder="month" {% if args["caipan_to_month"] %} value={{ args["caipan_to_month"] }} {% endif %}> -
+        <input type="number" name="caipan_to_day" placeholder="day" {% if args["caipan_to_day"] %} value={{ args["caipan_to_day"] }} {% endif %}>
         <br>
 
         当事人:Unsupported
@@ -88,6 +95,16 @@
         <br>
 
         法律依据:Unsupported
+        <br>
+
+        发布日期:
+        From <input type="number" name="fabu_from_year" placeholder="year" {% if args["fabu_from_year"] %} value={{ args["fabu_from_year"] }} {% endif %}> -
+        <input type="number" name="fabu_from_month" placeholder="month" {% if args["fabu_from_month"] %} value={{ args["fabu_from_month"] }} {% endif %}> -
+        <input type="number" name="fabu_from_day" placeholder="day" {% if args["fabu_from_day"] %} value={{ args["fabu_from_day"] }} {% endif %}>
+        <br>
+        To <input type="number" name="fabu_to_year" placeholder="year" {% if args["fabu_to_year"] %} value={{ args["fabu_to_year"] }} {% endif %}> -
+        <input type="number" name="fabu_to_month" placeholder="month" {% if args["fabu_to_month"] %} value={{ args["fabu_to_month"] }} {% endif %}> -
+        <input type="number" name="fabu_to_day" placeholder="day" {% if args["fabu_to_day"] %} value={{ args["fabu_to_day"] }} {% endif %}>
         <br>
 
         <input type="submit" value="Search">

@@ -192,6 +192,50 @@ def search_new():
             except ValueError:
                 pass
 
+        if "caipan_from_year" in request.args and "caipan_from_month" in request.args and "caipan_from_day" in request.args and util.check_date(
+                request.args["caipan_from_year"], request.args["caipan_from_month"], request.args["caipan_from_day"]):
+            if not ("filter" in body):
+                body["filter"] = {}
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("CPRQ" in body["filter"]["range"]):
+                body["filter"]["range"]["CPRQ"] = {}
+            body["filter"]["range"]["CPRQ"]["gte"] = request.args["caipan_from_year"] + "-" + request.args[
+                "caipan_from_month"] + "-" + request.args["caipan_from_day"]
+
+        if "caipan_to_year" in request.args and "caipan_to_month" in request.args and "caipan_to_day" in request.args and util.check_date(
+                request.args["caipan_to_year"], request.args["caipan_to_month"], request.args["caipan_to_day"]):
+            if not ("filter" in body):
+                body["filter"] = {}
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("CPRQ" in body["filter"]["range"]):
+                body["filter"]["range"]["CPRQ"] = {}
+            body["filter"]["range"]["CPRQ"]["lte"] = request.args["caipan_to_year"] + "-" + request.args[
+                "caipan_to_month"] + "-" + request.args["caipan_to_day"]
+
+        if "fabu_from_year" in request.args and "fabu_from_month" in request.args and "fabu_from_day" in request.args and util.check_date(
+                request.args["fabu_from_year"], request.args["fabu_from_month"], request.args["fabu_from_day"]):
+            if not ("filter" in body):
+                body["filter"] = {}
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("PubDate" in body["filter"]["range"]):
+                body["filter"]["range"]["PubDate"] = {}
+            body["filter"]["range"]["PubDate"]["gte"] = request.args["fabu_from_year"] + "-" + request.args[
+                "fabu_from_month"] + "-" + request.args["fabu_from_day"]
+
+        if "fabu_to_year" in request.args and "fabu_to_month" in request.args and "fabu_to_day" in request.args and util.check_date(
+                request.args["fabu_to_year"], request.args["fabu_to_month"], request.args["fabu_to_day"]):
+            if not ("filter" in body):
+                body["filter"] = {}
+            if not ("range" in body["filter"]):
+                body["filter"]["range"] = {}
+            if not ("PubDate" in body["filter"]["range"]):
+                body["filter"]["range"]["PubDate"] = {}
+            body["filter"]["range"]["PubDate"]["lte"] = request.args["fabu_to_year"] + "-" + request.args[
+                "fabu_to_month"] + "-" + request.args["fabu_to_day"]
+
         print body
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],

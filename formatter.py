@@ -3,6 +3,7 @@
 import os
 import json
 import re
+import util
 
 
 def get_name_of_court(obj):
@@ -52,6 +53,97 @@ def get_level_of_court(obj):
     gg
 
 
+def get_date_of_judgement(obj):
+    if not ("WBWB" in obj):
+        return
+
+    if not (re.search(u"中华人民共和国民法通则", obj["WBWB"]) is None):
+        return
+
+    if not (re.search(u"李哲", obj["WBWB"]) is None):
+        return
+
+    date_list = {
+        u"〇": 0,
+        u"\uff2f": 0,
+        u"\u3007": 0,
+        u"\u25cb": 0,
+        u"\uff10": 0,
+        u"\u039f": 0,
+        "O": 0,
+        "0": 0,
+        u"一": 1,
+        u"元": 1,
+        u"二": 2,
+        u'三': 3,
+        u'四': 4,
+        u'五': 5,
+        u'六': 6,
+        u'七': 7,
+        u'八': 8,
+        u'九': 9,
+        u'十': 10
+    }
+    # print obj["WBWB"]
+    result = re.search(u"([O|\d|\uff2f|\u3007|\u25cb|\uff10|\u039f|\u4e00-\u9fa5]{4})年([\u4e00-\u9fa5]*)月", obj["WBWB"])
+    p = obj["WBWB"].find(result.group()) + len(result.group())
+    while obj["WBWB"][p] == "月":
+        p += 1
+    endp = p
+    while obj["WBWB"][endp] in date_list:
+        endp += 1
+
+    year_str = result.group(1)
+    month_str = result.group(2)
+    day_str = obj["WBWB"][p:endp]
+
+    year = 0
+    for a in range(0, len(year_str)):
+        year = year * 10 + date_list[year_str[a]]
+
+    month = 0
+    if len(month_str) == 1:
+        month = date_list[month_str[0]]
+    else:
+        month = 10 + date_list[month_str[1]]
+
+    day = 0
+    if day_str == "":
+        return
+
+    if len(day_str) > 3:
+        day_str = day_str[0:3]
+    if len(day_str) == 1:
+        day = date_list[day_str[0]]
+    elif len(day_str) == 2:
+        if day_str[0] == u"十":
+            day = 10 + date_list[day_str[1]]
+        elif day_str[1] == u"十":
+            day = date_list[day_str[0]] * 10
+        else:
+            day = date_list[day_str[0]] * 10 + date_list[day_str[1]]
+    elif len(day_str) == 3:
+        day = date_list[day_str[0]] * 10 + date_list[day_str[2]]
+    else:
+        gg
+
+    year_str = str(year)
+    while len(year_str) < 4:
+        year_str = "0" + year_str
+
+    month_str = str(month)
+    while len(month_str) < 2:
+        month_str = "0" + month_str
+
+    day_str = str(day)
+    while len(day_str) < 2:
+        day_str = "0" + day_str
+    if not (util.check_date(year_str, month_str, day_str)):
+        gg
+
+    return year_str + month_str + day_str
+
+
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
         return obj
@@ -88,6 +180,15 @@ def parse(obj):
     except Exception:
         obj["FYCJ"] = 5
 
+    try:
+        if "WBWB" in obj:
+            obj["CPRQ"] = get_date_of_judgement(obj)
+        else
+            obj["CPRQ"] = "0000-00-00"
+    except Exception:
+        obj["CPRQ"] = "0000-00-00"
+        gg
+
     keylist = ["WBWB", "DSRXX", "PubDate", "Title", "CPYZ", "AJJBQK", "PJJG", "content", "SSJL", "WBSB", "AJJBQK"]
 
     for key in keylist:
@@ -106,10 +207,14 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
-        print >> fout, x
-        for y in content:
-            print >> fout, y, content[y].encode('utf8')
-        print >> fout
+        # print >> fout, x
+        # for y in content:
+        #    print >> fout, y, content[y].encode('utf8')
+        # print >> fout
+        try:
+            get_date_of_judgement(content)
+        except AttributeError:
+            continue
 
         # if "WBSB" in content or "" in content:
         #    continue
@@ -126,6 +231,7 @@ def test():
         #    get_number_of_case(content)
         cnt += 1
         if cnt >= 20:
+            continue
             break
     fout.close()
 
