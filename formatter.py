@@ -141,7 +141,7 @@ def get_date_of_judgement(obj):
     if not (util.check_date(year_str, month_str, day_str)):
         gg
 
-    return year_str + month_str + day_str
+    return year_str + "-" + month_str + "-" + day_str
 
 
 def parse(obj):
@@ -184,10 +184,9 @@ def parse(obj):
         if "WBWB" in obj:
             obj["CPRQ"] = get_date_of_judgement(obj)
         else:
-            obj["CPRQ"] = "0000-00-00"
+            obj["CPRQ"] = "1900-01-01"
     except Exception:
-        obj["CPRQ"] = "0000-00-00"
-        gg
+        obj["CPRQ"] = "1900-01-01"
 
     keylist = ["WBWB", "DSRXX", "PubDate", "Title", "CPYZ", "AJJBQK", "PJJG", "content", "SSJL", "WBSB", "AJJBQK"]
 
