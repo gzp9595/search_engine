@@ -24,6 +24,22 @@ def get_type_of_case(obj):
     gg
 
 
+def get_type_of_doc(obj):
+    if obj["Title"] == "":
+        return 10
+
+    word_list = [u"判决书", u"裁定书", u"调解书", u"决定书", u"通知书", u"批复", u"答复", u"函", u"令"]
+
+    for a in range(0,len(word_list)):
+        match = re.search(word_list[a], obj["Title"])
+        if not (match is None):
+            return a + 1
+
+    #print obj["Title"]
+
+    return 10
+
+
 def get_number_of_case(obj):
     if obj["content"] == "":
         gg
@@ -171,6 +187,11 @@ def parse(obj):
         obj["AJLX"] = 0
 
     try:
+        obj["WSLX"] = get_type_of_doc(obj)
+    except Exception:
+        obj["WSLX"] = 10
+
+    try:
         obj["AJAH"] = get_number_of_case(obj)
     except Exception:
         obj["AJAH"] = ""
@@ -206,14 +227,15 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
-        # print >> fout, x
-        # for y in content:
+        #print >> fout, x
+        #for y in content:
         #    print >> fout, y, content[y].encode('utf8')
-        # print >> fout
-        try:
-            get_date_of_judgement(content)
-        except AttributeError:
-            continue
+        #print >> fout
+        get_type_of_doc(content)
+        # try:
+        #    get_date_of_judgement(content)
+        # except AttributeError:
+        #    continue
 
         # if "WBSB" in content or "" in content:
         #    continue

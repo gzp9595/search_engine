@@ -45,7 +45,20 @@
         </select>
         <br>
 
-        文书类型:Unsupported
+        文书类型:
+        <select name="type_of_doc">
+            <option value="0" {% if (args["type_of_doc"] and args["type_of_doc"] == "0") or not("type_of_doc" in args) %}selected{% endif %}>请选择</option>
+            <option value="1" {% if args["type_of_doc"] and args["type_of_doc"] == "1" %}selected{% endif %}>判决书</option>
+            <option value="2" {% if args["type_of_doc"] and args["type_of_doc"] == "2" %}selected{% endif %}>裁定书</option>
+            <option value="3" {% if args["type_of_doc"] and args["type_of_doc"] == "3" %}selected{% endif %}>调解书</option>
+            <option value="4" {% if args["type_of_doc"] and args["type_of_doc"] == "4" %}selected{% endif %}>决定书</option>
+            <option value="5" {% if args["type_of_doc"] and args["type_of_doc"] == "5" %}selected{% endif %}>通知书</option>
+            <option value="6" {% if args["type_of_doc"] and args["type_of_doc"] == "6" %}selected{% endif %}>批复</option>
+            <option value="7" {% if args["type_of_doc"] and args["type_of_doc"] == "7" %}selected{% endif %}>答复</option>
+            <option value="8" {% if args["type_of_doc"] and args["type_of_doc"] == "8" %}selected{% endif %}>函</option>
+            <option value="9" {% if args["type_of_doc"] and args["type_of_doc"] == "9" %}selected{% endif %}>令</option>
+            <option value="10" {% if args["type_of_doc"] and args["type_of_doc"] == "10" %}selected{% endif %}其他</option>
+        </select>
         <br>
 
         审判人员:

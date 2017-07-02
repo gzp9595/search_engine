@@ -149,6 +149,13 @@ def search_new():
             except ValueError:
                 pass
 
+        if "type_of_doc" in args and args["type_of_doc"] != "0":
+            try:
+                value = int(args["type_of_doc"])
+                body.append({"term": {"WSLX": value}})
+            except ValueError:
+                pass
+
         if "judgement" in args and args["judgement"] != "":
             body.append({"match": {"WBWB": args["judgement"]}})
 
