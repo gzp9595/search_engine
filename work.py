@@ -123,7 +123,7 @@ def search_new():
         args = request.args
 
         search_type = "content"
-        if "where_to_search" in args and args["content"] != "":
+        if "where_to_search" in args and args["search_content"] != "":
             match_type = {
                 "0": "content",
                 "1": "WBSB",
