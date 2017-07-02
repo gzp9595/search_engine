@@ -87,7 +87,7 @@ def get_date_of_judgement(obj):
     # print obj["WBWB"]
     result = re.search(u"([O|\d|\uff2f|\u3007|\u25cb|\uff10|\u039f|\u4e00-\u9fa5]{4})年([\u4e00-\u9fa5]*)月", obj["WBWB"])
     p = obj["WBWB"].find(result.group()) + len(result.group())
-    while obj["WBWB"][p] == "月":
+    while obj["WBWB"][p] == u"月":
         p += 1
     endp = p
     while obj["WBWB"][endp] in date_list:
@@ -183,7 +183,7 @@ def parse(obj):
     try:
         if "WBWB" in obj:
             obj["CPRQ"] = get_date_of_judgement(obj)
-        else
+        else:
             obj["CPRQ"] = "0000-00-00"
     except Exception:
         obj["CPRQ"] = "0000-00-00"
