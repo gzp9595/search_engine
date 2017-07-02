@@ -118,7 +118,7 @@ def search_new():
     result = []
 
     if "doc_type" in request.args and "index" in request.args:
-        body = {}
+        body = []
 
         args = request.args
 
@@ -134,112 +134,58 @@ def search_new():
             }
             search_type = match_type[args["where_to_search"]]
 
-            if not ("must" in body):
-                body["must"] = {}
-            if not ("match" in body["must"]):
-                body["must"]["match"] = {}
-            body["must"]["match"][search_type] = args["search_content"]
+            body.append({"match": {search_type: args["search_content"]}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
-            if not ("must" in body):
-                body["must"] = {}
-            if not ("match" in body["must"]):
-                body["must"]["match"] = {}
-            body["must"]["match"]["Title"] = args["name_of_case"]
+            body.append({"match": {"Title": args["name_of_case"]}})
 
         if "name_of_court" in args and args["name_of_court"] != "":
-            if not ("must" in body):
-                body["must"] = {}
-            if not ("match" in body["must"]):
-                body["must"]["match"] = {}
-            body["must"]["match"]["FYMC"] = args["name_of_court"]
+            body.append({"match": {"FYMC": args["name_of_court"]}})
 
         if "type_of_case" in args and args["type_of_case"] != "0":
             try:
                 value = int(args["type_of_case"])
-                if not ("filter" in body):
-                    body["filter"] = {}
-                if not ("term" in body["filter"]):
-                    body["filter"]["term"] = {}
-                body["filter"]["term"]["AJLX"] = value
+                body.append({"term": {"AJLX": value}})
             except ValueError:
                 pass
 
         if "judgement" in args and args["judgement"] != "":
-            if not ("must" in body):
-                body["must"] = {}
-            if not ("match" in body["must"]):
-                body["must"]["match"] = {}
-            if not ("WBWB" in body["must"]["match"]):
-                body["must"]["match"]["WBWB"] = ""
-            body["must"]["match"]["WBWB"] += " " + args["judgement"]
+            body.append({"match": {"WBWB": args["judgement"]}})
 
         if "case_number" in args and args["case_number"] != "":
-            if not ("must" in body):
-                body["must"] = {}
-            if not ("match" in body["must"]):
-                body["must"]["match"] = {}
-            body["must"]["match"]["AJAH"] = args["case_number"]
+            body.append({"match": {"AJAH": args["case_number"]}})
 
         if "level_of_court" in args and args["level_of_court"] != "0":
             try:
                 value = int(args["level_of_court"])
-                if not ("filter" in body):
-                    body["filter"] = {}
-                if not ("term" in body["filter"]):
-                    body["filter"]["term"] = {}
-                body["filter"]["term"]["FYCJ"] = value
+                body.append({"term": {"FYCJ": value}})
             except ValueError:
                 pass
 
         if "caipan_from_year" in request.args and "caipan_from_month" in request.args and "caipan_from_day" in request.args and util.check_date(
                 request.args["caipan_from_year"], request.args["caipan_from_month"], request.args["caipan_from_day"]):
-            if not ("filter" in body):
-                body["filter"] = {}
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("CPRQ" in body["filter"]["range"]):
-                body["filter"]["range"]["CPRQ"] = {}
-            body["filter"]["range"]["CPRQ"]["gte"] = request.args["caipan_from_year"] + "-" + request.args[
-                "caipan_from_month"] + "-" + request.args["caipan_from_day"]
+            body.append({"range": {"CPRQ": {"gte": request.args["caipan_from_year"] + "-" + request.args[
+                "caipan_from_month"] + "-" + request.args["caipan_from_day"]}}})
 
         if "caipan_to_year" in request.args and "caipan_to_month" in request.args and "caipan_to_day" in request.args and util.check_date(
                 request.args["caipan_to_year"], request.args["caipan_to_month"], request.args["caipan_to_day"]):
-            if not ("filter" in body):
-                body["filter"] = {}
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("CPRQ" in body["filter"]["range"]):
-                body["filter"]["range"]["CPRQ"] = {}
-            body["filter"]["range"]["CPRQ"]["lte"] = request.args["caipan_to_year"] + "-" + request.args[
-                "caipan_to_month"] + "-" + request.args["caipan_to_day"]
+            body.append({"range": {"CPRQ": {"lte": request.args["caipan_to_year"] + "-" + request.args[
+                "caipan_to_month"] + "-" + request.args["caipan_to_day"]}}})
 
         if "fabu_from_year" in request.args and "fabu_from_month" in request.args and "fabu_from_day" in request.args and util.check_date(
                 request.args["fabu_from_year"], request.args["fabu_from_month"], request.args["fabu_from_day"]):
-            if not ("filter" in body):
-                body["filter"] = {}
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("PubDate" in body["filter"]["range"]):
-                body["filter"]["range"]["PubDate"] = {}
-            body["filter"]["range"]["PubDate"]["gte"] = request.args["fabu_from_year"] + "-" + request.args[
-                "fabu_from_month"] + "-" + request.args["fabu_from_day"]
+            body.append({"range": {"PubDate": {"gte": request.args["fabu_from_year"] + "-" + request.args[
+                "fabu_from_month"] + "-" + request.args["fabu_from_day"]}}})
 
         if "fabu_to_year" in request.args and "fabu_to_month" in request.args and "fabu_to_day" in request.args and util.check_date(
                 request.args["fabu_to_year"], request.args["fabu_to_month"], request.args["fabu_to_day"]):
-            if not ("filter" in body):
-                body["filter"] = {}
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("PubDate" in body["filter"]["range"]):
-                body["filter"]["range"]["PubDate"] = {}
-            body["filter"]["range"]["PubDate"]["lte"] = request.args["fabu_to_year"] + "-" + request.args[
-                "fabu_to_month"] + "-" + request.args["fabu_to_day"]
+            body.append({"range": {"PubDate": {"lte": request.args["fabu_to_year"] + "-" + request.args[
+                "to_from_month"] + "-" + request.args["fabu_to_day"]}}})
 
         print body
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps({"query": {"bool": body}, "size": 100}))
+                                          json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
 
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
