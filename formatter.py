@@ -161,7 +161,12 @@ def get_date_of_judgement(obj):
 
 
 def get_reason(obj):
-    pass
+    result = re.findall(u"《[\s\S]*》第[^《]*条",obj["content"])
+
+    for x in result:
+        print x
+
+    print
 
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
@@ -234,6 +239,7 @@ def test():
         for y in content:
             print >> fout, y, content[y].encode('utf8')
         print >> fout
+        get_reason(content)
         # get_type_of_doc(content)
         # try:
         #    get_date_of_judgement(content)
