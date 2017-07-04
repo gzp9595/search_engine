@@ -47,7 +47,7 @@ def insert_file(index, doc_type, file_name):
 
 
 def dfs_insert(index, doc_type, path):
-    for x in os.listdor(path):
+    for x in os.listdir(path):
         if os.path.isdir(path + x):
             dfs_insert(index, doc_type, path + x + "/")
         else:
@@ -198,6 +198,7 @@ def search_new():
         if "judgement" in args and args["judgement"] != "":
             body.append({"match": {"WBWB": args["judgement"]}})
 
+
         if "fabu_from_year" in request.args and "fabu_from_month" in request.args and "fabu_from_day" in request.args and util.check_date(
                 request.args["fabu_from_year"], request.args["fabu_from_month"], request.args["fabu_from_day"]):
             body.append({"range": {"PubDate": {"gte": request.args["fabu_from_year"] + "-" + request.args[
@@ -206,7 +207,7 @@ def search_new():
         if "fabu_to_year" in request.args and "fabu_to_month" in request.args and "fabu_to_day" in request.args and util.check_date(
                 request.args["fabu_to_year"], request.args["fabu_to_month"], request.args["fabu_to_day"]):
             body.append({"range": {"PubDate": {"lte": request.args["fabu_to_year"] + "-" + request.args[
-                "to_from_month"] + "-" + request.args["fabu_to_day"]}}})
+                "fabu_to_month"] + "-" + request.args["fabu_to_day"]}}})
 
         print body
 
