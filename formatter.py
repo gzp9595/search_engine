@@ -5,6 +5,46 @@ import json
 import re
 import util
 
+num_list = {
+    u"〇": 0,
+    u"\uff2f": 0,
+    u"\u3007": 0,
+    u"\u25cb": 0,
+    u"\uff10": 0,
+    u"\u039f": 0,
+    u'零': 0,
+    "O": 0,
+    "0": 0,
+    u"一": 1,
+    u"元": 1,
+    u"1": 1,
+    u"二": 2,
+    u"2": 2,
+    u'三': 3,
+    u'3': 3,
+    u'四': 4,
+    u'4': 4,
+    u'五': 5,
+    u'5': 5,
+    u'六': 6,
+    u'6': 6,
+    u'七': 7,
+    u'7': 7,
+    u'八': 8,
+    u'8': 8,
+    u'九': 9,
+    u'9': 9,
+    u'十': 10,
+    u'百': 100,
+    u'千': 1000,
+    u'万': 10000
+}
+
+num_str = ""
+
+for x in num_list:
+    num_str = num_str + x
+
 
 def get_number_of_case(obj):
     if obj["content"] == "":
@@ -78,35 +118,13 @@ def get_date_of_judgement(obj):
 
     if not (re.search(u"李哲", obj["WBWB"]) is None):
         return
-
-    date_list = {
-        u"〇": 0,
-        u"\uff2f": 0,
-        u"\u3007": 0,
-        u"\u25cb": 0,
-        u"\uff10": 0,
-        u"\u039f": 0,
-        "O": 0,
-        "0": 0,
-        u"一": 1,
-        u"元": 1,
-        u"二": 2,
-        u'三': 3,
-        u'四': 4,
-        u'五': 5,
-        u'六': 6,
-        u'七': 7,
-        u'八': 8,
-        u'九': 9,
-        u'十': 10
-    }
     # print obj["WBWB"]
     result = re.search(u"([O|\d|\uff2f|\u3007|\u25cb|\uff10|\u039f|\u4e00-\u9fa5]{4})年([\u4e00-\u9fa5]*)月", obj["WBWB"])
     p = obj["WBWB"].find(result.group()) + len(result.group())
     while obj["WBWB"][p] == u"月":
         p += 1
     endp = p
-    while obj["WBWB"][endp] in date_list:
+    while obj["WBWB"][endp] in num_list:
         endp += 1
 
     year_str = result.group(1)
@@ -115,13 +133,13 @@ def get_date_of_judgement(obj):
 
     year = 0
     for a in range(0, len(year_str)):
-        year = year * 10 + date_list[year_str[a]]
+        year = year * 10 + num_list[year_str[a]]
 
     month = 0
     if len(month_str) == 1:
-        month = date_list[month_str[0]]
+        month = num_list[month_str[0]]
     else:
-        month = 10 + date_list[month_str[1]]
+        month = 10 + num_list[month_str[1]]
 
     day = 0
     if day_str == "":
@@ -130,16 +148,16 @@ def get_date_of_judgement(obj):
     if len(day_str) > 3:
         day_str = day_str[0:3]
     if len(day_str) == 1:
-        day = date_list[day_str[0]]
+        day = num_list[day_str[0]]
     elif len(day_str) == 2:
         if day_str[0] == u"十":
-            day = 10 + date_list[day_str[1]]
+            day = 10 + num_list[day_str[1]]
         elif day_str[1] == u"十":
-            day = date_list[day_str[0]] * 10
+            day = num_list[day_str[0]] * 10
         else:
-            day = date_list[day_str[0]] * 10 + date_list[day_str[1]]
+            day = num_list[day_str[0]] * 10 + num_list[day_str[1]]
     elif len(day_str) == 3:
-        day = date_list[day_str[0]] * 10 + date_list[day_str[2]]
+        day = num_list[day_str[0]] * 10 + num_list[day_str[2]]
     else:
         gg
 
@@ -160,13 +178,105 @@ def get_date_of_judgement(obj):
     return year_str + "-" + month_str + "-" + day_str
 
 
+key_word_list = [u"第", u"条", u"款", u"、", u"，"]
+
+
+def get_number_from_string(s):
+    for x in s:
+        if not (x in num_list):
+            print s
+            gg
+
+    value = 0
+    try:
+        value = int(s)
+    except ValueError:
+        nowbase = 1
+        addnew = True
+        for a in range(len(s) - 1, -1, -1):
+            if s[a] == u'十':
+                nowbase = 10
+                addnew = False
+            elif s[a] == u'百':
+                nowbase = 100
+                addnew = False
+            elif s[a] == u'千':
+                nowbase = 1000
+                addnew = False
+            elif s[a] == u'万':
+                nowbase = 10000
+                addnew = False
+            else:
+                value = value + nowbase * num_list[s[a]]
+                addnew = True
+
+        if not (addnew):
+            value += nowbase
+
+        return value
+
+
+def get_one_reason(content, rex):
+    pos = rex.start()
+    law_name = rex.group(1)
+    nows = rex.group()
+
+    result = []
+
+    p = 0
+    while nows[p] != u"》":
+        p += 1
+    while nows[p] != u"第":
+        p += 1
+
+    tiao_num = 0
+    kuan_num = 0
+    add_kuan = True
+    while p < len(nows):
+        nowp = p + 1
+        while not(nows[nowp] in key_word_list):
+            nowp += 1
+        num = get_number_from_string(nows[p + 1:nowp])
+        if nows[nowp] != u"款":
+            if not (add_kuan):
+                result.append({"law_name": law_name, "tiao_num": tiao_num, "kuan_num": 0})
+            tiao_num = num
+            add_kuan = False
+        else:
+            kuan_num = num
+            result.append({"law_name": law_name, "tiao_num": tiao_num, "kuan_num": kuan_num})
+            add_kuan = True
+
+        p = nowp
+
+        while p < len(nows) and nows[p] != u'第':
+            p += 1
+
+    if not (add_kuan):
+        result.append({"law_name": law_name, "tiao_num": tiao_num, "kuan_num": 0})
+
+    #print nows
+    #for x in result:
+    #    print x["law_name"], x["tiao_num"], x["kuan_num"]
+    #print
+
+    return result
+
+
 def get_reason(obj):
-    result = re.findall(u"《[\s\S]*》第[^《]*条",obj["content"])
+    key_word_str = num_str
+    for x in key_word_list:
+        key_word_str = key_word_str + x
+    rex = re.compile(u"《([^《》]*)》第[" + key_word_str + u"]*条")
+    result = rex.finditer(obj["content"])
+
+    result_list = []
 
     for x in result:
-        print x
+        result_list = result_list + get_one_reason(obj["content"], x)
 
-    print
+    return result_list
+
 
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
@@ -217,6 +327,12 @@ def parse(obj):
     except Exception:
         obj["CPRQ"] = "1900-01-01"
 
+    try:
+        obj["FLYJ"] = get_reason(obj)
+    except Exception:
+        obj["FLYJ"] = []
+        gg
+
     keylist = ["WBWB", "DSRXX", "PubDate", "Title", "CPYZ", "AJJBQK", "PJJG", "content", "SSJL", "WBSB", "AJJBQK"]
 
     for key in keylist:
@@ -261,6 +377,7 @@ def test():
         #    get_number_of_case(content)
         cnt += 1
         if cnt >= 20:
+            continue
             break
     fout.close()
 
