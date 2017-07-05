@@ -178,7 +178,7 @@ def get_date_of_judgement(obj):
     return year_str + "-" + month_str + "-" + day_str
 
 
-key_word_list = [u"第", u"条", u"款", u"、", u"，"]
+key_word_list = [u"第", u"条", u"款", u"、", u"，",u"（",u"）"]
 
 
 def get_number_from_string(s):
@@ -213,13 +213,13 @@ def get_number_from_string(s):
         if not (addnew):
             value += nowbase
 
-        return value
+    return value
 
 
 def get_one_reason(content, rex):
     pos = rex.start()
     law_name = rex.group(1)
-    nows = rex.group()
+    nows = rex.group().replace(u"（",u"").replacE(u"）",u"")
 
     result = []
 
