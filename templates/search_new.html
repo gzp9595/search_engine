@@ -105,7 +105,10 @@
         律师:Unsupported
         <br>
 
-        法律依据:Unsupported
+        法律依据:
+        法律名称 <input type="text" name="name_of_law" {% if args["name_of_law"] %} value="{{ args["name_of_law"] }}"{% endif %}>
+        第 <input type="number" name="num_of_tiao" placeholder="" {% if args["num_of_tiao"] %} value={{ args["num_of_tiao"] }} {% endif %}>条
+        第 <input type="number" name="num_of_kuan" placeholder="" {% if args["num_of_kuan"] %} value={{ args["num_of_kuan"] }} {% endif %}>款
         <br>
 
         发布日期:

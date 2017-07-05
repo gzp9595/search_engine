@@ -185,29 +185,36 @@ def search_new():
             except ValueError:
                 pass
 
-        if "caipan_from_year" in request.args and "caipan_from_month" in request.args and "caipan_from_day" in request.args and util.check_date(
-                request.args["caipan_from_year"], request.args["caipan_from_month"], request.args["caipan_from_day"]):
-            body.append({"range": {"CPRQ": {"gte": request.args["caipan_from_year"] + "-" + request.args[
-                "caipan_from_month"] + "-" + request.args["caipan_from_day"]}}})
+        if "caipan_from_year" in args and "caipan_from_month" in args and "caipan_from_day" in args and util.check_date(
+                args["caipan_from_year"], args["caipan_from_month"], args["caipan_from_day"]):
+            body.append({"range": {"CPRQ": {"gte": args["caipan_from_year"] + "-" + args[
+                "caipan_from_month"] + "-" + args["caipan_from_day"]}}})
 
-        if "caipan_to_year" in request.args and "caipan_to_month" in request.args and "caipan_to_day" in request.args and util.check_date(
-                request.args["caipan_to_year"], request.args["caipan_to_month"], request.args["caipan_to_day"]):
-            body.append({"range": {"CPRQ": {"lte": request.args["caipan_to_year"] + "-" + request.args[
-                "caipan_to_month"] + "-" + request.args["caipan_to_day"]}}})
+        if "caipan_to_year" in args and "caipan_to_month" in args and "caipan_to_day" in args and util.check_date(
+                args["caipan_to_year"], args["caipan_to_month"], args["caipan_to_day"]):
+            body.append({"range": {"CPRQ": {"lte": args["caipan_to_year"] + "-" + args[
+                "caipan_to_month"] + "-" + args["caipan_to_day"]}}})
 
         if "judgement" in args and args["judgement"] != "":
             body.append({"match": {"WBWB": args["judgement"]}})
 
+        if "fabu_from_year" in args and "fabu_from_month" in args and "fabu_from_day" in args and util.check_date(
+                args["fabu_from_year"], args["fabu_from_month"], args["fabu_from_day"]):
+            body.append({"range": {"PubDate": {"gte": args["fabu_from_year"] + "-" + args[
+                "fabu_from_month"] + "-" + args["fabu_from_day"]}}})
 
-        if "fabu_from_year" in request.args and "fabu_from_month" in request.args and "fabu_from_day" in request.args and util.check_date(
-                request.args["fabu_from_year"], request.args["fabu_from_month"], request.args["fabu_from_day"]):
-            body.append({"range": {"PubDate": {"gte": request.args["fabu_from_year"] + "-" + request.args[
-                "fabu_from_month"] + "-" + request.args["fabu_from_day"]}}})
+        if "fabu_to_year" in args and "fabu_to_month" in args and "fabu_to_day" in args and util.check_date(
+                args["fabu_to_year"], args["fabu_to_month"], args["fabu_to_day"]):
+            body.append({"range": {"PubDate": {"lte": args["fabu_to_year"] + "-" + args[
+                "fabu_to_month"] + "-" + args["fabu_to_day"]}}})
 
-        if "fabu_to_year" in request.args and "fabu_to_month" in request.args and "fabu_to_day" in request.args and util.check_date(
-                request.args["fabu_to_year"], request.args["fabu_to_month"], request.args["fabu_to_day"]):
-            body.append({"range": {"PubDate": {"lte": request.args["fabu_to_year"] + "-" + request.args[
-                "fabu_to_month"] + "-" + request.args["fabu_to_day"]}}})
+        if "name_of_law" in args and args["name_of_law"] != "":
+            new_body = [{"match": {"FLYJ.law_name": args["name_of_law"]}}]
+            if "num_of_tiao" in args and args["num_of_tiao"] != "":
+                new_body.append({"match" : {"FLYJ.num_tiao" : args["num_of_tiao"]}})
+            if "num_of_kuan" in args and args["num_of_kuan"] != "":
+                new_body.append({"match" : {"FLYJ.num_kuan" : args["num_of_kuan"]}})
+            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
         print body
 
