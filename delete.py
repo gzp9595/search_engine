@@ -1,3 +1,3 @@
 import os
 
-os.system("curl -XDELETE http://localhost:9200/law")
+os.system("curl -XDELETE http://localhost:9200/law/small_data")

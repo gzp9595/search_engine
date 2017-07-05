@@ -26,9 +26,19 @@ os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
                 "include_in_all": "true",
                 "boost": 8
             }
+            "FLYJ": {
+                "type" : "nested",
+                "properties" : {
+                    "law_name" : { "type" : "text" },
+                    "tiao_num" : { "type" : "integer" },
+                    "kuan_num" : { "type" : "integer" },
+                }
+            }
         }
     }
 }'""")
+
+gg
 
 os.system("""curl -XPOST http://localhost:9200/law/big_data/_mapping -d'
 {
