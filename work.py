@@ -211,9 +211,9 @@ def search_new():
         if "name_of_law" in args and args["name_of_law"] != "":
             new_body = [{"match": {"FLYJ.law_name": args["name_of_law"]}}]
             if "num_of_tiao" in args and args["num_of_tiao"] != "":
-                new_body.append({"match" : {"FLYJ.num_tiao" : args["num_of_tiao"]}})
+                new_body.append({"match" : {"FLYJ.tiao_num" : args["num_of_tiao"]}})
             if "num_of_kuan" in args and args["num_of_kuan"] != "":
-                new_body.append({"match" : {"FLYJ.num_kuan" : args["num_of_kuan"]}})
+                new_body.append({"match" : {"FLYJ.kuan_num" : args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
         print body
