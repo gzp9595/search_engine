@@ -36,6 +36,7 @@ def insert_file(index, doc_type, file_name):
         data = formatter.parse(content)
         if data["content"] == "":
             return
+        data["doc_name"] = file_name[len(file_name) - 49:len(file_name) - 13]
         elastic.insert_doc(index, doc_type, json.dumps(data))
         # print x + " Succeed"
     except Exception as e:
@@ -211,9 +212,9 @@ def search_new():
         if "name_of_law" in args and args["name_of_law"] != "":
             new_body = [{"match": {"FLYJ.law_name": args["name_of_law"]}}]
             if "num_of_tiao" in args and args["num_of_tiao"] != "":
-                new_body.append({"match" : {"FLYJ.tiao_num" : args["num_of_tiao"]}})
+                new_body.append({"match": {"FLYJ.tiao_num": args["num_of_tiao"]}})
             if "num_of_kuan" in args and args["num_of_kuan"] != "":
-                new_body.append({"match" : {"FLYJ.kuan_num" : args["num_of_kuan"]}})
+                new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
         print body
@@ -235,7 +236,10 @@ def get_doc_byid():
         # print query_result["_source"]["content"]
         return render_template("news.html", content=unicode(query_result["_source"]["content"]),
                                Title=query_result["_source"]["Title"],
-                               PubDate=query_result["_source"]["PubDate"]).replace('\b', '<br/>')
+                               PubDate=query_result["_source"]["PubDate"],
+                               origin=query_result["_source"]["doc_name"]) \
+            .replace('\b', '<br/>')
+
     return "Error"
 
 
