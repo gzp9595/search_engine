@@ -25,7 +25,7 @@ os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
                 "search_analyzer": "ik_smart",
                 "include_in_all": "true",
                 "boost": 8
-            }
+            },
             "FLYJ": {
                 "type" : "nested"
             }

@@ -113,11 +113,6 @@ def get_date_of_judgement(obj):
     if not ("WBWB" in obj):
         return
 
-    if not (re.search(u"中华人民共和国民法通则", obj["WBWB"]) is None):
-        return
-
-    if not (re.search(u"李哲", obj["WBWB"]) is None):
-        return
     # print obj["WBWB"]
     result = re.search(u"([O|\d|\uff2f|\u3007|\u25cb|\uff10|\u039f|\u4e00-\u9fa5]{4})年([\u4e00-\u9fa5]*)月", obj["WBWB"])
     p = obj["WBWB"].find(result.group()) + len(result.group())
@@ -219,7 +214,7 @@ def get_number_from_string(s):
 def get_one_reason(content, rex):
     pos = rex.start()
     law_name = rex.group(1)
-    nows = rex.group().replace(u"（",u"").replacE(u"）",u"")
+    nows = rex.group().replace(u"（",u"").replace(u"）",u"")
 
     result = []
 
