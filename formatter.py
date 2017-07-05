@@ -250,9 +250,9 @@ def get_one_reason(content, rex):
     if not (add_kuan):
         result.append({"law_name": law_name, "tiao_num": tiao_num, "kuan_num": 0})
 
-    print nows
-    for x in result:
-        print x["law_name"], x["tiao_num"], x["kuan_num"]
+    #print nows
+    #for x in result:
+    #    print x["law_name"], x["tiao_num"], x["kuan_num"]
     #print
 
     return result
@@ -270,7 +270,7 @@ def get_reason(obj):
     for x in result:
         result_list = result_list + get_one_reason(obj["content"], x)
 
-    print
+    #print
 
     return result_list
 
