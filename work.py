@@ -227,9 +227,18 @@ def search_new():
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
 
-        result = ranking.reranking(result)
+        result = ranking.reranking(result, args)
 
-    return render_template("search_new.html", args=request.args, result=result)
+    return render_template("search_new.html", args=request.args, result=result, query=args)
+
+
+@app.route('/adddata')
+def add_data():
+    query = request.args["query"]
+    obj = elastic.get_by_id(request.args["id"])
+    score = request.args["score"] / 5.0
+    print obj, query, score
+    ranking.add_data(obj, query, score)
 
 
 @app.route('/doc')
