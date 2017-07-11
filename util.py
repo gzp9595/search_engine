@@ -7,10 +7,10 @@ def check_date(year, month, day):
         return False
 
     try:
-        print year,month,day
+        #print year,month,day
         time.strptime(str(year) + "-" + str(month) + "-" + str(day), "%Y-%m-%d")
-        print "Accepted"
+        #print "Accepted"
         return True
     except Exception as e:
-        print e
+        #print e
         return False

@@ -2,6 +2,7 @@ import os
 
 
 os.system("curl -XPUT http://localhost:9200/law")
+print
 os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
 {
     "small_data": {
@@ -29,12 +30,10 @@ os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
             "FLYJ": {
                 "type" : "nested"
             }
-        },
-        "_id" : {
-            "path" : "doc_name"
         }
     }
 }'""")
+print
 
 gg
 

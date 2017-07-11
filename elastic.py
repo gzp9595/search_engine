@@ -6,7 +6,7 @@ es = Elasticsearch(config.ElASTIC_SEARCH_ADDRESS, port=config.ELASTIC_SEARCH_POR
 
 def insert_doc(index, doc_type, doc):
     # print doc
-    es.index(index=index, doc_type=doc_type, body=doc)
+    es.index(index=index, doc_type=doc_type, body=doc, id = doc["doc_name"])
 
 
 def get_doc_byid(index, doc_type, id):
