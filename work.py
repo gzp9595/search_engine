@@ -7,6 +7,7 @@ import jieba
 import util
 import platform
 import formatter
+import ranking
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -225,6 +226,8 @@ def search_new():
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
+
+        result = ranking.reranking(result)
 
     return render_template("search_new.html", args=request.args, result=result)
 

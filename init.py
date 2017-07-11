@@ -5,7 +5,7 @@ os.system("curl -XPUT http://localhost:9200/law")
 os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
 {
     "small_data": {
-             "_all": {
+        "_all": {
             "analyzer": "ik_max_word",
             "search_analyzer": "ik_smart",
             "term_vector": "no",
@@ -29,6 +29,9 @@ os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
             "FLYJ": {
                 "type" : "nested"
             }
+        },
+        "_id" : {
+            "path" : "doc_name"
         }
     }
 }'""")

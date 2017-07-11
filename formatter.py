@@ -339,6 +339,10 @@ def parse(obj):
     return obj
 
 
+def parse_more(obj):
+    pass
+
+
 def test():
     fout = open('test.log', 'w')
     cnt = 0
