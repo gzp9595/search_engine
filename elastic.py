@@ -1,12 +1,13 @@
 from elasticsearch import Elasticsearch
 import config
+import json
 
 es = Elasticsearch(config.ElASTIC_SEARCH_ADDRESS, port=config.ELASTIC_SEARCH_PORT)
 
 
 def insert_doc(index, doc_type, doc):
     # print doc
-    es.index(index=index, doc_type=doc_type, body=doc, id = doc["doc_name"])
+    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id = doc["doc_name"])
 
 
 def get_doc_byid(index, doc_type, id):

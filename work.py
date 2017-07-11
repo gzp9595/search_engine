@@ -38,7 +38,7 @@ def insert_file(index, doc_type, file_name):
         if data["content"] == "":
             return
         data["doc_name"] = file_name[len(file_name) - 49:len(file_name) - 13]
-        elastic.insert_doc(index, doc_type, json.dumps(data))
+        elastic.insert_doc(index, doc_type, data)
         # print x + " Succeed"
     except Exception as e:
         print e
