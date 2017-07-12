@@ -5,7 +5,7 @@ import os
 X = []
 Y = []
 length = 11 * 2 + 1 + 3 + 2
-layer = (2 * np.random.random((length, 1)) - 1)/100
+layer = (2 * np.random.random((length, 1)) - 1)
 
 
 def write_model():
@@ -31,11 +31,7 @@ def train(iter):
     global layer
     for a in range(0, iter):
         l0 = np.array(X)
-        print X
-        print l0.shape
         l1 = 1 / (1 + np.exp(-np.dot(l0, layer)))
-        print l1.shape
-        print Y
         l1_error = Y - l1
         print l1_error
         l1_delta = l1_error * (l1 * (1 - l1))
@@ -93,6 +89,15 @@ def reranking(result, query):
     for a in range(0, len(result)):
         result[a]["_source"] = feature.gen_ranking_feature(result[a]["_source"], query)
         result[a]["_source"]["score"] = get_score(result[a]["_source"])
+
+    nowp = 0
+    while nowp<len(result):
+        nowf = get_feature(result[nowp]["_source"])
+        print nowf
+        if nowf[len(nowf)-1]<0.3:
+            result=result[0:nowp]+result[nowp+1:len(result)]
+        else:
+            nowp += 1
 
     result.sort(cmp)
 
