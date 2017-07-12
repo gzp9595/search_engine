@@ -13,7 +13,7 @@ def get_document_statistics(obj, query):
         obj["feature"]["statistics"][word + "_num_of_words"] = len(list(jieba.cut(obj[word])))
 
     obj["feature"]["statistics"]["judge_timestamp"] = int(
-        time.mktime(datetime.datetime.strptime(obj["CPRQ"], "%Y-%m-%d").timetuple()))
+        time.mktime(datetime.datetime.strptime(obj["CPRQ"], "%Y-%m-%d").timetuple()))/1e13
 
     return obj
 
@@ -55,8 +55,10 @@ def get_text_matching_feature(obj, query):
 
 
 def gen_ranking_feature(obj, query):
-    obj["features"] = {}
+    obj["feature"] = {}
 
+    obj = get_document_statistics(obj, query)
+    obj = get_classification_of_document(obj, query)
     obj = get_text_matching_feature(obj, query)
 
     return obj

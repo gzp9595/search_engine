@@ -138,7 +138,7 @@ def get_date_of_judgement(obj):
 
     day = 0
     if day_str == "":
-        return
+        gg
 
     if len(day_str) > 3:
         day_str = day_str[0:3]

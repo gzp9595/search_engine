@@ -2,17 +2,17 @@ import feature
 import numpy as np
 import os
 
-X = np.array()
-Y = np.array()
+X = []
+Y = []
 length = 11 * 2 + 1 + 3 + 2
-layer = 2 * np.random.random((length, 1)) - 1
+layer = (2 * np.random.random((length, 1)) - 1)/100
 
 
 def write_model():
     global layer
     f = open("model", "w")
     for a in range(0, length):
-        print >> f, layer[a]
+        print >> f, layer[a][0]
     f.close()
 
 
@@ -20,7 +20,7 @@ if os.path.exists("model"):
     f = open("model", "r")
     cnt = 0
     for line in f:
-        layer[cnt] = float(line)
+        layer[cnt] = [float(line)]
         cnt += 1
     f.close()
 else:
@@ -30,10 +30,16 @@ else:
 def train(iter):
     global layer
     for a in range(0, iter):
-        l0 = X
+        l0 = np.array(X)
+        print X
+        print l0.shape
         l1 = 1 / (1 + np.exp(-np.dot(l0, layer)))
+        print l1.shape
+        print Y
         l1_error = Y - l1
+        print l1_error
         l1_delta = l1_error * (l1 * (1 - l1))
+        print l1_delta
         layer += np.dot(l0.T, l1_delta)
     write_model()
 
@@ -66,7 +72,7 @@ def get_feature(obj):
 def add_data(obj, query,score):
     global X, Y
     X.append(get_feature(feature.gen_ranking_feature(obj,query)))
-    Y.append(score)
+    Y.append([score])
     if len(X) % 5 == 0:
         train(3)
 
@@ -76,17 +82,17 @@ def get_score(obj):
 
 
 def cmp(a, b):
-    if a["score"] < b["score"]:
+    if a["_source"]["score"] < b["_source"]["score"]:
         return 1
-    if a["score"] > b["score"]:
+    if a["_source"]["score"] > b["_source"]["score"]:
         return -1
     return 0
 
 
 def reranking(result, query):
     for a in range(0, len(result)):
-        result[a] = feature.gen_ranking_feature(result[a], query)
-        result[a]["score"] = get_score(result[a])
+        result[a]["_source"] = feature.gen_ranking_feature(result[a]["_source"], query)
+        result[a]["_source"]["score"] = get_score(result[a]["_source"])
 
     result.sort(cmp)
 

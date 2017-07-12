@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Search</title>
     <script type="text/javascript">
-            function click(id,score,query){
-                variable=new XMLHttpRequest();
-                xmlhttp.open("GET","/adddata?id=" + id + "&score=" + score + "&query=" + query)
+            function clicked(id,score,query){
+				console.log(id)
+                xmlhttp=new XMLHttpRequest();
+                xmlhttp.open("GET","/adddata?id=" + id + "&score=" + score + "&search_content={{search_content}}&where_to_search={{where_to_search}}&index={{index}}&doc_type={{doc_type}}")
+				xmlhttp.send()
             }
 
     </script>
@@ -138,12 +140,12 @@
     {% if result %}
         {% for data in result %}
             <a href="/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
-            <button action="{{ click(data["id"],5) }}"{% endif %}>Perfect</button>
-            <button action="{{ click(data["id"],4) }}"{% endif %}>Excellent</button>
-            <button action="{{ click(data["id"],3) }}"{% endif %}>Good</button>
-            <button action="{{ click(data["id"],2) }}"{% endif %}>Fair</button>
-            <button action="{{ click(data["id"],1) }}"{% endif %}>Bad</button>
-            <button action="{{ click(data["id"],0) }}"{% endif %}>Negative</button>
+            <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
+            <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
+            <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
+            <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
+            <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
+            <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
             <br>
         {% endfor %}
     {% endif %}

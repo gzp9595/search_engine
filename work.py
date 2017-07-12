@@ -222,24 +222,38 @@ def search_new():
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+        query_result["hits"] = ranking.reranking(query_result["hits"],args)
+
 
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
 
-        result = ranking.reranking(result, args)
-
-    return render_template("search_new.html", args=request.args, result=result, query=args)
+    if not("search_content" in request.args):
+         request.args["search_content"] = ""
+    if not("where_to_search" in request.args):
+         request.args["where_to_search"] = ""
+    if not("index" in request.args):
+         request.args["index"] = ""
+    if not("doc_type" in request.args):
+         request.args["doc_type"] = ""
+    return render_template("search_new.html", args=request.args, result=result, search_content=request.args["search_content"],where_to_search=request.args["where_to_search"],index=request.args["index"],doc_type=request.args["doc_type"])
 
 
 @app.route('/adddata')
 def add_data():
-    query = request.args["query"]
-    obj = elastic.get_by_id(request.args["id"])
-    score = request.args["score"] / 5.0
-    print obj, query, score
+    print request.args
+    query = {
+        "search_content" : request.args["search_content"],
+        "where_to_search" : request.args["where_to_search"],
+        "index" : request.args["index"],
+        "doc_type" : request.args["doc_type"]
+    }
+    obj = elastic.get_by_id(query["index"],query["doc_type"],request.args["id"])["_source"]
+    score = int(request.args["score"])
+    print request.args["id"], score
     ranking.add_data(obj, query, score)
-
+    return ""
 
 @app.route('/doc')
 def get_doc_byid():
