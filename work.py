@@ -228,16 +228,17 @@ def search_new():
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"]})
-
+	
+    args = dict(request.args)
     if not("search_content" in request.args):
-         request.args["search_content"] = ""
+        args["search_content"] = ""
     if not("where_to_search" in request.args):
-         request.args["where_to_search"] = ""
+        args["where_to_search"] = ""
     if not("index" in request.args):
-         request.args["index"] = ""
+        args["index"] = ""
     if not("doc_type" in request.args):
-         request.args["doc_type"] = ""
-    return render_template("search_new.html", args=request.args, result=result, search_content=request.args["search_content"],where_to_search=request.args["where_to_search"],index=request.args["index"],doc_type=request.args["doc_type"])
+        args["doc_type"] = ""
+    return render_template("search_new.html", args=request.args, result=result, search_content=args["search_content"],where_to_search=args["where_to_search"],index=args["index"],doc_type=args["doc_type"])
 
 
 @app.route('/adddata')
