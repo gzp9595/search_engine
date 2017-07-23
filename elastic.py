@@ -4,6 +4,8 @@ import json
 
 es = Elasticsearch(config.ElASTIC_SEARCH_ADDRESS, port=config.ELASTIC_SEARCH_PORT)
 
+TIMEOUT = 100
+
 
 def insert_doc(index, doc_type, doc):
     # print doc
@@ -11,15 +13,15 @@ def insert_doc(index, doc_type, doc):
 
 
 def get_doc_byid(index, doc_type, id):
-    return es.get(index=index, doc_type=doc_type, id=id)['_source']
+    return es.get(index=index, doc_type=doc_type, id=id,request_timeout=TIMEOUT)['_source']
 
 
 def search_doc(index, doc_type, body):
-    return es.search(index=index, doc_type=doc_type, body=body)["hits"]
+    return es.search(index=index, doc_type=doc_type, body=body,request_timeout=TIMEOUT)["hits"]
 
 
 def get_count(index, doc_type):
-    return es.count(index=index, doc_type=doc_type)
+    return es.count(index=index, doc_type=doc_type,request_timeout=TIMEOUT)
 
 
 def remove_all(index, doc_type):
@@ -27,7 +29,7 @@ def remove_all(index, doc_type):
 
 
 def get_by_id(index, doc_type, id):
-    return es.get(index=index, doc_type=doc_type, id=id)
+    return es.get(index=index, doc_type=doc_type, id=id,request_timeout=TIMEOUT)
 
 
 def delete_index(index):
