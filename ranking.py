@@ -86,6 +86,7 @@ def cmp(a, b):
 
 
 def reranking(result, query):
+    return result
     for a in range(0, len(result)):
         result[a]["_source"] = feature.gen_ranking_feature(result[a]["_source"], query)
         result[a]["_source"]["score"] = get_score(result[a]["_source"])
