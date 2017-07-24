@@ -8,7 +8,7 @@
 				console.log(id)
                 var data = new FormData();
 				data.append("id",id);
-                data.append("query",query);
+                data.append("query",JSON.parse({{ query }}));
                 data.append("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);
@@ -144,12 +144,12 @@
     {% if result %}
         {% for data in result %}
             <a href="/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
-            <button onclick="clicked('{{ data['id'] }}',5, {{ query }})">Perfect</button>
-            <button onclick="clicked('{{ data['id'] }}',4, {{ query }})">Excellent</button>
-            <button onclick="clicked('{{ data['id'] }}',3, {{ query }})">Good</button>
-            <button onclick="clicked('{{ data['id'] }}',2, {{ query }})">Fair</button>
-            <button onclick="clicked('{{ data['id'] }}',1, {{ query }})">Bad</button>
-            <button onclick="clicked('{{ data['id'] }}',0, {{ query }})">Negative</button>
+            <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
+            <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
+            <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
+            <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
+            <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
+            <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
             <br>
         {% endfor %}
     {% endif %}
