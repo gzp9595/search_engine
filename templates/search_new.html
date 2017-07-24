@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <title>Search</title>
     <script type="text/javascript">
-            function clicked(id,score,query){
+            function clicked(id,score){
 				console.log(id)
                 var data = new FormData();
 				data.append("id",id);
                 data.append("query",JSON.parse("{{ query }}"));
+                qdata = {}
+                {% for key in query %}
+                    {% if type(query[key]) is int %}
+                        qdata["{{ key }}"] = {{ query[key] }}
+                    {% else %}
+                        qdata["{{ key }}"] = "{{ query[key] }}"
+                    {% endif %}
+                {% endfor %}
                 data.append("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);
