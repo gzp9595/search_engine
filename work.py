@@ -238,7 +238,7 @@ def search_new():
         args["index"] = ""
     if not("doc_type" in request.args):
         args["doc_type"] = ""
-    return render_template("search_new.html", args=request.args, result=result, search_content=args["search_content"],where_to_search=args["where_to_search"],index=args["index"],doc_type=args["doc_type"])
+    return render_template("search_new.html", args=request.args, result=result, query=request.args)
 
 
 @app.route('/adddata',methods=["POST","GET"])
