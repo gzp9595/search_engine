@@ -7,9 +7,9 @@
             function clicked(id,score,query){
 				console.log(id)
                 var data = new FormData();
-				data["id"]=id;
-                data["query"]=query;
-                data["score"]=score;
+				dataa.append("id",id);
+                data.append("query",query);
+                data("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);
                 xmlhttp.send(data);
