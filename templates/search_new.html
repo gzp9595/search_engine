@@ -7,7 +7,7 @@
             function clicked(id,score,query){
 				console.log(id)
                 xmlhttp=new XMLHttpRequest();
-                xmlhttp.open("GET","/adddata?id=" + id + "&score=" + score + "&search_content={{search_content}}&where_to_search={{where_to_search}}&index={{index}}&doc_type={{doc_type}}")
+                xmlhttp.open("GET",encodeURI("/adddata?id=" + id + "&score=" + score + "&search_content={{search_content}}&where_to_search={{where_to_search}}&index={{index}}&doc_type={{doc_type}}"))
 				xmlhttp.send()
             }
 
