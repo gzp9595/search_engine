@@ -8,7 +8,7 @@
 				console.log(id)
                 var data = new FormData();
 				data.append("id",id);
-                data.append("query",JSON.parse({{ query }}));
+                data.append("query",JSON.parse("{{ query }}"));
                 data.append("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);
