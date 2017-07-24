@@ -16,7 +16,7 @@
                         qdata["{{ key }}"] = "{{ query[key] }}"
                     {% endif %}
                 {% endfor %}
-                data.append("query",qdata);
+                data.append("query",JSON.stringify(qdata));
                 data.append("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);

@@ -245,7 +245,7 @@ def search_new():
 def add_data():
     print "GG"
     print request.form
-    query = request.form
+    query = json.loads(request.form)
     obj = elastic.get_by_id(query["index"],query["doc_type"],request.form["id"])
     score = int(request.form["score"])
     print request.form["id"], score
