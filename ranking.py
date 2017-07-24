@@ -48,8 +48,9 @@ def get_feature(obj, query):
 
 
 def add_data(obj, query, score):
+    print score
     file_name = str(uuid.uuid4())
-    f = open(file_name + ".json", "w")
+    f = open(config.TRAINING_DIR+file_name + ".json", "w")
     print >> f, json.dumps({"obj": obj, "query": query, "score": score})
     f.close()
 

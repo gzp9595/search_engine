@@ -241,8 +241,9 @@ def search_new():
     return render_template("search_new.html", args=request.args, result=result, search_content=args["search_content"],where_to_search=args["where_to_search"],index=args["index"],doc_type=args["doc_type"])
 
 
-@app.route('/adddata')
+@app.route('/adddata',methods=["POST","GET"])
 def add_data():
+    print "GG"
     print request.form
     query = request.form
     obj = elastic.get_by_id(query["index"],query["doc_type"],request.form["id"])
