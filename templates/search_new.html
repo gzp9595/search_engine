@@ -8,15 +8,15 @@
 				console.log(id)
                 var data = new FormData();
 				data.append("id",id);
-                data.append("query",JSON.parse("{{ query }}"));
                 qdata = {}
                 {% for key in query %}
-                    {% if type(query[key]) is int %}
+                    {% if not(query[key] is string) %}
                         qdata["{{ key }}"] = {{ query[key] }}
                     {% else %}
                         qdata["{{ key }}"] = "{{ query[key] }}"
                     {% endif %}
                 {% endfor %}
+                data.append("query",qdata);
                 data.append("score",score);
                 xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("post","adddata",true);
