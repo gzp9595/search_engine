@@ -243,16 +243,11 @@ def search_new():
 
 @app.route('/adddata')
 def add_data():
-    print request.args
-    query = {
-        "search_content" : request.args["search_content"],
-        "where_to_search" : request.args["where_to_search"],
-        "index" : request.args["index"],
-        "doc_type" : request.args["doc_type"]
-    }
-    obj = elastic.get_by_id(query["index"],query["doc_type"],request.args["id"])["_source"]
-    score = int(request.args["score"])
-    print request.args["id"], score
+    print request.form
+    query = request.form
+    obj = elastic.get_by_id(query["index"],query["doc_type"],request.form["id"])
+    score = int(request.form["score"])
+    print request.form["id"], score
     ranking.add_data(obj, query, score)
     return ""
 

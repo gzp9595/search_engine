@@ -6,9 +6,13 @@
     <script type="text/javascript">
             function clicked(id,score,query){
 				console.log(id)
-                xmlhttp=new XMLHttpRequest();
-                xmlhttp.open("GET",encodeURI("/adddata?id=" + id + "&score=" + score + "&search_content={{search_content}}&where_to_search={{where_to_search}}&index={{index}}&doc_type={{doc_type}}"))
-				xmlhttp.send()
+                var data = new FormData();
+				data["id"]=id;
+                data["query"]=query;
+                data["score"]=score;
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("post","/adddata",true);
+                xmlhttp.send(data);
             }
 
     </script>
