@@ -64,24 +64,28 @@ def cmp(a, b):
         return 1
     if a["_source"]["score"] > b["_source"]["score"]:
         return -1
+    if a["_source"]["FYCJ"] < b["_source"]["FYCJ"]:
+        return 1
+    if a["_source"]["FYCJ"] > b["_source"]["FYCJ"]:
+        return 1     
     return 0
 
 
 def reranking(result, query):
-    random.shuffle(result)
-    return result
+    #random.shuffle(result)
+    #return result
 
     for a in range(0, len(result)):
         result[a]["_source"]["score"] = get_score(result[a]["_source"], query)
 
-    nowp = 0
-    while nowp < len(result):
-        nowf = get_feature(result[nowp]["_source"])
-        print nowf
-        if nowf[len(nowf) - 1] < 0.3:
-            result = result[0:nowp] + result[nowp + 1:len(result)]
-        else:
-            nowp += 1
+    #nowp = 0
+    #while nowp < len(result):
+    #    nowf = get_feature(result[nowp]["_source"],query)
+    #    print nowf
+    #    if nowf[len(nowf) - 1] < 0.3:
+    #        result = result[0:nowp] + result[nowp + 1:len(result)]
+    #    else:
+    #        nowp += 1
 
     result.sort(cmp)
 

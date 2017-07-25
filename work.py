@@ -249,7 +249,7 @@ def add_data():
     obj = elastic.get_by_id(query["index"],query["doc_type"],request.form["id"])
     score = int(request.form["score"])
     print request.form["id"], score
-    ranking.add_data(obj, query, score)
+    ranking.add_data(obj["_source"], query, score)
     return ""
 
 @app.route('/doc')

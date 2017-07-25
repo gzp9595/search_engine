@@ -6,5 +6,5 @@ HOST = 'localhost'
 PORT = 8888
 DEBUG = True
 
-MODEL_FILE = "model"
-TRAINING_DIR = "tdata/"
+MODEL_FILE = "/mnt/model"
+TRAINING_DIR = "/mnt/tdata/"

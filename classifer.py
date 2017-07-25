@@ -8,7 +8,7 @@ import ranking
 
 
 # Multinomial Naive Bayes Classifier  
-def naive_bayes_classifier(model, train_x, train_y):
+def naive_bayes_classifier(train_x, train_y):
     from sklearn.naive_bayes import MultinomialNB
     model = MultinomialNB(alpha=0.01)
     model.fit(train_x, train_y)
@@ -16,7 +16,7 @@ def naive_bayes_classifier(model, train_x, train_y):
 
 
 # KNN Classifier  
-def knn_classifier(model, train_x, train_y):
+def knn_classifier(train_x, train_y):
     from sklearn.neighbors import KNeighborsClassifier
     model = KNeighborsClassifier()
     model.fit(train_x, train_y)
@@ -24,7 +24,7 @@ def knn_classifier(model, train_x, train_y):
 
 
 # Logistic Regression Classifier  
-def logistic_regression_classifier(model, train_x, train_y):
+def logistic_regression_classifier(train_x, train_y):
     from sklearn.linear_model import LogisticRegression
     model = LogisticRegression(penalty='l2')
     model.fit(train_x, train_y)
@@ -32,7 +32,7 @@ def logistic_regression_classifier(model, train_x, train_y):
 
 
 # Random Forest Classifier  
-def random_forest_classifier(model, train_x, train_y):
+def random_forest_classifier(train_x, train_y):
     from sklearn.ensemble import RandomForestClassifier
     model = RandomForestClassifier(n_estimators=8)
     model.fit(train_x, train_y)
@@ -40,7 +40,7 @@ def random_forest_classifier(model, train_x, train_y):
 
 
 # Decision Tree Classifier  
-def decision_tree_classifier(model, train_x, train_y):
+def decision_tree_classifier(train_x, train_y):
     from sklearn import tree
     model = tree.DecisionTreeClassifier()
     model.fit(train_x, train_y)
@@ -48,7 +48,7 @@ def decision_tree_classifier(model, train_x, train_y):
 
 
 # GBDT(Gradient Boosting Decision Tree) Classifier  
-def gradient_boosting_classifier(model, train_x, train_y):
+def gradient_boosting_classifier(train_x, train_y):
     from sklearn.ensemble import GradientBoostingClassifier
     model = GradientBoostingClassifier(n_estimators=200)
     model.fit(train_x, train_y)
@@ -56,7 +56,7 @@ def gradient_boosting_classifier(model, train_x, train_y):
 
 
 # SVM Classifier  
-def svm_classifier(model, train_x, train_y):
+def svm_classifier(train_x, train_y):
     from sklearn.svm import SVC
     model = SVC(kernel='rbf', probability=True)
     model.fit(train_x, train_y)
@@ -64,7 +64,7 @@ def svm_classifier(model, train_x, train_y):
 
 
 # SVM Classifier using cross validation
-def svm_cross_validation(model, train_x, train_y):
+def svm_cross_validation(train_x, train_y):
     from sklearn.grid_search import GridSearchCV
     from sklearn.svm import SVC
     model = SVC(kernel='rbf', probability=True)
@@ -94,21 +94,22 @@ use_what = "GBDT"
 
 class model:
     def load_model(self):
-        self.model = pickle.load(open(config.MODEL_FILE, 'r'))
+        self.models = pickle.load(open(config.MODEL_FILE, 'r'))
 
     def train_model(self, X, Y):
-        self.model = classifiers[use_what](self.model, X, Y)
+        self.models = classifiers[use_what](X, Y)
 
     def save_model(self):
-        pickle.dump(self.model, open(config.MODEL_FILE, "wb"))
+        pickle.dump(self.models, open(config.MODEL_FILE, "wb"))
 
     def judge(self, X):
-        return self.model.predict(X)
+        return self.models.predict(X)
 
 
 if __name__ == "__main__":
     X = []
     Y = []
+    models = model();
     for x in os.listdir(config.TRAINING_DIR):
         f = open(config.TRAINING_DIR + x, "r")
         content = ''
@@ -119,5 +120,5 @@ if __name__ == "__main__":
         X.append(ranking.get_feature(content["obj"], content["query"]))
         Y.append(content["score"])
 
-    model.train_model(X,Y)
-    model.save_model()
+    models.train_model(X,Y)
+    models.save_model()
