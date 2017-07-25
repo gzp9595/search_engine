@@ -8,6 +8,7 @@ import util
 import platform
 import formatter
 import ranking
+import sys
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -271,7 +272,13 @@ def click(id, perform):
 
 
 if __name__ == '__main__':
-    if platform.system() == "Windows":
-        app.run(host='127.0.0.1', port=8000)
+    if len(sys.argv)>1:
+        debug=False
+        port=8888
     else:
-        app.run(host='115.28.106.67', port=8000)
+        debug=True
+        port=8000
+    if platform.system() == "Windows":
+        app.run(host='127.0.0.1', port=port,debug=debug)
+    else:
+        app.run(host='115.28.106.67', port=port,debug=debug)
