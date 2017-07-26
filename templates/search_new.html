@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Search</title>
     <script type="text/javascript">
+        var count = 0;
         function clicked(id, score) {
             console.log(id)
             var data = new FormData();
@@ -35,6 +36,8 @@
                 {% endif %}
             {% endfor %}
             data.append("query", JSON.stringify(qdata));
+            count += 1;
+            data.append("count",count);
             xmlhttp = new XMLHttpRequest();
             xmlhttp.open("post", "addclickdata", false);
             xmlhttp.send(data);
