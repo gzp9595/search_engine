@@ -9,6 +9,7 @@ import platform
 import formatter
 import ranking
 import sys
+import uuid
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -265,6 +266,15 @@ def get_doc_byid():
             .replace('\b', '<br/>')
 
     return "Error"
+
+
+@app.route("/addclickdata", methods=["POST", "GET"])
+def addclickdata():
+    print request.form
+    file_name = str(uuid.uuid4())
+    f = open(config.CLICK_DIR + file_name + ".json", "w")
+    print >> f, json.dumps(request.form)
+    f.close()
 
 
 def click(id, perform):

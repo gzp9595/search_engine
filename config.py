@@ -8,3 +8,4 @@ DEBUG = True
 
 MODEL_FILE = "/mnt/model"
 TRAINING_DIR = "/mnt/tdata/"
+CLICK_DIR = "/mnt/clickdata/"
