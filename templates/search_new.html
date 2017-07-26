@@ -42,7 +42,7 @@
             xmlhttp.open("post", "addclickdata", false);
             xmlhttp.send(data);
 
-            window.location.href = "/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id=" + id;
+            window.open("/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id=" + id,"_blank");
         }
     </script>
 </head>
@@ -211,8 +211,8 @@
 
 {% if result %}
     {% for data in result %}
-        <a onclick="javascript:clickhref({{ args["index"] }},{{ args["doc_type"] }},{{ data["id"] }}); return false;"
-           href="#" target="_blank"> {{ data["title"] }}</a>
+        <a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;"
+           href="#"> {{ data["title"] }}</a>
         {{ data["score"] }}
         <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
         <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
