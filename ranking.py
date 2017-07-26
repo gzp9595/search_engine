@@ -45,7 +45,7 @@ def get_feature(obj, query):
         obj["feature"]["matching_result"]["matched_time"].append(0)
     if len(obj["feature"]["matching_result"]["matched_or_not"]) == 0:
         obj["feature"]["matching_result"]["matched_or_not"].append(0)
-        features.append(np.average(obj["feature"]["matching_result"]["matched_time"]))
+    features.append(np.average(obj["feature"]["matching_result"]["matched_time"]))
     features.append(np.average(obj["feature"]["matching_result"]["matched_or_not"]))
 
     return features
