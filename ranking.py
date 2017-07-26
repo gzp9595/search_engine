@@ -9,7 +9,7 @@ import config
 
 length = 11 * 2 + 1 + 3 + 2
 
-if not(os.path.exists(config.TRAINING_DIR)):
+if not (os.path.exists(config.TRAINING_DIR)):
     os.mkdir(config.TRAINING_DIR)
 
 model = classifer.model()
@@ -41,11 +41,11 @@ def get_feature(obj, query):
     features.append(obj["feature"]["classification"]["AJLX"])
     features.append(obj["feature"]["classification"]["WSLX"])
 
-    if len(obj["feature"]["matching_result"]["matched_time"])==0:
+    if len(obj["feature"]["matching_result"]["matched_time"]) == 0:
         obj["feature"]["matching_result"]["matched_time"].append(0)
-    if len(obj["feature"]["matching_result"]["matched_or_not"])==0:
+    if len(obj["feature"]["matching_result"]["matched_or_not"]) == 0:
         obj["feature"]["matching_result"]["matched_or_not"].append(0)
-	features.append(np.average(obj["feature"]["matching_result"]["matched_time"]))
+        features.append(np.average(obj["feature"]["matching_result"]["matched_time"]))
     features.append(np.average(obj["feature"]["matching_result"]["matched_or_not"]))
 
     return features
@@ -54,7 +54,7 @@ def get_feature(obj, query):
 def add_data(obj, query, score):
     print score
     file_name = str(uuid.uuid4())
-    f = open(config.TRAINING_DIR+file_name + ".json", "w")
+    f = open(config.TRAINING_DIR + file_name + ".json", "w")
     print >> f, json.dumps({"obj": obj, "query": query, "score": score})
     f.close()
 
@@ -71,19 +71,19 @@ def cmp(a, b):
     if a["_source"]["FYCJ"] < b["_source"]["FYCJ"]:
         return 1
     if a["_source"]["FYCJ"] > b["_source"]["FYCJ"]:
-        return 1     
+        return 1
     return 0
 
 
 def reranking(result, query):
-    #random.shuffle(result)
-    #return result
+    # random.shuffle(result)
+    # return result
 
     for a in range(0, len(result)):
         result[a]["_source"]["score"] = get_score(result[a]["_source"], query)
 
-    #nowp = 0
-    #while nowp < len(result):
+    # nowp = 0
+    # while nowp < len(result):
     #    nowf = get_feature(result[nowp]["_source"],query)
     #    print nowf
     #    if nowf[len(nowf) - 1] < 0.3:

@@ -1,6 +1,5 @@
 import os
 
-
 os.system("curl -XPUT http://localhost:9200/law")
 print
 os.system("""curl -XPOST http://localhost:9200/law/small_data/_mapping -d'
@@ -66,4 +65,3 @@ os.system("""curl -XPOST http://localhost:9200/law/big_data/_mapping -d'
         }
     }
 }'""")
-

@@ -173,7 +173,7 @@ def get_date_of_judgement(obj):
     return year_str + "-" + month_str + "-" + day_str
 
 
-key_word_list = [u"第", u"条", u"款", u"、", u"，",u"（",u"）"]
+key_word_list = [u"第", u"条", u"款", u"、", u"，", u"（", u"）"]
 
 
 def get_number_from_string(s):
@@ -214,7 +214,7 @@ def get_number_from_string(s):
 def get_one_reason(content, rex):
     pos = rex.start()
     law_name = rex.group(1)
-    nows = rex.group().replace(u"（",u"").replace(u"）",u"")
+    nows = rex.group().replace(u"（", u"").replace(u"）", u"")
 
     result = []
 
@@ -229,7 +229,7 @@ def get_one_reason(content, rex):
     add_kuan = True
     while p < len(nows):
         nowp = p + 1
-        while not(nows[nowp] in key_word_list):
+        while not (nows[nowp] in key_word_list):
             nowp += 1
         num = get_number_from_string(nows[p + 1:nowp])
         if nows[nowp] != u"款":
@@ -250,10 +250,10 @@ def get_one_reason(content, rex):
     if not (add_kuan):
         result.append({"law_name": law_name, "tiao_num": tiao_num, "kuan_num": 0})
 
-    #print nows
-    #for x in result:
+    # print nows
+    # for x in result:
     #    print x["law_name"], x["tiao_num"], x["kuan_num"]
-    #print
+    # print
 
     return result
 
@@ -270,7 +270,7 @@ def get_reason(obj):
     for x in result:
         result_list = result_list + get_one_reason(obj["content"], x)
 
-    #print
+    # print
 
     return result_list
 

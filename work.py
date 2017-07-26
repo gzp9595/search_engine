@@ -223,35 +223,35 @@ def search_new():
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
-        query_result["hits"] = ranking.reranking(query_result["hits"],args)
-
+        query_result["hits"] = ranking.reranking(query_result["hits"], args)
 
         for x in query_result["hits"]:
             # res.append(x["_source"]["Title"])
-            result.append({"title": x["_source"]["Title"], "id": x["_id"]})
-	
+            result.append({"title": x["_source"]["Title"], "id": x["_id"], "score": x["_source"]["score"]})
+
     args = dict(request.args)
-    if not("search_content" in request.args):
+    if not ("search_content" in request.args):
         args["search_content"] = ""
-    if not("where_to_search" in request.args):
+    if not ("where_to_search" in request.args):
         args["where_to_search"] = ""
-    if not("index" in request.args):
+    if not ("index" in request.args):
         args["index"] = ""
-    if not("doc_type" in request.args):
+    if not ("doc_type" in request.args):
         args["doc_type"] = ""
     return render_template("search_new.html", args=request.args, result=result, query=request.args)
 
 
-@app.route('/adddata',methods=["POST","GET"])
+@app.route('/adddata', methods=["POST", "GET"])
 def add_data():
     print "GG"
     print request.form
     query = json.loads(request.form["query"])
-    obj = elastic.get_by_id(query["index"],query["doc_type"],request.form["id"])
+    obj = elastic.get_by_id(query["index"], query["doc_type"], request.form["id"])
     score = int(request.form["score"])
     print request.form["id"], score
     ranking.add_data(obj["_source"], query, score)
     return ""
+
 
 @app.route('/doc')
 def get_doc_byid():
@@ -272,13 +272,13 @@ def click(id, perform):
 
 
 if __name__ == '__main__':
-    if len(sys.argv)>1:
-        debug=False
-        port=8888
+    if len(sys.argv) > 1:
+        debug = False
+        port = 8888
     else:
-        debug=True
-        port=8000
+        debug = True
+        port = 8000
     if platform.system() == "Windows":
-        app.run(host='127.0.0.1', port=port,debug=debug)
+        app.run(host='127.0.0.1', port=port, debug=debug)
     else:
-        app.run(host='115.28.106.67', port=port,debug=debug)
+        app.run(host='115.28.106.67', port=port, debug=debug)

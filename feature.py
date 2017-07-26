@@ -13,7 +13,7 @@ def get_document_statistics(obj, query):
         obj["feature"]["statistics"][word + "_num_of_words"] = len(list(jieba.cut(obj[word])))
 
     obj["feature"]["statistics"]["judge_timestamp"] = int(
-        time.mktime(datetime.datetime.strptime(obj["CPRQ"], "%Y-%m-%d").timetuple()))/1e13
+        time.mktime(datetime.datetime.strptime(obj["CPRQ"], "%Y-%m-%d").timetuple())) / 1e13
 
     return obj
 

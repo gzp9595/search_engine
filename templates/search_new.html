@@ -152,6 +152,7 @@
     {% if result %}
         {% for data in result %}
             <a href="/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id={{ data["id"] }}"  target="_blank"> {{ data["title"] }}</a>
+            {{ data["score"] }}
             <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
             <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
             <button onclick="clicked('{{ data['id'] }}',3)">Good</button>

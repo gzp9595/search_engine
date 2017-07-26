@@ -120,5 +120,5 @@ if __name__ == "__main__":
         X.append(ranking.get_feature(content["obj"], content["query"]))
         Y.append(content["score"])
 
-    models.train_model(X,Y)
+    models.train_model(X, Y)
     models.save_model()
