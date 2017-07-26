@@ -76,6 +76,7 @@ def cmp(a, b):
 
 
 def reranking(result, query):
+    model.load_model()
     # random.shuffle(result)
     # return result
 
