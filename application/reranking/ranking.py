@@ -1,16 +1,16 @@
-import feature
-import numpy as np
-import os
-import classifer
-import uuid
+from application import app
+from application.reranking import classifer, feature
+
 import json
-import random
-import config
+import os
+import uuid
+
+import numpy as np
 
 length = 11 * 2 + 1 + 3 + 2
 
-if not (os.path.exists(config.TRAINING_DIR)):
-    os.mkdir(config.TRAINING_DIR)
+if not (os.path.exists(app.config["TRAINING_DIR"])):
+    os.makedirs(app.config["TRAINING_DIR"])
 
 model = classifer.model()
 try:
@@ -54,7 +54,7 @@ def get_feature(obj, query):
 def add_data(obj, query, score):
     print score
     file_name = str(uuid.uuid4())
-    f = open(config.TRAINING_DIR + file_name + ".json", "w")
+    f = open(app.config["TRAINING_DIR"] + file_name + ".json", "w")
     print >> f, json.dumps({"obj": obj, "query": query, "score": score})
     f.close()
 

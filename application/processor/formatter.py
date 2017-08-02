@@ -1,9 +1,10 @@
 #  -*- coding:utf-8 -*-
 
-import os
 import json
+import os
 import re
-import util
+
+from application.util import util
 
 num_list = {
     u"〇": 0,
