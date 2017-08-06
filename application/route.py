@@ -21,43 +21,12 @@ cnt = 0
 count = 0
 
 
-def insert_file(index, doc_type, file_name):
-    global cnt
-    global count
-    cnt += 1
-    print cnt
-    f = open(file_name, 'r')
-    content = ''
-    for line in f:
-        content = json.loads(line)
-        break
-    try:
-        # print formatter.parse(content)
-        data = formatter.parse(content)
-        if data["content"] == "":
-            return
-        data["doc_name"] = file_name[len(file_name) - 49:len(file_name) - 13]
-        elastic.insert_doc(index, doc_type, data)
-        # print x + " Succeed"
-    except Exception as e:
-        print e
-        count += 1
-        f = open('fail_list.txt', 'a')
-        print >> f, file_name, e
-        f.close()
 
-
-def dfs_insert(index, doc_type, path):
-    for x in os.listdir(path):
-        if os.path.isdir(path + x):
-            dfs_insert(index, doc_type, path + x + "/")
-        else:
-            if x.endswith(".json"):
-                insert_file(index, doc_type, path + x)
 
 
 @app.route('/insert_all')
 def insert_all():
+    return "Disabled"
     if not ("index" in request.args) or not ("doc_type" in request.args):
         return "No specific data"
     global count
@@ -80,61 +49,8 @@ def remove_all():
     return "I won't allow you to do this"
     return "Succeed delete " + str(elastic.remove_all(request.args["index"], request.args["doc_type"])["deleted"])
 
-
 @app.route('/search')
 def search():
-    content = ""
-    result = []
-    if "content" in request.args and "type" in request.args and "doc_type" in request.args and "index" in request.args:
-        body = {}
-
-        body["must"] = {}
-        body["filter"] = {}
-        if True:
-            body["must"]["match"] = {}
-
-        body["must"]["match"][request.args["type"]] = "\"" + request.args["content"] + "\""
-
-        if "from_year" in request.args and "from_month" in request.args and "from_day" in request.args and util.check_date(
-                request.args["from_year"], request.args["from_month"], request.args["from_day"]):
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("PubDate" in body["filter"]["range"]):
-                body["filter"]["range"]["PubDate"] = {}
-            body["filter"]["range"]["PubDate"]["gte"] = request.args["from_year"] + "-" + request.args[
-                "from_month"] + "-" + request.args["from_day"]
-
-        if "to_year" in request.args and "to_month" in request.args and "to_day" in request.args and util.check_date(
-                request.args["to_year"], request.args["to_month"], request.args["to_day"]):
-            if not ("range" in body["filter"]):
-                body["filter"]["range"] = {}
-            if not ("PubDate" in body["filter"]["range"]):
-                body["filter"]["range"]["PubDate"] = {}
-            body["filter"]["range"]["PubDate"]["lte"] = request.args["to_year"] + "-" + request.args[
-                "to_month"] + "-" + request.args["to_day"]
-
-        print body
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps({"query": {"bool": body}, "size": 100}))[
-            "hits"]
-        # res = [request.args["content"]]
-        # print request.args["content"]
-        for x in query_result:
-            # res.append(x["_source"]["Title"])
-            result.append({"title": x["_source"]["Title"], "id": x["_id"]})
-            # for y in x["_source"]:
-            #    if y != "content":
-            #        print y,x["_source"][y]
-            # break
-        # print res
-
-        if "content" in request.args:
-            content = request.args["content"]
-    return render_template("search.html", content=content, result=result, args=request.args)
-
-
-@app.route('/search_new')
-def search_new():
     result = []
 
     if "doc_type" in request.args and "index" in request.args:
@@ -217,14 +133,12 @@ def search_new():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
-        print body
 
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
 
         for x in query_result["hits"]:
-            # res.append(x["_source"]["Title"])
             result.append({"title": x["_source"]["Title"], "id": x["_id"], "score": x["_source"]["score"]})
 
     args = dict(request.args)
