@@ -21,9 +21,6 @@ cnt = 0
 count = 0
 
 
-
-
-
 @app.route('/insert_all')
 def insert_all():
     return "Disabled"
@@ -49,6 +46,8 @@ def remove_all():
     return "I won't allow you to do this"
     return "Succeed delete " + str(elastic.remove_all(request.args["index"], request.args["doc_type"])["deleted"])
 
+
+@app.route('/search_new')
 @app.route('/search')
 def search():
     result = []
@@ -133,13 +132,15 @@ def search():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
-
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
 
         for x in query_result["hits"]:
-            result.append({"title": x["_source"]["Title"], "id": x["_id"], "score": x["_source"]["score"]})
+            res = {"id": x["_id"], "score": x["_source"]["score"]}
+            for y in x["_source"]:
+                res[y] = x["_source"][y]
+            result.append(res)
 
     args = dict(request.args)
     if not ("search_content" in request.args):
@@ -150,7 +151,7 @@ def search():
         args["index"] = ""
     if not ("doc_type" in request.args):
         args["doc_type"] = ""
-    return render_template("search_new.html", args=request.args, result=result, query=request.args)
+    return render_template("search.html", args=request.args, result=result, query=request.args)
 
 
 @app.route('/adddata', methods=["POST", "GET"])
