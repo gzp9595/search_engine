@@ -3,7 +3,9 @@ from application import app
 from elasticsearch import Elasticsearch
 import json
 
-es = Elasticsearch(app.config["ElASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
+print app.config
+
+es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
 
 
 def insert_doc(index, doc_type, doc):
