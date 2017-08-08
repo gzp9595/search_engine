@@ -9,7 +9,6 @@ if __name__ == '__main__':
     from application import app, initialize
 
     app.config.from_pyfile(config_file)
-    print app.config
     if os.path.exists(local_config_file):
         app.config.from_pyfile(local_config_file)
 

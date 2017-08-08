@@ -3,8 +3,6 @@ from application import app
 from elasticsearch import Elasticsearch
 import json
 
-print app.config
-
 es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
 
 
