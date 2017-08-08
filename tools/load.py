@@ -1,17 +1,24 @@
 import json
+import os
 
 import application.processor.formatter
 
-file_name = "data/law/small_data/" + "47c310f1-7bd9-44eb-a8c4-a748008c9e52_content.json"
+file_name = "C:\\work\\search_engine\\data\\newdata\\result\\" + "2015-02-16.json"
 
-f = open(file_name, "r")
+dir_name = "C:\\work\\search_engine\\data\\newdata\\result\\"
+
 
 content = ""
 
-for line in f:
-    content = json.loads(line)
-    break
-content = application.processor.formatter.parse(content)
+cnt = 0
 
-for x in content:
-    print x, content[x]
+for x in os.listdir(dir_name):
+    file_name=dir_name+x
+    f = open(file_name, "r")
+    for line in f:
+        #print len(line)
+        content = json.loads(line)
+        application.processor.formatter.new_parse(content)
+
+    #print
+

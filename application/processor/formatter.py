@@ -385,5 +385,21 @@ def test():
     fout.close()
 
 
+def new_parse(obj):
+    document = json.loads(obj["document"])
+
+    for x in document:
+        obj[x] = document[x]
+
+    obj.pop("document", None)
+
+    obj = parse(obj)
+
+    if not(obj["docType"] is None):
+        for x in obj:
+            print x, type(obj[x]), obj[x]
+    #print obj["Title"], obj["AJLX"], obj["caseType"]
+
+
 if __name__ == "__main__":
     test()
