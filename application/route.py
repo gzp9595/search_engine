@@ -9,6 +9,7 @@ import elastic
 import util
 from application.processor import formatter
 from application.reranking import ranking
+from application.reranking.classifer import train_new_model
 from . import app
 
 
@@ -187,3 +188,8 @@ def addclickdata():
     f = open(config.CLICK_DIR + file_name + ".json", "w")
     print >> f, json.dumps(request.form)
     f.close()
+
+
+@app.route("/train_model")
+def train_model():
+    train_new_model()

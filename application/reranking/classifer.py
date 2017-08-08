@@ -103,10 +103,10 @@ class model:
         return self.models.predict(X)
 
 
-if __name__ == "__main__":
+def train_new_model():
     X = []
     Y = []
-    models = model();
+    models = model()
     for x in os.listdir(app.config["TRAINING_DIR"]):
         f = open(app.config["TRAINING_DIR"] + x, "r")
         content = {}
