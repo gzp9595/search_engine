@@ -392,15 +392,21 @@ def new_parse(obj):
         obj[x] = document[x]
 
     obj.pop("document", None)
+    
+    for x in obj:
+        if obj[x] is None:
+            obj[x]=""
 
     obj = parse(obj)
+    
+
 
     #if not(obj["docType"] is None):
     #    for x in obj:
     #        print x, type(obj[x]), obj[x]
     #print obj["Title"], obj["AJLX"], obj["caseType"]
 
-    return document
+    return obj
 
 
 if __name__ == "__main__":
