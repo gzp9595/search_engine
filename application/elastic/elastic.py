@@ -30,5 +30,9 @@ def get_by_id(index, doc_type, id):
     return es.get(index=index, doc_type=doc_type, id=id, request_timeout=app.config["ES_TIMEOUT"])
 
 
+def update_by_id(index, doc_type, id, doc):
+    es.update(index=index, doc_type=doc_type, id=id, body={"doc": doc})
+
+
 def delete_index(index):
     return es.delete(index=index)
