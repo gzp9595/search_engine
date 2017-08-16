@@ -31,7 +31,10 @@ def get_by_id(index, doc_type, id):
 
 
 def update_by_id(index, doc_type, id, doc):
-    es.update(index=index, doc_type=doc_type, id=id, body={"doc": doc})
+    if get_by_id(index, doc_type, id) is None:
+        insert_doc(index, doc_type, doc)
+    else:
+        es.update(index=index, doc_type=doc_type, id=id, body={"doc": doc})
 
 
 def delete_index(index):
