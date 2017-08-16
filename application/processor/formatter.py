@@ -395,10 +395,12 @@ def new_parse(obj):
 
     obj = parse(obj)
 
-    if not(obj["docType"] is None):
-        for x in obj:
-            print x, type(obj[x]), obj[x]
+    #if not(obj["docType"] is None):
+    #    for x in obj:
+    #        print x, type(obj[x]), obj[x]
     #print obj["Title"], obj["AJLX"], obj["caseType"]
+
+    return document
 
 
 if __name__ == "__main__":

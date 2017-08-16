@@ -1,7 +1,7 @@
 import logging
 import os
 
-insert_path = "/mnt/data/new"
+insert_path = "/mnt/data/new/"
 index = "test"
 doc_type = "test"
 

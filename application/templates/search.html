@@ -212,8 +212,11 @@
 {% if result %}
     {% for data in result %}
         <div>
-            <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["title"] }}</a></h3>
-            <span>{{ data["score"] }}</span>
+            <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["Title"] }}</a></h3>
+            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["AJLX"]}}</span><br>
+			<p>
+				{{data["AJJBQK"] | truncate(200,True)}}
+			</p>
             <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
             <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
             <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
