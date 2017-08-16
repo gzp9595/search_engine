@@ -1,6 +1,7 @@
 from application import app
 
 from elasticsearch import Elasticsearch
+from elasticsearch import exceptions
 import json
 
 es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
@@ -27,7 +28,10 @@ def remove_all(index, doc_type):
 
 
 def get_by_id(index, doc_type, id):
-    return es.get(index=index, doc_type=doc_type, id=id, request_timeout=app.config["ES_TIMEOUT"])
+    try:
+        return es.get(index=index, doc_type=doc_type, id=id, request_timeout=app.config["ES_TIMEOUT"])
+    except exceptions.NotFoundError:
+        return None
 
 
 def update_by_id(index, doc_type, id, doc):
