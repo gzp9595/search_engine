@@ -13,3 +13,19 @@ json字段含义
 * content：文本内容
 * FLYJ：法律依据
 * docType,result,lawyer,judge,keyword,cause：未知
+
+caseName
+time
+caseType
+caseNumber
+spcx
+court
+judge
+lawyer
+keyword
+cause
+docType
+punishment
+result
+docId
+document
