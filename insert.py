@@ -2,8 +2,8 @@ import logging
 import os
 
 insert_path = "/mnt/data/"
-index = "test"
-doc_type = "test"
+index = "law"
+doc_type = "big_data"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
