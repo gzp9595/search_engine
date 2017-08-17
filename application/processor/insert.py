@@ -73,7 +73,8 @@ def insert_file(index, doc_type, file_name):
 
             cnt += 1
 
-            # print cnt
+            if cnt%1000==0:
+                print cnt
 
         except Exception as e:
             # print e
