@@ -1,7 +1,7 @@
 import logging
 import os
 
-insert_path = "C:\\work\\search_engine\\data\\newdata\\gdata\\"
+insert_path = "/mnt/data/"
 index = "test"
 doc_type = "test"
 
