@@ -81,7 +81,7 @@ def insert_file(index, doc_type, file_name):
             # print e
             count += 1
             of = open('fail_list.txt', 'a')
-            print >> of, file_name, e, line
+            print >> of, file_name, e, line.encode("utf8")
             of.close()
 
             # gg
