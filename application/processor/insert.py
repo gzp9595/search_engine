@@ -59,9 +59,9 @@ def insert_file(index, doc_type, file_name):
                 content[text_field[a]] = arr[a]
             if len(content["document"]) == 3:
                 content["document"] = "{\"content\":\"\"}"
-                f = open('no_content.txt', 'a')
-                print >> f, content["docId"]
-                f.close()
+                of = open('no_content.txt', 'a')
+                print >> of, content["docId"]
+                of.close()
             else:
                 content["document"] = content["document"][0:(len(content["document"]) - 2)]
             data = formatter.new_parse(content)
@@ -79,9 +79,9 @@ def insert_file(index, doc_type, file_name):
         except Exception as e:
             # print e
             count += 1
-            f = open('fail_list.txt', 'a')
-            print >> f, file_name, e, line
-            f.close()
+            of = open('fail_list.txt', 'a')
+            print >> of, file_name, e, line
+            of.close()
 
             # gg
     print cnt
