@@ -392,19 +392,20 @@ def new_parse(obj):
         obj[x] = document[x]
 
     obj.pop("document", None)
-    
+
     for x in obj:
         if obj[x] is None:
-            obj[x]=""
+            obj[x] = ""
 
     obj = parse(obj)
-    
 
+    if obj["time"] == "0000-00-00":
+        obj["time"] = "1900-01-01"
 
-    #if not(obj["docType"] is None):
+    # if not(obj["docType"] is None):
     #    for x in obj:
     #        print x, type(obj[x]), obj[x]
-    #print obj["Title"], obj["AJLX"], obj["caseType"]
+    # print obj["Title"], obj["AJLX"], obj["caseType"]
 
     return obj
 
