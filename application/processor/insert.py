@@ -57,7 +57,7 @@ def insert_file(index, doc_type, file_name):
             content = {}
             for a in range(0, len(text_field)):
                 content[text_field[a]] = arr[a]
-            if len(content["document"])==3:
+            if len(content["document"]) == 3:
                 content["document"] = "{\"content\":\"\"}"
                 f = open('no_content.txt', 'a')
                 print >> f, content["docId"]
@@ -73,7 +73,7 @@ def insert_file(index, doc_type, file_name):
 
             cnt += 1
 
-            if cnt%1000==0:
+            if cnt % 100 == 0:
                 print cnt
 
         except Exception as e:
