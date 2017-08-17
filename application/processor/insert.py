@@ -49,6 +49,7 @@ def insert_file(index, doc_type, file_name):
     print file_name
     for line in f:
         try:
+            line = line.decode('utf8')
             arr = line.split('\t')
             if len(arr) == 1:
                 continue
@@ -74,7 +75,7 @@ def insert_file(index, doc_type, file_name):
             cnt += 1
 
             if cnt % 100 == 0:
-                print cnt
+                print cnt, count
 
         except Exception as e:
             # print e
@@ -94,3 +95,4 @@ def dfs_insert(index, doc_type, path):
         else:
             if x.endswith(".json"):
                 insert_file(index, doc_type, path + x)
+
