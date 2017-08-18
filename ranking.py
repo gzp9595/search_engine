@@ -71,7 +71,11 @@ def cmp(a, b):
     if a["_source"]["FYCJ"] < b["_source"]["FYCJ"]:
         return 1
     if a["_source"]["FYCJ"] > b["_source"]["FYCJ"]:
+        return -1
+    if a["_source"]["Title"] < b["_source"]["Title"]:
         return 1
+    if a["_source"]["Title"] < b["_source"]["Title"]:
+        return -1
     return 0
 
 
