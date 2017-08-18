@@ -14,3 +14,7 @@ def check_date(year, month, day):
     except Exception as e:
         # print e
         return False
+
+
+def print_time():
+    print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))

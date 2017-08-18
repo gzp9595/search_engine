@@ -59,6 +59,7 @@
         <option value="3" {% if args["type_of_model"] and args["type_of_model"] == "3" %}selected{% endif %}>LDA+embedding</option>
         <option value="4" {% if args["type_of_model"] and args["type_of_model"] == "4" %}selected{% endif %}>LDA+embedding+tfidf</option>
     </select>
+	<br>
 
     数据集:
     <input type="text" name="index" {% if args["index"] %} value="law" {% else %} value="law" {% endif %}

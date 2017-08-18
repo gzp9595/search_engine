@@ -64,13 +64,14 @@ def add_data(obj, query, score):
 
 
 def get_score(obj, query):
-    if query["type_of_model"] == -1:
+    model_type=int(query["type_of_model"])
+    if model_type == -1:
         return model.judge(get_feature(obj, query))
     else:
         return doc2vec_model.get_similarity(
-            embedding1=doc2vec_model.get_embedding(text=obj["content"], mode=query["type_of_model"]),
-            embedding2=doc2vec_model.get_embedding(text=query["search_content"], mode=query["type_of_model"]),
-            mode=query["type_of_model"])
+            embedding1=doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=model_type),
+            embedding2=doc2vec_model.get_embedding(text=query["search_content"].encode('utf8'), mode=model_type),
+            mode=model_type)
 
 
 def cmp(a, b):

@@ -10,6 +10,7 @@ import util
 from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
+from application.util import print_time
 from . import app
 
 
@@ -133,14 +134,21 @@ def search():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
+        print "Begin to search"
+        print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+        print "Begin to reranking"
+        print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        print "All over"
+        print_time()
 
         for x in query_result["hits"]:
-            res = {"id": x["_id"], "score": x["_source"]["score"]}
-            for y in x["_source"]:
-                res[y] = x["_source"][y]
+            res = {"id" : x["_id"], "title" : x["_source"]["Title"],"shortcut": x["_source"]["AJJBQK"][:100]}
+            #res = {"id": x["_id"], "score": x["_source"]["score"]}
+            #for y in x["_source"]:
+            #    res[y] = x["_source"][y]
             result.append(res)
 
     args = dict(request.args)
@@ -152,7 +160,7 @@ def search():
         args["index"] = ""
     if not ("doc_type" in request.args):
         args["doc_type"] = ""
-    return render_template("search.html", args=request.args, result=result, query=request.args)
+    return json.dumps(result)#return render_template("search.html", args=request.args, result=result, query=request.args)
 
 
 @app.route('/adddata', methods=["POST", "GET"])
@@ -171,12 +179,13 @@ def add_data():
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
+        return json.dumps(query_result["_source"])
         # print query_result["_source"]["content"]
-        return render_template("news.html", content=unicode(query_result["_source"]["content"]),
-                               Title=query_result["_source"]["Title"],
-                               PubDate=query_result["_source"]["PubDate"],
-                               origin=query_result["_source"]["doc_name"]) \
-            .replace('\b', '<br/>')
+        #return render_template("news.html", content=unicode(query_result["_source"]["content"]),
+        #                       Title=query_result["_source"]["Title"],
+        #                       PubDate=query_result["_source"]["PubDate"],
+        #                       origin=query_result["_source"]["doc_name"]) \
+        #    .replace('\b', '<br/>')
 
     return "Error"
 
