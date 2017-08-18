@@ -48,6 +48,18 @@
 </head>
 <body>
 <form>
+    模型:
+    <select name="type_of_model">
+        <option value="-1" {% if (args["type_of_model"] and args["type_of_model"] == "-1") or not("type_of_search" in args) %}selected{% endif %}>
+            DBDT
+        </option>
+        <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "0" %}selected{% endif %}>LDA</option>
+        <option value="1" {% if args["type_of_model"] and args["type_of_model"] == "1" %}selected{% endif %}>tfidf</option>
+        <option value="2" {% if args["type_of_model"] and args["type_of_model"] == "2" %}selected{% endif %}>word embedding</option>
+        <option value="3" {% if args["type_of_model"] and args["type_of_model"] == "3" %}selected{% endif %}>LDA+embedding</option>
+        <option value="4" {% if args["type_of_model"] and args["type_of_model"] == "4" %}selected{% endif %}>LDA+embedding+tfidf</option>
+    </select>
+
     数据集:
     <input type="text" name="index" {% if args["index"] %} value="law" {% else %} value="law" {% endif %}
            readonly="readonly">
@@ -211,17 +223,22 @@
 
 {% if result %}
     {% for data in result %}
-        <a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;"
-           href="#"> {{ data["title"] }}</a>
-        {{ data["score"] }}
-        <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
-        <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
-        <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
-        <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
-        <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
-        <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
-        <br>
+        <div>
+            <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["Title"] }}</a></h3>
+            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["AJLX"]}}</span><br>
+			<p>
+				{{data["AJJBQK"] | truncate(200,True)}}
+			</p>
+            <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
+            <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
+            <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
+            <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
+            <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
+            <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
+            <br>
+        </div>
     {% endfor %}
 {% endif %}
+
 </body>
 </html>

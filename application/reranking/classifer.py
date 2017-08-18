@@ -1,13 +1,12 @@
-import time
-from sklearn import metrics
-import pickle as pickle
-import config
-import os
-import json
+from application import app
 import ranking
 
+import json
+import os
+import pickle as pickle
 
-# Multinomial Naive Bayes Classifier  
+
+# Multinomial Naive Bayes Classifier
 def naive_bayes_classifier(train_x, train_y):
     from sklearn.naive_bayes import MultinomialNB
     model = MultinomialNB(alpha=0.01)
@@ -89,30 +88,28 @@ classifiers = {'NB': naive_bayes_classifier,
                'GBDT': gradient_boosting_classifier
                }
 
-use_what = "GBDT"
-
 
 class model:
     def load_model(self):
-        self.models = pickle.load(open(config.MODEL_FILE, 'r'))
+        self.models = pickle.load(open(app.config["MODEL_FILE"], 'r'))
 
     def train_model(self, X, Y):
-        self.models = classifiers[use_what](X, Y)
+        self.models = classifiers[app.config["MODEL_TYPE"]](X, Y)
 
     def save_model(self):
-        pickle.dump(self.models, open(config.MODEL_FILE, "wb"))
+        pickle.dump(self.models, open(app.config["MODEL_FILE"], "wb"))
 
     def judge(self, X):
         return self.models.predict(X)
 
 
-if __name__ == "__main__":
+def train_new_model():
     X = []
     Y = []
-    models = model();
-    for x in os.listdir(config.TRAINING_DIR):
-        f = open(config.TRAINING_DIR + x, "r")
-        content = ''
+    models = model()
+    for x in os.listdir(app.config["TRAINING_DIR"]):
+        f = open(app.config["TRAINING_DIR"] + x, "r")
+        content = {}
         for line in f:
             content = json.loads(line)
             break

@@ -1,6 +1,10 @@
 import logging
 import os
 
+insert_path = "/mnt/data/"
+index = "law"
+doc_type = "big_data"
+
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
 local_config_file = os.path.join(server_dir, 'local_config.py')
@@ -12,6 +16,6 @@ if __name__ == '__main__':
     if os.path.exists(local_config_file):
         app.config.from_pyfile(local_config_file)
 
-    initialize()
+    from application.processor.insert import dfs_insert
 
-    app.run(host=app.config["HOST"], port=app.config["PORT"], debug=app.config["DEBUG"])
+    dfs_insert(index,doc_type,insert_path)

@@ -1,9 +1,10 @@
 #  -*- coding:utf-8 -*-
 
-import os
 import json
+import os
 import re
-import util
+
+from application.util import util
 
 num_list = {
     u"〇": 0,
@@ -382,6 +383,31 @@ def test():
             continue
             break
     fout.close()
+
+
+def new_parse(obj):
+    document = json.loads(obj["document"])
+
+    for x in document:
+        obj[x] = document[x]
+
+    obj.pop("document", None)
+
+    for x in obj:
+        if obj[x] is None:
+            obj[x] = ""
+
+    obj = parse(obj)
+
+    if obj["time"] == "0000-00-00":
+        obj["time"] = "1900-01-01"
+
+    # if not(obj["docType"] is None):
+    #    for x in obj:
+    #        print x, type(obj[x]), obj[x]
+    # print obj["Title"], obj["AJLX"], obj["caseType"]
+
+    return obj
 
 
 if __name__ == "__main__":
