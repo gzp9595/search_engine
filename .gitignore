@@ -10,3 +10,4 @@ node_modules/
 no_content.txt
 result.txt
 npm-debug*
+application/doc2vec/model
