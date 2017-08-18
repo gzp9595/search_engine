@@ -13,27 +13,47 @@ def insert_file_new(index, doc_type, file_name):
     global count
     f = open(file_name, 'r')
     content = ''
+    text_field = ["caseName", "time", "caseType", "caseNumber", "spcx", "court", "judge", "lawyer", "keyword", "cause",
+                  "docType", "punishment", "result", "docId", "document"]
     print file_name
     for line in f:
         try:
-            content = json.loads(line)
+            line = line.decode('utf8')
+            arr = line.split('\t')
+            if len(arr) == 1:
+                continue
+            if len(arr) != len(text_field):
+                gg
+            content = {}
+            for a in range(0, len(text_field)):
+                content[text_field[a]] = arr[a]
+            if len(content["document"]) == 3:
+                content["document"] = "{\"content\":\"\"}"
+                of = open('no_content.txt', 'a')
+                print >> of, content["docId"]
+                of.close()
+            else:
+                content["document"] = content["document"][0:(len(content["document"]) - 2)]
             data = formatter.new_parse(content)
             if data["content"] == "":
                 continue
             data["doc_name"] = data["docId"]
 
             elastic.update_by_id(index, doc_type, data["doc_name"], data)
+            elastic.update_by_id(index, "content", data["doc_name"],
+                                 {"content": data["content"], "Title": data["Title"], "doc_name": data["doc_name"]})
 
             cnt += 1
 
-        except Exception as e:
-            print e
-            count += 1
-            f = open('fail_list.txt', 'a')
-            print >> f, file_name, e
-            f.close()
+            if cnt % 100 == 0:
+                print cnt, count
 
-            # print cnt
+        except Exception as e:
+            # print e
+            count += 1
+            of = open('fail_list.txt', 'a')
+            print >> of, file_name, e, line.encode("utf8")
+            of.close()
 
             # gg
     print cnt
@@ -94,5 +114,4 @@ def dfs_insert(index, doc_type, path):
             dfs_insert(index, doc_type, path + x + "/")
         else:
             if x.endswith(".json"):
-                insert_file(index, doc_type, path + x)
-
+                insert_file_new(index, doc_type, path + x)

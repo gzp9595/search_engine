@@ -34,3 +34,26 @@ os.system("""curl -XPOST http://localhost:9200/law/big_data/_mapping -d'
         }
     }
 }'""")
+
+
+print
+os.system("""curl -XPOST http://localhost:9200/law/content/_mapping -d'
+{
+    "content": {
+        "properties": {
+            "content": {
+                "type": "text",
+                "analyzer": "ik_smart",
+                "search_analyzer": "ik_smart",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "Title": {
+                "type": "text",
+                "analyzer": "ik_smart",
+                "search_analyzer": "ik_smart",
+                "include_in_all": "true",
+                "boost": 8
+            }
+    }
+}'""")
