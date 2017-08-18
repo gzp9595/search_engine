@@ -49,6 +49,7 @@ def insert_file(index, doc_type, file_name):
     print file_name
     for line in f:
         try:
+            line = line.decode('utf8')
             arr = line.split('\t')
             if len(arr) == 1:
                 continue
@@ -57,11 +58,11 @@ def insert_file(index, doc_type, file_name):
             content = {}
             for a in range(0, len(text_field)):
                 content[text_field[a]] = arr[a]
-            if len(content["document"])==3:
+            if len(content["document"]) == 3:
                 content["document"] = "{\"content\":\"\"}"
-                f = open('no_content.txt', 'a')
-                print >> f, content["docId"]
-                f.close()
+                of = open('no_content.txt', 'a')
+                print >> of, content["docId"]
+                of.close()
             else:
                 content["document"] = content["document"][0:(len(content["document"]) - 2)]
             data = formatter.new_parse(content)
@@ -73,14 +74,15 @@ def insert_file(index, doc_type, file_name):
 
             cnt += 1
 
-            # print cnt
+            if cnt % 100 == 0:
+                print cnt, count
 
         except Exception as e:
             # print e
             count += 1
-            f = open('fail_list.txt', 'a')
-            print >> f, file_name, e, line
-            f.close()
+            of = open('fail_list.txt', 'a')
+            print >> of, file_name, e, line.encode("utf8")
+            of.close()
 
             # gg
     print cnt
@@ -93,3 +95,4 @@ def dfs_insert(index, doc_type, path):
         else:
             if x.endswith(".json"):
                 insert_file(index, doc_type, path + x)
+

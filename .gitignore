@@ -6,3 +6,8 @@ fail_list.txt
 data/law/big_data/
 tdata/
 local_config.py
+node_modules/
+no_content.txt
+result.txt
+npm-debug*
+application/doc2vec/model

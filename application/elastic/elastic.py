@@ -8,7 +8,7 @@ es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTI
 
 
 def insert_doc(index, doc_type, doc):
-    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"])
+    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"],request_timeout=app.config["ES_TIMEOUT"])
 
 
 def get_doc_byid(index, doc_type, id):
