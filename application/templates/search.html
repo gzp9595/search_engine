@@ -48,6 +48,18 @@
 </head>
 <body>
 <form>
+    模型:
+    <select name="type_of_model">
+        <option value="-1" {% if (args["type_of_model"] and args["type_of_model"] == "-1") or not("type_of_search" in args) %}selected{% endif %}>
+            DBDT
+        </option>
+        <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "0" %}selected{% endif %}>LDA</option>
+        <option value="1" {% if args["type_of_model"] and args["type_of_model"] == "1" %}selected{% endif %}>tfidf</option>
+        <option value="2" {% if args["type_of_model"] and args["type_of_model"] == "2" %}selected{% endif %}>word embedding</option>
+        <option value="3" {% if args["type_of_model"] and args["type_of_model"] == "3" %}selected{% endif %}>LDA+embedding</option>
+        <option value="4" {% if args["type_of_model"] and args["type_of_model"] == "4" %}selected{% endif %}>LDA+embedding+tfidf</option>
+    </select>
+
     数据集:
     <input type="text" name="index" {% if args["index"] %} value="law" {% else %} value="law" {% endif %}
            readonly="readonly">

@@ -7,6 +7,8 @@ import uuid
 
 import numpy as np
 
+from application.doc2vec.Doc2vec import *
+
 length = 11 * 2 + 1 + 3 + 2
 
 if not (os.path.exists(app.config["TRAINING_DIR"])):
@@ -17,6 +19,8 @@ try:
     model.load_model()
 except Exception:
     pass
+
+doc2vec_model = Doc2vec(save_path=app.config["DOC2VEC_PATH"])
 
 
 def write_model():
@@ -60,7 +64,13 @@ def add_data(obj, query, score):
 
 
 def get_score(obj, query):
-    return model.judge(get_feature(obj, query))
+    if query["type_of_model"] == -1:
+        return model.judge(get_feature(obj, query))
+    else:
+        return doc2vec_model.get_similarity(
+            embedding1=doc2vec_model.get_embedding(text=obj["content"], mode=query["type_of_model"]),
+            embedding2=doc2vec_model.get_embedding(text=query["search_content"], mode=query["type_of_model"]),
+            mode=query["type_of_model"])
 
 
 def cmp(a, b):

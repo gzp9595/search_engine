@@ -11,3 +11,5 @@ MODEL_FILE = "/mnt/model"
 MODEL_TYPE = "GBDT"
 TRAINING_DIR = "/mnt/tdata/"
 CLICK_DIR = "/mnt/clickdata/"
+
+DOC2VEC_PATH = "application/doc2vec/model"
