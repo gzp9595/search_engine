@@ -55,5 +55,6 @@ os.system("""curl -XPOST http://localhost:9200/law/content/_mapping -d'
                 "include_in_all": "true",
                 "boost": 8
             }
+        }
     }
 }'""")
