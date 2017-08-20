@@ -4,6 +4,7 @@ from application.reranking import classifer, feature
 import json
 import os
 import uuid
+import warnings
 
 import numpy as np
 
@@ -63,10 +64,15 @@ def add_data(obj, query, score):
     f.close()
 
 
-def get_score(obj, query):
+def get_score(obj, query,sc):
     model_type=int(query["type_of_model"])
+    print model_type
+    if model_type == -2:
+        return sc
     if model_type == -1:
-        return model.judge(get_feature(obj, query))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return model.judge(get_feature(obj, query))
     else:
         return doc2vec_model.get_similarity(
             embedding1=doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=model_type),
@@ -96,7 +102,7 @@ def reranking(result, query):
     # return result
 
     for a in range(0, len(result)):
-        result[a]["_source"]["score"] = get_score(result[a]["_source"], query)
+        result[a]["_source"]["score"] = get_score(result[a]["_source"], query,result[a]["_score"])
 
     # nowp = 0
     # while nowp < len(result):

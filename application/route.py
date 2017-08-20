@@ -163,9 +163,11 @@ def search():
         result)  # return render_template("search.html", args=request.args, result=result, query=request.args)
 
 
-@app.route('/search_new')
+@app.route('/search_new',methods=["POST","GET"])
 def search_new():
     result = []
+    #if request.args=={}:
+    request.args = request.form
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -247,8 +249,16 @@ def search_new():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
+        print "Begin to search"
+        print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+        print "Begin to reranking"
+        print_time()
+        query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        print "All over"
+        print_time()
+
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
 
         for x in query_result["hits"]:
@@ -285,13 +295,13 @@ def add_data():
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
-        return json.dumps(query_result["_source"])
+        #return json.dumps(query_result["_source"])
         # print query_result["_source"]["content"]
-        # return render_template("news.html", content=unicode(query_result["_source"]["content"]),
-        #                       Title=query_result["_source"]["Title"],
-        #                       PubDate=query_result["_source"]["PubDate"],
-        #                       origin=query_result["_source"]["doc_name"]) \
-        #    .replace('\b', '<br/>')
+        return render_template("news.html", content=unicode(query_result["_source"]["content"]),
+                               Title=query_result["_source"]["Title"],
+                               PubDate=query_result["_source"]["PubDate"],
+                               origin=query_result["_source"]["doc_name"]) \
+            .replace('\b', '<br/>')
 
     return "Error"
 

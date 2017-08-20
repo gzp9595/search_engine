@@ -48,8 +48,12 @@ def get_text_matching_feature(obj, query):
     }
     search_type = match_type[query["where_to_search"]]
     for a in range(0, len(word_list)):
-        obj["feature"]["matching_result"]["matched_time"].append(len(re.findall(word_list[a], obj[search_type])))
-        obj["feature"]["matching_result"]["matched_or_not"].append(len(re.findall(word_list[a], obj[search_type])) >= 1)
+        try:
+            obj["feature"]["matching_result"]["matched_time"].append(len(re.findall(word_list[a], obj[search_type])))
+            obj["feature"]["matching_result"]["matched_or_not"].append(len(re.findall(word_list[a], obj[search_type])) >= 1)
+        except Exception:
+            obj["feature"]["matching_result"]["matched_time"].append(0)
+            obj["feature"]["matching_result"]["matched_or_not"].append(0)
 
     return obj
 

@@ -47,10 +47,11 @@
     </script>
 </head>
 <body>
-<form>
+<form method="post">
     模型:
     <select name="type_of_model">
-        <option value="-1" {% if (args["type_of_model"] and args["type_of_model"] == "-1") or not("type_of_search" in args) %}selected{% endif %}>
+        <option value="-2" {% if args["type_of_model"] and args["type_of_model"] == "-2" %}selected{% endif %}>Origin</option>
+        <option value="-1" {% if (args["type_of_model"] and args["type_of_model"] == "-1") or not("type_of_model" in args) %}selected{% endif %}>
             DBDT
         </option>
         <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "0" %}selected{% endif %}>LDA</option>
