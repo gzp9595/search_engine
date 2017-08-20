@@ -6,17 +6,20 @@ import os
 
 cnt = 0
 count = 0
+total = 0
 
 
 def insert_file_new(index, doc_type, file_name):
     global cnt
     global count
+    global total
     f = open(file_name, 'r')
     content = ''
     text_field = ["caseName", "time", "caseType", "caseNumber", "spcx", "court", "judge", "lawyer", "keyword", "cause",
                   "docType", "punishment", "result", "docId", "document"]
     print file_name
     for line in f:
+        total += 1
         try:
             line = line.decode('utf8')
             arr = line.split('\t')
@@ -46,7 +49,7 @@ def insert_file_new(index, doc_type, file_name):
             cnt += 1
 
             if cnt % 100 == 0:
-                print cnt, count
+                print total, cnt, count
 
         except Exception as e:
             # print e
