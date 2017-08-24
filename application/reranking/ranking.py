@@ -77,7 +77,10 @@ def get_score(obj, query,sc):
         return doc2vec_model.get_similarity(
             embedding1=doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=model_type),
             embedding2=doc2vec_model.get_embedding(text=query["search_content"].encode('utf8'), mode=model_type),
-            mode=model_type)
+            mode=model_type) * 0.6 + doc2vec_model.get_similarity(
+            embedding1=doc2vec_model.get_embedding(text=obj["Title"].encode('utf8'), mode=model_type),
+            embedding2=doc2vec_model.get_embedding(text=query["search_content"].encode('utf8'), mode=model_type),
+            mode=model_type) * 0.4
 
 
 def cmp(a, b):
