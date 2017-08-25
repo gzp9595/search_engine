@@ -2,13 +2,15 @@ from application import app
 
 from elasticsearch import Elasticsearch
 from elasticsearch import exceptions
+from elasticsearch import helpers
 import json
 
 es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
 
 
 def insert_doc(index, doc_type, doc):
-    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"],request_timeout=app.config["ES_TIMEOUT"])
+    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"],
+             request_timeout=app.config["ES_TIMEOUT"])
 
 
 def get_doc_byid(index, doc_type, id):
@@ -17,6 +19,10 @@ def get_doc_byid(index, doc_type, id):
 
 def search_doc(index, doc_type, body):
     return es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"])["hits"]
+
+
+def scan_doc(index, doc_type, body):
+    return helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type)
 
 
 def get_count(index, doc_type):

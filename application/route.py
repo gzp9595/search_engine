@@ -251,7 +251,7 @@ def search_new():
 
         print "Begin to search"
         print_time()
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
+        query_result = elastic.scan_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
 
 
