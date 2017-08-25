@@ -8,55 +8,74 @@ import random
 from init import *
 import os
 
-class LSTM(object):
+class TextCNN(object):
 
 	def __init__(self, word_embeddings, config):
-
+		
 		self.batch_size = batch_size = config.batch_size
 		self.num_steps = num_steps = config.num_steps
 		size = config.hidden_size
 		vocab_size = config.vocab_size
 		num_classes = config.num_classes
 		hits_k = config.hits_k
+
 		self.input_x = tf.placeholder(tf.int32, [batch_size, num_steps])
 		self.input_y = tf.placeholder(tf.float32, [batch_size, num_classes])
 		self.keep_prob = tf.placeholder(tf.float32)
+		filter_sizes = config.filter_sizes
+		num_filters = config.num_filters
+		l2_loss = tf.constant(0.0)
 
-		lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias = 1.0)
-
-		lstm_cell = tf.nn.rnn_cell.DropoutWrapper(lstm_cell, output_keep_prob=self.keep_prob)
-		cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers)
-
-		self.initial_state = cell.zero_state(batch_size, tf.float32)
-
-		with tf.device("/cpu:0"), tf.name_scope("embedding"):
-			embedding = tf.Variable(word_embeddings, trainable = True)
+		with tf.device('/cpu:0'), tf.name_scope("embedding"):
+			embedding = tf.Variable(word_embeddings, trainable = False)
 			inputs = tf.nn.embedding_lookup(embedding, self.input_x)
+			self.inputs = tf.expand_dims(inputs, -1)
 
-		outputs,_ = tf.nn.dynamic_rnn(cell,inputs,initial_state = self.initial_state)
-
-		xx = tf.concat(1,outputs)
-		yy = tf.reshape(xx, [batch_size, -1, size])
-		output = tf.expand_dims(yy, -1)
-
-		with tf.name_scope("maxpool"):
-			output_pooling = tf.nn.max_pool(output,
-					ksize=[1, num_steps, 1, 1],
+		pooled_outputs = []
+		for i, filter_size in enumerate(filter_sizes):
+			with tf.name_scope("conv-maxpool-%s" % filter_size):
+				
+				filter_shape = [filter_size, size, 1, num_filters]
+				W = tf.Variable(tf.truncated_normal(filter_shape, stddev=0.1), name="W")
+				b = tf.Variable(tf.constant(0.1, shape=[num_filters]), name="b")
+				conv = tf.nn.conv2d(
+					self.inputs,
+					W,
+					strides=[1, 1, 1, 1],
+					padding="VALID",
+					name="conv")
+				
+				h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
+				pooled = tf.nn.max_pool(
+					h,
+					ksize=[1, num_steps - filter_size + 1, 1, 1],
 					strides=[1, 1, 1, 1],
 					padding='VALID',
 					name="pool")
-			self.output = tf.reshape(output_pooling, [-1, size])
+				pooled_outputs.append(pooled)
+
+		num_filters_total = num_filters * len(filter_sizes)
+		self.h_pool = tf.concat(3, pooled_outputs)
+		self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
+
+		with tf.name_scope("dropout"):
+			self.output = tf.nn.dropout(self.h_pool_flat, self.keep_prob)
 
 		with tf.name_scope("output"):
-			softmax_w = tf.get_variable("softmax_w", [size, num_classes])
-			softmax_b = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="softmax_b")
-			self.scores = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b, name="scores")
+			W = tf.get_variable(
+				"W",
+				shape=[num_filters_total, num_classes],
+				initializer=tf.contrib.layers.xavier_initializer())
+			b = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b")
+			#l2_loss += tf.nn.l2_loss(W)
+			#l2_loss += tf.nn.l2_loss(b)
+			self.scores = tf.nn.xw_plus_b(self.output, W, b, name="scores")
 			self.predictions = tf.argmax(self.scores, 1, name="predictions")
 
 		with tf.name_scope("loss"):
 			self.soft = tf.nn.softmax(self.scores)
-			losses = tf.nn.softmax_cross_entropy_with_logits(logits = self.scores,labels =  self.input_y)
-			self.loss = tf.reduce_mean(losses)
+			losses = tf.nn.softmax_cross_entropy_with_logits(self.scores, self.input_y)
+			self.loss = tf.reduce_mean(losses)# + 0.0001 * l2_loss
 
 		with tf.name_scope("accuracy"):
 			self.ans = tf.argmax(self.input_y, 1)
@@ -74,8 +93,10 @@ class Config(object):
 		self.vocab_size = 10000
 		self.num_classes = 550
 		self.hits_k = [1]
+		self.filter_sizes = [3,4,5]
+		self.num_filters = 100
 
-class lstm_model(object):
+class cnn_model(object):
 	def load_labels(self, vec_path, label_path):
 
 		word_embeddings = []
@@ -129,19 +150,19 @@ class lstm_model(object):
 		self.out_config.num_classes = len(self.relationhash)
 		self.out_config.batch_size = 1
 
-		self.model_path = save_path + '/lstmmodel/model'
-		self.load_path = save_path + '/lstmmodel/model-9100'
+		self.model_path = save_path + '/cnnmodel/model'
+		self.load_path = save_path + '/cnnmodel/model-9100'
 
 		with tf.Graph().as_default():
 			self.sess = tf.Session()
 			with self.sess.as_default():
 				initializer = tf.contrib.layers.xavier_initializer()
 				with tf.variable_scope("model", reuse=None, initializer = initializer):
-					self.m = LSTM(word_embeddings = self.word_embeddings, config = self.config)
+					self.m = TextCNN(word_embeddings = self.word_embeddings, config = self.config)
 				with tf.variable_scope("model", reuse=True, initializer = initializer):
-					self.mtest = LSTM(word_embeddings = self.word_embeddings, config = self.eval_config)
+					self.mtest = TextCNN(word_embeddings = self.word_embeddings, config = self.eval_config)
 				with tf.variable_scope("model", reuse=True, initializer = initializer):
-					self.mout = LSTM(word_embeddings = self.word_embeddings, config = self.out_config)
+					self.mout = TextCNN(word_embeddings = self.word_embeddings, config = self.out_config)
 
 				self.saver = tf.train.Saver()
 
@@ -279,13 +300,13 @@ class lstm_model(object):
 				self.m.input_y: y_batch,
 				self.m.keep_prob: 0.5
 			}
-			_, step, loss = self.sess.run(
-				[self.train_op, self.global_step, self.m.loss], feed_dict)
+			_, step, loss,accuracy = self.sess.run(
+				[self.train_op, self.global_step, self.m.loss, self.m.accuracy], feed_dict)
 
 			time_str = datetime.datetime.now().isoformat()
 
 			if step % 50 == 0:
- 				print("{}: step {}, loss {:g}".format(time_str, step, loss))
+ 				print("{}: step {}, loss {:g}, accuracy {:g}".format(time_str, step, loss, accuracy))
 
 		def dev_step(x_batch, y_batch, writer=None):
 
@@ -409,7 +430,7 @@ class lstm_model(object):
 
 
 if __name__ == "__main__":
-	a = lstm_model(save_path = './model')
+	a = cnn_model(save_path = './model')
 	a.Load()
 	#a.Train(path = '')
-	print a.get_embedding(text = '�?�?北京 天安�?')
+	a.get_embedding(text = '我 爱 北京 天安门')

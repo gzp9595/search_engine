@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <script type="text/javascript">
+        var count = 0;
+        function clicked(id, score) {
+            console.log(id)
+            var data = new FormData();
+            data.append("id", id);
+            qdata = {}
+            {% for key in query %}
+                {% if not(query[key] is string) %}
+                    qdata["{{ key }}"] = {{ query[key] }}
+                        {% else %}
+                        qdata["{{ key }}"] = "{{ query[key] }}"
+                {% endif %}
+            {% endfor %}
+            data.append("query", JSON.stringify(qdata));
+            data.append("score", score);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("post", "adddata", true);
+            xmlhttp.send(data);
+        }
+        function clickhref(index, doc_type, id) {
+
+            var data = new FormData();
+            data.append("id", id);
+            qdata = {}
+            {% for key in query %}
+                {% if not(query[key] is string) %}
+                    qdata["{{ key }}"] = {{ query[key] }}
+                        {% else %}
+                        qdata["{{ key }}"] = "{{ query[key] }}"
+                {% endif %}
+            {% endfor %}
+            data.append("query", JSON.stringify(qdata));
+            count += 1;
+            data.append("count",count);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("post", "addclickdata", false);
+            xmlhttp.send(data);
+
+            window.open("/doc?index={{ args["index"] }}&doc_type={{ args["doc_type"] }}&id=" + id,"_blank");
+        }
+    </script>
+</head>
+<body>
+<form method="post">
+    模型:
+    <select name="type_of_model">
+        <option value="-2" {% if args["type_of_model"] and args["type_of_model"] == "-2" %}selected{% endif %}>Origin</option>
+        <option value="-1" {% if (args["type_of_model"] and args["type_of_model"] == "-1") or not("type_of_model" in args) %}selected{% endif %}>
+            DBDT
+        </option>
+        <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "0" %}selected{% endif %}>LDA</option>
+        <option value="1" {% if args["type_of_model"] and args["type_of_model"] == "1" %}selected{% endif %}>tfidf</option>
+        <option value="2" {% if args["type_of_model"] and args["type_of_model"] == "2" %}selected{% endif %}>word embedding</option>
+        <option value="3" {% if args["type_of_model"] and args["type_of_model"] == "3" %}selected{% endif %}>LSTM</option>
+        <option value="4" {% if args["type_of_model"] and args["type_of_model"] == "4" %}selected{% endif %}>CNN</option>
+        <option value="5" {% if args["type_of_model"] and args["type_of_model"] == "5" %}selected{% endif %}>LDA+embedding</option>
+        <option value="6" {% if args["type_of_model"] and args["type_of_model"] == "6" %}selected{% endif %}>LDA+embedding+tfidf</option>
+    </select>
+	<br>
+
+    数据集:
+    <input type="text" name="index" {% if args["index"] %} value="law" {% else %} value="law" {% endif %}
+           readonly="readonly">
+    <br>
+
+    数据类型:
+    <input type="text" name="doc_type" {% if args["doc_type"] %} value="content" {% else %}value="content" {% endif %}
+           readonly="readonly">
+    <br>
+
+    全文检索:
+    <input type="text" name="search_content" {% if args["search_content"] %}
+           value="{{ args["search_content"] }}" {% endif %}>
+    <select name="where_to_search">
+        <option value="0"
+                {% if (args["where_to_search"] and args["where_to_search"] == "0") or not("where_to_search" in args) %}selected{% endif %}>
+            全文
+        </option>
+        <option value="1" {% if args["where_to_search"] and args["where_to_search"] == "1" %}selected{% endif %}>首部
+        </option>
+        <option value="2" {% if args["where_to_search"] and args["where_to_search"] == "2" %}selected{% endif %}>事实
+        </option>
+        <option value="3" {% if args["where_to_search"] and args["where_to_search"] == "3" %}selected{% endif %}>理由
+        </option>
+        <option value="4" {% if args["where_to_search"] and args["where_to_search"] == "4" %}selected{% endif %}>判决结果
+        </option>
+        <option value="5" {% if args["where_to_search"] and args["where_to_search"] == "5" %}selected{% endif %}>尾部
+        </option>
+    </select>
+    <br>
+
+    <input type="submit" value="Search">
+</form>
+
+{% if error_inf %}
+    <p>{{ error_inf }}</p>
+{% endif %}
+
+{% if result %}
+    {% for data in result %}
+        <div>
+            <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["Title"] }}</a></h3>
+            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["AJLX"]}}</span><br>
+			<p>
+				{{data["AJJBQK"] | truncate(200,True)}}
+			</p>
+            <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
+            <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
+            <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
+            <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
+            <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
+            <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
+            <br>
+        </div>
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>

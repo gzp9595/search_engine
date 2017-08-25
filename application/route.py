@@ -188,7 +188,7 @@ def search_new():
 
             body.append({"match": {search_type: args["search_content"]}})
 
-        if "name_of_case" in args and args["name_of_case"] != "":
+        """if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
 
         if "case_number" in args and args["case_number"] != "":
@@ -247,22 +247,26 @@ def search_new():
                 new_body.append({"match": {"FLYJ.tiao_num": args["num_of_tiao"]}})
             if "num_of_kuan" in args and args["num_of_kuan"] != "":
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
-            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
+            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})"""
 
         print "Begin to search"
         print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+
+
+        for x in query_result["hits"]:
+            x["_source"] = elastic.get_doc_byid(request.args["index"],"big_data",x["_id"])
+
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
         print "All over"
         print_time()
 
-        query_result["hits"] = ranking.reranking(query_result["hits"], args)
-
         for x in query_result["hits"]:
             res = {"id": x["_id"], "score": x["_source"]["score"]}
+            x["_source"] = elastic.get_doc_byid(request.args["index"],"big_data",x["_id"])
             for y in x["_source"]:
                 res[y] = x["_source"][y]
             result.append(res)
@@ -276,7 +280,7 @@ def search_new():
         args["index"] = ""
     if not ("doc_type" in request.args):
         args["doc_type"] = ""
-    return render_template("search.html", args=request.args, result=result, query=request.args)
+    return render_template("search_new.html", args=request.args, result=result, query=request.args)
 
 
 @app.route('/adddata', methods=["POST", "GET"])

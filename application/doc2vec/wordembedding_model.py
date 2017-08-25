@@ -1,18 +1,16 @@
 import numpy as np
 class wordembedding_model(object):
-	def __init__(self, wordembedding_path = '../train/vec.txt.vec'):
+	def __init__(self, wordembedding_path = '../train/words.vec'):
 
 		f_vec = open(wordembedding_path, 'r')
 		lines = f_vec.readlines()
 		info = lines[0].strip().split(' ')
 		self.embedding_size = int(info[1])
-
 		self.word2id = {}
 		self.word_embedding = []
 		for i in range(1, len(lines)):
 			rep = lines[i].strip().split(' ')
-			if rep[0] not in self.word2id:
-				self.word2id[rep[0]] = len(self.word2id)
+			self.word2id[rep[0]] = len(self.word2id)
 			temp = []
 			for j in range(1, len(rep)):
 				temp.append(float(rep[j]))
@@ -23,12 +21,13 @@ class wordembedding_model(object):
 	def get_embedding(self, text):
 		result = np.array([0.0 for i in range(self.embedding_size)])
 		count = 0
-		#print text
 		for word in text:
 			if word in self.word2id:
 				id = self.word2id[word]
 				result += np.array(self.word_embedding[id])
 				count += 1.0
+		if(count == 0):
+			return result
 		result = result/count
 		return result
 	

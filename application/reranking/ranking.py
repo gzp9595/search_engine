@@ -66,7 +66,6 @@ def add_data(obj, query, score):
 
 def get_score(obj, query,sc):
     model_type=int(query["type_of_model"])
-    print model_type
     if model_type == -2:
         return sc
     if model_type == -1:
