@@ -18,11 +18,16 @@ def get_doc_byid(index, doc_type, id):
 
 
 def search_doc(index, doc_type, body):
-    return es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"])["hits"]
+    return es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")["hits"]
 
 
 def scan_doc(index, doc_type, body):
-    return helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type)
+    print "gg"
+    print body
+    res = list(helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type,size=1,preserve_order=False))
+    print "gg"
+    print res
+    return res
 
 
 def get_count(index, doc_type):

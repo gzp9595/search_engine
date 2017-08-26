@@ -186,7 +186,7 @@ def search_new():
             }
             search_type = match_type[args["where_to_search"]]
 
-            body.append({"term": {search_type: args["search_content"]}})
+            body.append({"match": {search_type: args["search_content"]}})
 
         """if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
@@ -251,8 +251,8 @@ def search_new():
 
         print "Begin to search"
         print_time()
-        query_result = elastic.scan_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
+                                          json.dumps({"query": {"bool": {"must": body}}, "size": 20}))
 
 
         for x in query_result["hits"]:
@@ -303,7 +303,7 @@ def get_doc_byid():
         # print query_result["_source"]["content"]
         return render_template("news.html", content=unicode(query_result["_source"]["content"]),
                                Title=query_result["_source"]["Title"],
-                               PubDate=query_result["_source"]["PubDate"],
+                               PubDate="0000-00-00",#query_result["_source"]["PubDate"],
                                origin=query_result["_source"]["doc_name"]) \
             .replace('\b', '<br/>')
 
