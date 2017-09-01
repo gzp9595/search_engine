@@ -7,6 +7,8 @@ import json
 
 es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"])
 
+scroll_id = ""
+
 
 def insert_doc(index, doc_type, doc):
     es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"],
@@ -18,7 +20,11 @@ def get_doc_byid(index, doc_type, id):
 
 
 def search_doc(index, doc_type, body):
-    return es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")["hits"]
+    res =  es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")
+    for x in res:
+        if x!="hits":
+            print x,res[x]
+    return res["hits"]
 
 
 def scan_doc(index, doc_type, body):
