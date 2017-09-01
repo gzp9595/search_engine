@@ -2,7 +2,7 @@ import logging
 import os
 
 insert_path = "/mnt/data/"
-index = "law"
+index = "law_thulac"
 doc_type = "big_data"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
