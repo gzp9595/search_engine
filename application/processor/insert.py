@@ -42,7 +42,7 @@ def insert_file_new(index, doc_type, file_name):
                 continue
             data["doc_name"] = data["docId"]
 
-            elastic.update_by_id(index, doc_type, data["doc_name"], data)
+            #elastic.update_by_id(index, doc_type, data["doc_name"], data)
             elastic.update_by_id(index, "content", data["doc_name"],
                                  {"content": data["content"], "Title": data["Title"], "doc_name": data["doc_name"]})
 
