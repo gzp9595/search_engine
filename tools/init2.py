@@ -3,7 +3,8 @@ import os
 os.system("curl -XPUT http://localhost:9200/law_thulac")
 print
 
-printcurl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
+print
+os.system("""curl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
 {
     "big_data": {
         "_all": {
@@ -14,8 +15,7 @@ printcurl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
             "boost": 8
         }
     }
-}'
-os.system("""""")
+}'""")
 
 
 print
