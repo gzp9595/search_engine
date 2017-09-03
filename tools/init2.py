@@ -3,8 +3,7 @@ import os
 os.system("curl -XPUT http://localhost:9200/law_thulac")
 print
 
-print
-os.system("""curl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
+printcurl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
 {
     "big_data": {
         "_all": {
@@ -15,11 +14,12 @@ os.system("""curl -XPOST http://localhost:9200/law_thulac/big_data/_mapping -d'
             "boost": 8
         }
     }
-}'""")
+}'
+os.system("""""")
 
 
 print
-os.system("""curl -XPOST http://localhost:9200/law/law_thulac/_mapping -d'
+os.system("""curl -XPOST http://localhost:9200/law_thulac/content/_mapping -d'
 {
     "content": {
         "properties": {
