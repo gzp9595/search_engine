@@ -33,7 +33,7 @@ if __name__ == '__main__':
                 arr = line.split('\t')
                 update_by_id(index, doc_type, arr[0], {"id": arr[0], "vector": arr[1]})
                 cnt += 1
-            except Exception:
+            except Exception as e:
                 count += 1
                 of = open('fail_vector_list.txt', 'a')
                 print >> of, file_name, e, line.split('\t')[0]
