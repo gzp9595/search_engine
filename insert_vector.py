@@ -1,6 +1,5 @@
 import os
 import config
-from application.elastic import update_by_id
 
 index = "law_vector"
 doc_type = "tfidf"
@@ -20,6 +19,8 @@ if __name__ == '__main__':
     total = 0
     cnt = 0
     count = 0
+
+    from application.elastic import update_by_id
 
     for x in os.listdir(dir_path):
         file_name = dir_path + x
