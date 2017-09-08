@@ -31,7 +31,7 @@ if __name__ == '__main__':
                 print total, cnt, count
             try:
                 arr = line.split('\t')
-                update_by_id(index, doc_type, arr[0], {"id": arr[0], "vector": arr[1]})
+                update_by_id(index, doc_type, arr[0], {"doc_name": arr[0], "vector": arr[1]})
                 cnt += 1
             except Exception as e:
                 count += 1
