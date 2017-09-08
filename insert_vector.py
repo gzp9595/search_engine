@@ -19,6 +19,7 @@ if __name__ == '__main__':
 
     total = 0
     cnt = 0
+    count = 0
 
     for x in os.listdir(dir_path):
         file_name = dir_path + x
@@ -26,10 +27,13 @@ if __name__ == '__main__':
         for line in f:
             total += 1
             if total % 100 == 0:
-                print total, cnt
+                print total, cnt, count
             try:
                 arr = line.split('\t')
                 update_by_id(index, doc_type, arr[0], {"id": arr[0], "vector": arr[1]})
                 cnt += 1
-
-            gg
+            except Exception:
+                count += 1
+                of = open('fail_vector_list.txt', 'a')
+                print >> of, file_name, e, line.split('\t')[0]
+                of.close()
