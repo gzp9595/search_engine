@@ -2,7 +2,7 @@ import json
 import os
 import uuid
 
-from flask import request, render_template
+from flask import request, render_template, make_response
 
 import config
 import elastic
@@ -159,8 +159,11 @@ def search():
         args["index"] = ""
     if not ("doc_type" in request.args):
         args["doc_type"] = ""
-    return json.dumps(
-        result)  # return render_template("search.html", args=request.args, result=result, query=request.args)
+    response = make_response(json.dumps(result))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'POST'
+    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+    return response
 
 
 @app.route('/search_new',methods=["POST","GET"])
@@ -299,6 +302,11 @@ def add_data():
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
+        response = make_response(json.dumps(query_result))
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+        return response
         return json.dumps(query_result["_source"])
         # print query_result["_source"]["content"]
         return render_template("news.html", content=unicode(query_result["_source"]["content"]),
