@@ -19,6 +19,7 @@ if __name__ == '__main__':
     total = 0
     cnt = 0
     count = 0
+    basic = 0
 
     from application.elastic import update_by_id
 
@@ -27,6 +28,8 @@ if __name__ == '__main__':
         f = open(file_name, "r")
         for line in f:
             total += 1
+            if basic < total:
+                continue
             if total % 100 == 0:
                 print total, cnt, count
             try:
