@@ -2,7 +2,7 @@ import json
 import os
 import uuid
 
-from flask import request, render_template, make_response
+from flask import request, render_template, make_response, send_from_directory
 
 import config
 import elastic
@@ -12,7 +12,6 @@ from application.reranking import ranking
 from application.reranking.classifer import train_new_model
 from application.util import print_time
 from . import app
-
 
 cnt = 0
 count = 0
@@ -161,10 +160,10 @@ def search():
     return response
 
 
-@app.route('/search_new',methods=["POST","GET"])
+@app.route('/search_new', methods=["POST", "GET"])
 def search_new():
     result = []
-    #if request.args=={}:
+    # if request.args=={}:
     request.args = request.form
 
     if "doc_type" in request.args and "index" in request.args:
@@ -252,9 +251,8 @@ def search_new():
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
                                           json.dumps({"query": {"bool": {"must": body}}, "size": 20}))
 
-
         for x in query_result["hits"]:
-            x["_source"] = elastic.get_doc_byid(request.args["index"],"big_data",x["_id"])
+            x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
 
         print "Begin to reranking"
         print_time()
@@ -264,7 +262,7 @@ def search_new():
 
         for x in query_result["hits"]:
             res = {"id": x["_id"], "score": x["_source"]["score"]}
-            x["_source"] = elastic.get_doc_byid(request.args["index"],"big_data",x["_id"])
+            x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
             for y in x["_source"]:
                 res[y] = x["_source"][y]
             result.append(res)
@@ -306,7 +304,7 @@ def get_doc_byid():
         # print query_result["_source"]["content"]
         return render_template("news.html", content=unicode(query_result["_source"]["content"]),
                                Title=query_result["_source"]["Title"],
-                               PubDate="0000-00-00",#query_result["_source"]["PubDate"],
+                               PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
                                origin=query_result["_source"]["doc_name"]) \
             .replace('\\b', '<br/>')
 
@@ -330,3 +328,11 @@ def train_model():
 @app.route("/")
 def main():
     return render_template("main.html")
+
+
+@app.route('/static/<path:filetype>/<path:filename>')
+def serve_static(filetype, filename):
+    print "gg"
+    root_dir = os.path.dirname(os.getcwd())
+    print root_dir
+    return send_from_directory(os.path.join(root_dir,'search_engine', 'application', 'static', filetype), filename)
