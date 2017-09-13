@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- saved from url=(0028)http://162.243.120.148:5000/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>幂律智能</title>
+    <link href="/static/css/normalize.css" rel="stylesheet">
+    <link href="/static/css/powerlaw.css" rel="stylesheet">
+    <link href="/static/css/css" rel="stylesheet">
+    <script src="/static/js/jquery-3.2.1.min.js.下载"></script>
+    <script src="/static/js/powerlaw.js.下载"></script>
+<style>#haloword-pron { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -94px -34px; }#haloword-pron:hover { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -111px -34px; }#haloword-open { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -94px -17px; }#haloword-open:hover { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -111px -17px; }#haloword-close { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -94px 0; }#haloword-close:hover { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -111px 0; }#haloword-add { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -94px -51px; }#haloword-add:hover { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -111px -51px; }#haloword-remove { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -94px -68px; }#haloword-remove:hover { background: url(chrome-extension://bhkcehpnnlgncpnefpanachijmhikocj/img/icon.svg) -111px -68px; }</style></head>
+<body>
+
+<div id="wrapper">
+    <div id="main" class="search">
+    
+        <div id="title"><img width="300" src="/static/image/logo.png"></div>
+        <div id="search">
+            <textarea id="search-input" onkeyup="textarea_auto_grow(this);" maxlength="500"></textarea>
+            <button id="search-button" class="light">搜索</button>
+            <div id="search-advance">
+                <label style="position: absolute; left: 0; font-size: 13px;">模型类型
+                    <select name="type_of_model" style="width: 120px;">
+                        <option value="-2">Origin</option>
+                        <option value="-1">DBDT</option>
+                        <option value="0">LDA</option>
+                        <option value="1">TF-IDF</option>
+                        <option value="2">Word Embedding</option>
+                        <option value="3">LDA+Embedding</option>
+                        <option value="4">LDA+TF-IDF+Embedding</option>
+                    </select>
+                </label>
+                <div id="search-advance-expand">高级搜索</div>
+                <table id="search-advance-options" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td>案件名</td>
+                        <td><input name="name_of_case" type="text" maxlength="50"></td>
+                    </tr>
+                    <tr>
+                        <td>案件号</td>
+                        <td><input name="case_number" type="text" maxlength="50"></td>
+                    </tr>
+                    <tr>
+                        <td>法院名</td>
+                        <td><input name="name_of_court" type="text" maxlength="50"></td>
+                    </tr>
+                    <tr>
+                        <td>法院级别</td>
+                        <td><select name="level_of_court">
+                            <option value=""></option>
+                            <option value="1">最高法院</option>
+                            <option value="2">高级法院</option>
+                            <option value="3">中级法院</option>
+                            <option value="4">基层法院</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>案件类型</td>
+                        <td><select name="type_of_case">
+                            <option value=""></option>
+                            <option value="1">刑事案件</option>
+                            <option value="2">民事案件</option>
+                            <option value="3">行政案件</option>
+                            <option value="4">赔偿案件</option>
+                            <option value="5">执行案件</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>文书类型</td>
+                        <td><select name="type_of_doc">
+                            <option value=""></option>
+                            <option value="1">判决书</option>
+                            <option value="2">裁定书</option>
+                            <option value="3">调解书</option>
+                            <option value="4">决定书</option>
+                            <option value="5">通知书</option>
+                            <option value="6">批复</option>
+                            <option value="7">答复</option>
+                            <option value="8">函</option>
+                            <option value="9">令</option>
+                            <option value="10">其他</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>判决时间</td>
+                        <td><input name="judge_date_from" type="date"> - <input name="judge_data_to" type="date"></td>
+                    </tr>
+                    <tr>
+                        <td>法律依据</td>
+                        <td>法律名称 <input name="name_of_law" type="text" maxlength="50">
+                        第 <input name="article" type="text" maxlength="10"> 条
+                        第 <input name="paragraph" type="text" maxlength="10"> 款
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>文书发布时间</td>
+                        <td><input name="publication_date_from" type="date"> - <input name="publication_date_to" type="date"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div id="footer-link"></div>
+        <div id="footer-copyright">@2017 PowerLaw 京ICP证000000号 京公网安备1100000000001号</div>
+    </div>
+</div>
+
+<div id="haloword-lookup" class="ui-widget-content ui-draggable"><div id="haloword-title"><span id="haloword-word"></span><a herf="#" id="haloword-pron" class="haloword-button" title="发音"></a><audio id="haloword-audio"></audio><div id="haloword-control-container"><a herf="#" id="haloword-add" class="haloword-button" title="加入单词表"></a><a herf="#" id="haloword-remove" class="haloword-button" title="移出单词表"></a><a href="http://162.243.120.148:5000/#" id="haloword-open" class="haloword-button" title="查看单词详细释义" target="_blank"></a><a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a></div><br style="clear: both;"></div><div id="haloword-content"></div></div></body></html>
