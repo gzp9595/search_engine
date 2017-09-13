@@ -330,3 +330,8 @@ def addclickdata():
 @app.route("/train_model")
 def train_model():
     train_new_model()
+
+
+@app.route("/")
+def main():
+    return render_template("main.html")
