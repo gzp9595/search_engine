@@ -14,11 +14,6 @@ from application.util import print_time
 from . import app
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
 cnt = 0
 count = 0
 
