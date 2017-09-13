@@ -13,6 +13,8 @@ from application.reranking.classifer import train_new_model
 from application.util import print_time
 from . import app
 
+import urllib2
+
 cnt = 0
 count = 0
 
@@ -43,9 +45,11 @@ def remove_all():
     return "Succeed delete " + str(elastic.remove_all(request.args["index"], request.args["doc_type"])["deleted"])
 
 
-@app.route('/search')
+@app.route('/search', methods=["POST", "GET"])
 def search():
     result = []
+    for x in request.form:
+        request.args[x] = request.form[x]
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -350,4 +354,28 @@ def main():
 @app.route('/static/<path:filetype>/<path:filename>')
 def serve_static(filetype, filename):
     root_dir = os.path.dirname(os.getcwd())
-    return send_from_directory(os.path.join(root_dir, app.config["WORK_DIR"], 'application', 'static', filetype), filename)
+    return send_from_directory(os.path.join(root_dir, app.config["WORK_DIR"], 'application', 'static', filetype),
+                               filename)
+
+
+@app.route('/document')
+def get_document():
+    return render_template("document.html", id=request.args["id"])
+
+
+@app.route('/search_new2')
+def search_new2():
+    url = "http://bc2.citr.me:8000/search"
+    first = True
+    for x in request.args:
+        if first:
+            url += "?"
+        else:
+            url += "&"
+        url += x + "=" + request.args[x]
+        first=False
+    print url
+    result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
+    print result
+
+    return render_template("search_new2.html",result=result,s=len(result),args=request.args)

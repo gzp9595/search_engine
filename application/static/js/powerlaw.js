@@ -193,6 +193,7 @@ function get_parameters() {
 
 function search() {
     var parameters = get_parameters();
+    console.log("gg")
     if (parameters.valid) {
         parameters.where_to_search = 0;
         parameters.index = 'law';
@@ -204,7 +205,7 @@ function search() {
         // }).done(function (data) {
         //     console.log(data)
         // });
-        window.location.href = "/search?" + $.param(parameters);
+        window.location.href = "/search_new2?" + $.param(parameters);
     } else {
         // error
     }

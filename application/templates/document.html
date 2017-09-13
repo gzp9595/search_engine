@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>幂律智能 | 文档</title>
+    <link href="{{ url_for('static', filename='css/normalize.css') }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/powerlaw.css") }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <script src="{{ url_for("static", filename="js/jquery-3.2.1.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/powerlaw.js") }}"></script>
+</head>
+<body>
+<div id="header">
+    <div id="title" class="header">
+
+        <a href="/"><img width="150" src="{{ url_for("static", filename="image/logo.png") }}"></a>
+    </div>
+
+    <textarea id="search-input" class="header" onkeyup="textarea_auto_grow(this);" maxlength="200"></textarea>
+    <button id="search-button" class="header light">搜索</button>
+    <div id="search-advance-expand" class="header">高级搜索</div>
+
+</div>
+<div id="main" class="result">
+    <div id="doc">
+        <div id="search-advance" class="result">
+            <table>
+                <tbody>
+                <tr>
+                    <td>案件名</td>
+                    <td><input name="name_of_case" type="text" maxlength="50"/></td>
+                    <td>判决时间</td>
+                    <td><input name="judge_date_from" type="date"/> - <input name="judge_data_to" type="date"/></td>
+                </tr>
+                <tr>
+                    <td>案件号</td>
+                    <td><input name="case_number" type="text" maxlength="50"/></td>
+                    <td>法律依据</td>
+                    <td>法律名称 <input name="name_of_law" type="text" maxlength="50"/>
+                        第 <input name="article" type="text" maxlength="10"/> 条
+                        第 <input name="paragraph" type="text" maxlength="10"/> 款
+                    </td>
+                </tr>
+                <tr>
+                    <td>法院名</td>
+                    <td><input name="name_of_court" type="text" maxlength="50"/></td>
+                    <td>文书发布时间</td>
+                    <td><input name="publication_date_from" type="date"/> - <input name="publication_date_to" type="date"/></td>
+                </tr>
+                <tr>
+                    <td>法院级别</td>
+                    <td><select name="level_of_court">
+                        <option value=""></option>
+                        <option value="1">最高法院</option>
+                        <option value="2">高级法院</option>
+                        <option value="3">中级法院</option>
+                        <option value="4">基层法院</option>
+                    </select></td>
+                    <td>案件类型</td>
+                    <td><select name="type_of_case">
+                        <option value=""></option>
+                        <option value="1">刑事案件</option>
+                        <option value="2">民事案件</option>
+                        <option value="3">行政案件</option>
+                        <option value="4">赔偿案件</option>
+                        <option value="5">执行案件</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>文书类型</td>
+                    <td><select name="type_of_doc">
+                        <option value=""></option>
+                        <option value="1">判决书</option>
+                        <option value="2">裁定书</option>
+                        <option value="3">调解书</option>
+                        <option value="4">决定书</option>
+                        <option value="5">通知书</option>
+                        <option value="6">批复</option>
+                        <option value="7">答复</option>
+                        <option value="8">函</option>
+                        <option value="9">令</option>
+                        <option value="10">其他</option>
+                    </select></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="doc" doc-id="82a93fa3-a52b-48d6-8e4e-d3a09b917bb6">
+
+            <div id="doc-text">
+                <iframe style="border: 0; min-height: 600px; height: auto; width: 100%; margin: 0; padding: 0;" src="http://bc2.citr.me:8000/doc_new?index=law&doc_type=big_data&id={{ id }}"></iframe>
+            </div>
+        </div>
+    </div>
+    <div style="height: 50px;"></div>
+</div>
+<div id="footer" class="result">
+    <div id="footer-link"></div>
+    <div id="footer-copyright">@2017 PowerLaw 京ICP证000000号 京公网安备1100000000001号</div>
+</div>
+</body>
+</html>
