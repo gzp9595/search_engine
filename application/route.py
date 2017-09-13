@@ -332,7 +332,5 @@ def main():
 
 @app.route('/static/<path:filetype>/<path:filename>')
 def serve_static(filetype, filename):
-    print "gg"
     root_dir = os.path.dirname(os.getcwd())
-    print root_dir
-    return send_from_directory(os.path.join(root_dir,'search_engine', 'application', 'static', filetype), filename)
+    return send_from_directory(os.path.join(root_dir, app.config["WORK_DIR"], 'application', 'static', filetype), filename)
