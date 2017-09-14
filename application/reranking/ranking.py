@@ -8,12 +8,12 @@ import warnings
 
 import numpy as np
 
-#from application.doc2vec.Doc2vec import *
+from application.doc2vec.Doc2vec import *
 
 length = 11 * 2 + 1 + 3 + 2
 
-#if not (os.path.exists(app.config["TRAINING_DIR"])):
-#    os.makedirs(app.config["TRAINING_DIR"])
+if not (os.path.exists(app.config["TRAINING_DIR"])):
+    os.makedirs(app.config["TRAINING_DIR"])
 
 model = classifer.model()
 try:
@@ -21,7 +21,7 @@ try:
 except Exception:
     pass
 
-#doc2vec_model = Doc2vec(save_path=app.config["DOC2VEC_PATH"])
+doc2vec_model = Doc2vec(save_path=app.config["DOC2VEC_PATH"])
 
 
 def write_model():
