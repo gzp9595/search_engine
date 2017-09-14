@@ -12,6 +12,7 @@ from application.reranking import ranking
 from application.reranking.classifer import train_new_model
 from application.util import print_time
 from . import app
+from matcher import get_best
 
 import urllib2
 
@@ -142,7 +143,8 @@ def search():
         print_time()
 
         for x in query_result["hits"]:
-            res = {"id": x["_id"], "title": x["_source"]["Title"], "shortcut": x["_source"]["AJJBQK"][:100]}
+            res = {"id": x["_id"], "title": x["_source"]["Title"],
+                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
             # res = {"id": x["_id"], "score": x["_source"]["score"]}
             # for y in x["_source"]:
             #    res[y] = x["_source"][y]
@@ -356,9 +358,9 @@ def search_new2():
         else:
             url += "&"
         url += x + "=" + request.args[x]
-        first=False
+        first = False
     print url
     result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
     print result
 
-    return render_template("search_new2.html",result=result,s=len(result),args=request.args)
+    return render_template("search_new2.html", result=result, s=len(result), args=request.args)

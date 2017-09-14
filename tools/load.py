@@ -18,7 +18,10 @@ for x in os.listdir(dir_name):
     for line in f:
         #print len(line)
         content = json.loads(line)
-        application.processor.formatter.new_parse(content)
+        content = application.processor.formatter.new_parse(content)
+        print content["content"]
+        break
+    break
 
     #print
 
