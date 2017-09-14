@@ -317,6 +317,23 @@ def get_doc_byid():
     return "Error"
 
 
+@app.route('/doc_new')
+def get_doc_byid_new():
+    if "doc_type" in request.args and "index" in request.args and "id" in request.args:
+        query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
+        response = make_response(render_template("news.html", content=unicode(query_result["_source"]["content"]),
+                               Title=query_result["_source"]["Title"],
+                               PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
+                               origin=query_result["_source"]["doc_name"]) \
+            .replace('\\b', '<br/>'))
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response
+
+    return "Error"
+
+
 @app.route("/addclickdata", methods=["POST", "GET"])
 def addclickdata():
     print request.form
