@@ -106,7 +106,7 @@
     {% for data in result %}
         <div>
             <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["Title"] }}</a></h3>
-            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["AJLX"]}}</span><br>
+            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["shortcut"]}}</span><br>
 			<p>
 				{{data["AJJBQK"] | truncate(200,True)}}
 			</p>

@@ -135,7 +135,7 @@ def search():
         print "Begin to search"
         print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps({"query": {"bool": {"must": body}}, "size": 100}))
+                                          json.dumps({"query": {"bool": {"must": body}}, "size": 25}))
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -144,11 +144,13 @@ def search():
 
         for x in query_result["hits"]:
             res = {"id": x["_id"], "title": x["_source"]["Title"],
-                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
+                   "shortcut": x["_source"]["AJJBQK"]}#get_best(args["search_content"], x["_source"]["content"])}
             # res = {"id": x["_id"], "score": x["_source"]["score"]}
             # for y in x["_source"]:
             #    res[y] = x["_source"][y]
             result.append(res)
+        print "All over again"
+        print_time()
 
     args = dict(request.args)
     if not ("search_content" in request.args):
@@ -266,12 +268,17 @@ def search_new():
         print "All over"
         print_time()
 
+
         for x in query_result["hits"]:
             res = {"id": x["_id"], "score": x["_source"]["score"]}
             x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
             for y in x["_source"]:
                 res[y] = x["_source"][y]
+            res["shortcut"]= get_best(args["search_content"],x["_source"]["content"]    
             result.append(res)
+
+        print "All over again"
+        print_time()
 
     args = dict(request.args)
     if not ("search_content" in request.args):
@@ -376,8 +383,6 @@ def search_new2():
             url += "&"
         url += x + "=" + request.args[x]
         first = False
-    print url
     result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
-    print result
 
     return render_template("search_new2.html", result=result, s=len(result), args=request.args)
