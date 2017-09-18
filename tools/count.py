@@ -12,12 +12,13 @@ def count_file(path):
     f = open(path, "r")
 
     print total, size
+    cnt = 0
 
     for line in f:
+        cnt += 1
+        if cnt % 10000 == 0:
+            print total,size
         arr = line.split('\t')[1].split(' ')
-        print arr
-
-        gg
 
         total += len(arr)
 
@@ -33,8 +34,7 @@ def dfs_insert(path):
         if os.path.isdir(path + x):
             dfs_insert(path + x + "/")
         else:
-            if x.endswith(".json"):
-                count_file(path + x)
+            count_file(path + x)
 
 
 if __name__ == "__main__":
