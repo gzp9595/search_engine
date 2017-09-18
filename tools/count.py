@@ -2,7 +2,8 @@ import os
 
 size = 0
 total = 0
-dic = {}
+tf = {}
+idf = {}
 
 
 def count_file(path):
@@ -17,16 +18,24 @@ def count_file(path):
     for line in f:
         cnt += 1
         if cnt % 10000 == 0:
-            print total,size
+            print total, size
         arr = line.split('\t')[1].split(' ')
 
         total += len(arr)
 
+        cur = {}
         for x in arr:
-            if not (x in dic):
-                dic[x] = 0
+            if not (x in cur):
+                cur[x] = 0
+            cur[x] += 1
+
+        for x in cur:
+            if not (x in tf):
+                tf[x] = 0
+                idf[x] = 0
                 size += 1
-            dic[x] += 1
+            tf[x] += cur[x]
+            idf[x] += 1
 
 
 def dfs_insert(path):
@@ -41,3 +50,6 @@ if __name__ == "__main__":
     path = "data/"
 
     dfs_insert(path)
+
+    for x in tf:
+        print x, tf[x], idf[x]
