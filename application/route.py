@@ -15,6 +15,7 @@ from . import app
 from matcher import get_best
 
 import urllib2
+import urllib
 
 cnt = 0
 count = 0
@@ -274,7 +275,7 @@ def search_new():
             x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
             for y in x["_source"]:
                 res[y] = x["_source"][y]
-            res["shortcut"]= get_best(args["search_content"],x["_source"]["content"]    
+            res["shortcut"]= get_best(args["search_content"],x["_source"]["content"])
             result.append(res)
 
         print "All over again"
@@ -383,6 +384,6 @@ def search_new2():
             url += "&"
         url += x + "=" + request.args[x]
         first = False
-    result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
+    result = json.loads(urllib2.urlopen(url=urllib.urlencode(url.encode('utf8')), timeout=1000000).read())
 
     return render_template("search_new2.html", result=result, s=len(result), args=request.args)

@@ -1,6 +1,7 @@
 # coding=utf-8
 import thulac
 from gensim import corpora, models, similarities
+from application.util import print_time
 
 thu_ins = thulac.thulac(seg_only=True)
 
@@ -29,17 +30,25 @@ def get_best(search_content, document):
         now = len(arr) - 1
         for b in range(0, 50):
             arr[now].append(text[a + b])
-
+    
+    print "Begin tfidf"
+    print_time()
     (dictionary, corpus, tfidf) = train_tfidf(arr)
     corpus_tfidf = tfidf[corpus]
+    print "End tfidf"
+    print_time()
 
     vec_bow = dictionary.doc2bow(cut(search_content))
     vec_tfidf = tfidf[vec_bow]
 
     index = similarities.MatrixSimilarity(corpus_tfidf)
     sims = index[vec_tfidf]
+    print "Begin similarity"
+    print_time()
 
     similarity = list(sims)
+    print "End similarity"
+    print_time()
 
     p = 0
     for a in range(1,len(similarity)):
