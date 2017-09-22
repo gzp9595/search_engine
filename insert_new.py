@@ -1,7 +1,7 @@
 import logging
 import os
 
-insert_path = "/mnt/data/"
+insert_path = "/mnt/zhx/"
 index = "law_doc"
 doc_type = "content_seg"
 
@@ -14,7 +14,7 @@ count = 0
 total = 0
 
 cibiao = set()
-f = open("/mnt/zhx/cibiao.txt", "r")
+f = open("cibiao.txt", "r")
 for line in f:
     cibiao.add(line.replace("\n", ""))
 
