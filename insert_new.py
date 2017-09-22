@@ -1,6 +1,5 @@
 import logging
 import os
-from application.elastic import update_by_id
 
 insert_path = "/mnt/data/"
 index = "law_doc"
@@ -18,6 +17,14 @@ cibiao = set()
 f = open("/mnt/zhx/cibiao.txt", "r")
 for line in f:
     cibiao.add(line.replace("\n", ""))
+
+from application import app, initialize
+
+app.config.from_pyfile(config_file)
+if os.path.exists(local_config_file):
+    app.config.from_pyfile(local_config_file)
+
+from application.elastic import update_by_id
 
 
 def insert_file(index, doc_type, file_name):
@@ -69,11 +76,4 @@ def dfs_insert(index, doc_type, path):
             insert_file(index, doc_type, path + x)
 
 
-if __name__ == '__main__':
-    from application import app, initialize
-
-    app.config.from_pyfile(config_file)
-    if os.path.exists(local_config_file):
-        app.config.from_pyfile(local_config_file)
-
-    dfs_insert(index, doc_type, insert_path)
+dfs_insert(index, doc_type, insert_path)
