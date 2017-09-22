@@ -16,7 +16,7 @@ total = 0
 cibiao = set()
 f = open("cibiao.txt", "r")
 for line in f:
-    cibiao.add(line.replace("\n", ""))
+    cibiao.add(line.decode('utf8').replace("\n", ""))
 
 from application import app, initialize
 
@@ -47,7 +47,7 @@ def insert_file(index, doc_type, file_name):
             for a in range(0, len(arr)):
                 if arr[a] in cibiao:
                     if not (first):
-                        data["content"] += ""
+                        data["content"] += " "
                     first = False
                     data["content"] += arr[a]
 
