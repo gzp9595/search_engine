@@ -15,7 +15,7 @@ count = 0
 total = 0
 
 cibiao = set()
-f = open("cibiao.txt", "r")
+f = open("/mnt/zhx/cibiao.txt", "r")
 for line in f:
     cibiao.add(line.replace("\n", ""))
 
