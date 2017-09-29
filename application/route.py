@@ -384,6 +384,6 @@ def search_new2():
             url += "&"
         url += x + "=" + request.args[x]
         first = False
-    result = json.loads(urllib2.urlopen(url=urllib.urlencode(url.encode('utf8')), timeout=1000000).read())
+    result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
 
     return render_template("search_new2.html", result=result, s=len(result), args=request.args)
