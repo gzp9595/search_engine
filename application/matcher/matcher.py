@@ -1,17 +1,7 @@
 # coding=utf-8
-import thulac
 from gensim import corpora, models, similarities
 from application.util import print_time
-
-thu_ins = thulac.thulac(seg_only=True)
-
-
-def cut(text):
-    data = thu_ins.cut(text)
-    result = []
-    for x in data:
-        result.append(x[0])
-    return result
+from application.cutter import cut
 
 
 def train_tfidf(text):
@@ -23,7 +13,7 @@ def train_tfidf(text):
 
 
 def get_best(search_content, document):
-    text = cut(document)
+    text = cut(document)[0]
     arr = []
     for a in range(0, len(text) - 50):
         arr.append([])
@@ -38,7 +28,7 @@ def get_best(search_content, document):
     print "End tfidf"
     print_time()
 
-    vec_bow = dictionary.doc2bow(cut(search_content))
+    vec_bow = dictionary.doc2bow(cut(search_content)[0])
     vec_tfidf = tfidf[vec_bow]
 
     index = similarities.MatrixSimilarity(corpus_tfidf)

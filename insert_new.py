@@ -5,6 +5,8 @@ insert_path = "/mnt/zhx/"
 index = "law_doc"
 doc_type = "content_seg"
 
+lower = 0
+
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
 local_config_file = os.path.join(server_dir, 'local_config.py')
@@ -35,6 +37,9 @@ def insert_file(index, doc_type, file_name):
     print file_name
     for line in f:
         try:
+            cnt += 1
+            if cnt <= lower:
+                continue
             line = line.decode('utf8')
             arr = line.split('\t')
             if len(arr) == 1:
@@ -52,8 +57,6 @@ def insert_file(index, doc_type, file_name):
                     data["content"] += arr[a]
 
             update_by_id(index, doc_type, data["docId"], data)
-
-            cnt += 1
 
             if cnt % 100 == 0:
                 print cnt, count

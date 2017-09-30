@@ -11,6 +11,7 @@ from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
 from application.util import print_time
+from application.expander import get_expand
 from . import app
 from matcher import get_best
 
@@ -192,7 +193,7 @@ def search_new():
             }
             search_type = match_type[args["where_to_search"]]
 
-            body.append({"match": {search_type: args["search_content"]}})
+            body.append({"match": {search_type: get_expand(args["search_content"])}})
 
         """if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
