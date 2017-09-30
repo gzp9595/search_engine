@@ -10,8 +10,8 @@ es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTI
 scroll_id = ""
 
 
-def insert_doc(index, doc_type, doc):
-    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=doc["doc_name"],
+def insert_doc(index, doc_type, id, doc):
+    es.index(index=index, doc_type=doc_type, body=json.dumps(doc), id=id,
              request_timeout=app.config["ES_TIMEOUT"])
 
 
@@ -20,17 +20,19 @@ def get_doc_byid(index, doc_type, id):
 
 
 def search_doc(index, doc_type, body):
-    res =  es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")
+    res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")
     for x in res:
-        if x!="hits":
-            print x,res[x]
+        if x != "hits":
+            print x, res[x]
     return res["hits"]
 
 
 def scan_doc(index, doc_type, body):
     print "gg"
     print body
-    res = list(helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type,size=1,preserve_order=False))
+    res = list(
+        helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type, size=1,
+                     preserve_order=False))
     print "gg"
     print res
     return res
@@ -53,7 +55,7 @@ def get_by_id(index, doc_type, id):
 
 def update_by_id(index, doc_type, id, doc):
     if get_by_id(index, doc_type, id) is None:
-        insert_doc(index, doc_type, doc)
+        insert_doc(index, doc_type, id, doc)
     else:
         es.update(index=index, doc_type=doc_type, id=id, body={"doc": doc})
 

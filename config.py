@@ -13,5 +13,6 @@ TRAINING_DIR = "/mnt/tdata/"
 CLICK_DIR = "/mnt/clickdata/"
 
 DOC2VEC_PATH = "application/doc2vec/model"
+THULAC = "/mnt/thulac/"
 
 WORK_DIR = "work"
