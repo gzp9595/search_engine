@@ -134,10 +134,18 @@ def search():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
+        size = 20
+        from_id = 0
+        if "from" in request.args:
+            from_id = int(request.args["from"])
+            if "to" in request.args:
+                size = int(request.args["to"]) - int(request.args["from"]) + 1
+                
         print "Begin to search"
         print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps({"query": {"bool": {"must": body}}, "size": 25}))
+                                          json.dumps(
+                                              {"query": {"bool": {"must": body}}, "size": size, "from": from_id}))
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -146,7 +154,7 @@ def search():
 
         for x in query_result["hits"]:
             res = {"id": x["_id"], "title": x["_source"]["Title"],
-                   "shortcut": x["_source"]["AJJBQK"]}#get_best(args["search_content"], x["_source"]["content"])}
+                   "shortcut": x["_source"]["AJJBQK"]}  # get_best(args["search_content"], x["_source"]["content"])}
             # res = {"id": x["_id"], "score": x["_source"]["score"]}
             # for y in x["_source"]:
             #    res[y] = x["_source"][y]
@@ -271,13 +279,12 @@ def search_new():
         print "All over"
         print_time()
 
-
         for x in query_result["hits"]:
             res = {"id": x["_id"], "score": x["_source"]["score"]}
             x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
             for y in x["_source"]:
                 res[y] = x["_source"][y]
-            res["shortcut"]= get_best(args["search_content"],x["_source"]["content"])
+            res["shortcut"] = get_best(args["search_content"], x["_source"]["content"])
             result.append(res)
 
         print "All over again"
@@ -332,10 +339,10 @@ def get_doc_byid_new():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
         query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
         response = make_response(render_template("news.html", content=unicode(query_result["_source"]["content"]),
-                               Title=query_result["_source"]["Title"],
-                               PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
-                               origin=query_result["_source"]["doc_name"]) \
-            .replace('\\b', '<br/>'))
+                                                 Title=query_result["_source"]["Title"],
+                                                 PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
+                                                 origin=query_result["_source"]["doc_name"]) \
+                                 .replace('\\b', '<br/>'))
         response.headers['Access-Control-Allow-Methods'] = 'POST'
         response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
         response.headers['Access-Control-Allow-Origin'] = '*'
