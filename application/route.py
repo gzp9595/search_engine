@@ -140,7 +140,7 @@ def search():
             from_id = int(request.args["from"])
             if "to" in request.args:
                 size = int(request.args["to"]) - int(request.args["from"]) + 1
-                
+
         print "Begin to search"
         print_time()
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],

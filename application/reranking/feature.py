@@ -34,7 +34,7 @@ def get_text_matching_feature(obj, query):
     obj["feature"]["matching_result"] = {}
 
     # process 1
-    word_list = list(jieba.cut(content))
+    word_list = list(cut(content))
 
     obj["feature"]["matching_result"]["matched_time"] = []
     obj["feature"]["matching_result"]["matched_or_not"] = []
