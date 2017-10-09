@@ -105,17 +105,8 @@
 {% if result %}
     {% for data in result %}
         <div>
-            <h3><a onclick="javascript:clickhref('{{ args["index"] }}','{{ args["doc_type"] }}','{{ data["id"] }}'); return false;" href="#"> {{ data["Title"] }}</a></h3>
-            <span>{{ data["score"] }}</span> <span>{{data["FYMC"]}}</span> <span>{{data["shortcut"]}}</span><br>
-			<p>
-				{{data["AJJBQK"] | truncate(200,True)}}
-			</p>
-            <button onclick="clicked('{{ data['id'] }}',5)">Perfect</button>
-            <button onclick="clicked('{{ data['id'] }}',4)">Excellent</button>
-            <button onclick="clicked('{{ data['id'] }}',3)">Good</button>
-            <button onclick="clicked('{{ data['id'] }}',2)">Fair</button>
-            <button onclick="clicked('{{ data['id'] }}',1)">Bad</button>
-            <button onclick="clicked('{{ data['id'] }}',0)">Negative</button>
+			<a href="http://wenshu.court.gov.cn/content/content?DocID={{ data["docId"] }}" target="_blank?">Click me</a>
+            <div>{{ data["content"] }}</div>
             <br>
         </div>
     {% endfor %}

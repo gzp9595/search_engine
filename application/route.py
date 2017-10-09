@@ -134,7 +134,7 @@ def search():
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
             body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
-        size = 20
+        size = 25
         from_id = 0
         if "from" in request.args:
             from_id = int(request.args["from"])
@@ -192,29 +192,26 @@ def search_new():
     search_type = "content"
 
     #body.append({"match": {"content": get_expand(args["search_content"])}})
-    body.append({"match": {"content": args["search_content"]}})
+    if not("search_content" in args):
+        return render_template("search_new.html",args=request.args)
+    body.append({"term": {"content": args["search_content"]}})
+    print body
 
     print "Begin to search"
     print_time()
-    query_result = elastic.search_doc("law", "law_doc",
+    print json.dumps({"query":{"bool":{"must":body}},"size":20})
+    query_result = elastic.search_doc("law_doc", "content_seg",
                                       json.dumps({"query": {"bool": {"must": body}}, "size": 20}))
-
-    for x in query_result["hits"]:
-        x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
 
     print "Begin to reranking"
     print_time()
     query_result["hits"] = ranking.reranking(query_result["hits"], args)
     print "All over"
     print_time()
-
-    for x in query_result["hits"]:
-        res = {"id": x["_id"], "score": x["_source"]["score"]}
-        x["_source"] = elastic.get_doc_byid(request.args["index"], "big_data", x["_id"])
-        for y in x["_source"]:
-            res[y] = x["_source"][y]
-        res["shortcut"] = get_best(args["search_content"], x["_source"]["content"])
-        result.append(res)
+    query_result=query_result["hits"]
+    result=[]
+    for x in query_result:
+        result.append(x["_source"])
 
     print "All over again"
     print_time()
