@@ -4,7 +4,7 @@ import uuid
 
 cutter = None
 
-if not ("THULAC" in app.config and os.path.exists(app.confg["THULAC"])):
+if not ("THULAC" in app.config and os.path.exists(app.config["THULAC"])):
     import thulac
 
     cutter = thulac.thulac(seg_only=True)
@@ -28,11 +28,12 @@ def cut(text):
         temp_path = os.path.join(app.config["TEMP_DIR"], str(uuid.uuid4()) + ".txt")
         temp_path2 = os.path.join(app.config["TEMP_DIR"], str(uuid.uuid4()) + ".txt")
         f = open(temp_path, "w")
-        for line in cutter:
+        for line in text:
             print >> f, line.replace("\n", "").replace(" ", "%")
         f.close()
 
-        os.system(app.config["THULAC"] + "-seg_only -t2s < " + temp_path + " > " + temp_path2)
+        os.system(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
+        print(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
 
         f = open(temp_path2, "r")
         for line in f:
@@ -45,5 +46,4 @@ def cut(text):
         for line in text:
             result.append(thulac_cutone(line))
 
-    print result
     return result

@@ -3,7 +3,7 @@ from application import app
 from application.cutter import cut
 import gensim
 
-model = app.config["DOC2VEC_PATH "]
+#model = gensim.models.Word2Vec.load(app.config["DOC2VEC_PATH"])
 
 
 def expand(word, mode, bound):

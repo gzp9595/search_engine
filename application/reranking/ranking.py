@@ -21,7 +21,7 @@ try:
 except Exception:
     pass
 
-doc2vec_model = Doc2vec(save_path=app.config["DOC2VEC_PATH"])
+doc2vec_model = Doc2vec(save_path=app.config["ANOTHER_DOC2VEC"])
 
 
 def write_model():

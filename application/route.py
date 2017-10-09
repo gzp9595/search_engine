@@ -172,6 +172,7 @@ def search():
 
 @app.route('/search_new', methods=["POST", "GET"])
 def search_new():
+    print "Mission start!"
     result = []
     # if request.args=={}:
     request.args = request.form

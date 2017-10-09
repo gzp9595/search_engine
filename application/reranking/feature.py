@@ -1,7 +1,7 @@
 import re
-import jieba
 import datetime
 import time
+from application.cutter import cut
 
 
 def get_document_statistics(obj, query):
@@ -10,7 +10,7 @@ def get_document_statistics(obj, query):
     keylist = ["WBWB", "DSRXX", "PubDate", "Title", "CPYZ", "AJJBQK", "PJJG", "content", "SSJL", "WBSB", "AJJBQK"]
     for word in keylist:
         obj["feature"]["statistics"][word + "_length"] = len(obj[word])
-        obj["feature"]["statistics"][word + "_num_of_words"] = len(list(jieba.cut(obj[word])))
+        obj["feature"]["statistics"][word + "_num_of_words"] = len(list(cut(obj[word])))
 
     obj["feature"]["statistics"]["judge_timestamp"] = int(
         time.mktime(datetime.datetime.strptime(obj["CPRQ"], "%Y-%m-%d").timetuple())) / 1e13
