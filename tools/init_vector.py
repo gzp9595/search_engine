@@ -13,3 +13,23 @@ os.system("""curl -XPOST http://localhost:9200/law_vector/tfidf/_mapping -d'
         }
     }
 }'""")
+print
+os.system("""curl -XPOST http://localhost:9200/law_vector/lda/_mapping -d'
+{
+    "tfidf": {
+        "_all": {
+            "type": "text",
+            "index" : "no"
+        }
+    }
+}'""")
+print
+os.system("""curl -XPOST http://localhost:9200/law_vector/word/_mapping -d'
+{
+    "tfidf": {
+        "_all": {
+            "type": "text",
+            "index" : "no"
+        }
+    }
+}'""")

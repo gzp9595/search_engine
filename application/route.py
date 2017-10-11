@@ -191,15 +191,15 @@ def search_new():
 
     search_type = "content"
 
-    #body.append({"match": {"content": get_expand(args["search_content"])}})
-    if not("search_content" in args):
-        return render_template("search_new.html",args=request.args)
+    # body.append({"match": {"content": get_expand(args["search_content"])}})
+    if not ("search_content" in args):
+        return render_template("search_new.html", args=request.args)
     body.append({"term": {"content": args["search_content"]}})
     print body
 
     print "Begin to search"
     print_time()
-    print json.dumps({"query":{"bool":{"must":body}},"size":20})
+    print json.dumps({"query": {"bool": {"must": body}}, "size": 20})
     query_result = elastic.search_doc("law_doc", "content_seg",
                                       json.dumps({"query": {"bool": {"must": body}}, "size": 20}))
 
@@ -208,14 +208,13 @@ def search_new():
     query_result["hits"] = ranking.reranking(query_result["hits"], args)
     print "All over"
     print_time()
-    query_result=query_result["hits"]
-    result=[]
+    query_result = query_result["hits"]
+    result = []
     for x in query_result:
         result.append(x["_source"])
 
     print "All over again"
     print_time()
-
 
     args = dict(request.args)
     if not ("search_content" in request.args):
