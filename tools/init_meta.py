@@ -6,13 +6,8 @@ os.system("""curl -XPOST http://localhost:9200/law_meta/meta/_mapping -d'
 {
     "meta": {
         "_all": {
-            "index" : "no"
-        },
-        "properties": {
-            "FLYJ": {
-                "type" : "nested",
-                "index" : "no
-            }
+            "index" : "no",
+            "type" : "text"
         }
     }
 }'""")
