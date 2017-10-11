@@ -29,7 +29,7 @@ if __name__ == '__main__':
             f = open(file_name, "r")
             for line in f:
                 total += 1
-                if basic < total:
+                if basic > total:
                     continue
                 if total % 100 == 0:
                     print total, cnt, count
