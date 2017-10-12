@@ -271,16 +271,15 @@ def get_reason(obj):
     law_list = {}
 
     for x in result:
-        if not (x["law_name"] in law_list):
-            law_list[x["law_name"]] = set()
-        law_list[x["law_name"]].add((x["tiao_num"], x["kuan_num"]))
+        y = get_one_reason(obj["content"], x)
+        for z in y:
+            if not (z["law_name"] in law_list):
+                law_list[z["law_name"]] = set()
+            law_list[z["law_name"]].add((z["tiao_num"], z["kuan_num"]))
 
     for x in law_list:
         for (y, z) in law_list[x]:
             result_list.append({"law_name": x, "tiao_num": y, "kuan_num": z})
-
-    for x in result:
-        result_list = result_list + get_one_reason(obj["content"], x)
 
     # print
 
