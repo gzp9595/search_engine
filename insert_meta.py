@@ -1,7 +1,9 @@
 import os
 import config
+import json
 
 index = "law_meta"
+doc_type = "meta"
 dir_path = "/mnt/vec/"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
@@ -28,11 +30,11 @@ if __name__ == '__main__':
                   "docType", "punishment", "result", "docId", "document"]
 
     for x in os.listdir(dir_path):
-        file_name = dir_path  + x
+        file_name = dir_path + x
         f = open(file_name, "r")
         for line in f:
             total += 1
-            if basic < total:
+            if basic > total:
                 continue
             if total % 100 == 0:
                 print total, cnt, count
@@ -59,7 +61,7 @@ if __name__ == '__main__':
                     continue
                 data["doc_name"] = data["docId"]
 
-                update_by_id(index, doc_type, data["doc_name"], data)
+                update_by_id(index, doc_type, data["doc_name"], {"content": json.dumps(data)})
 
                 cnt += 1
 
