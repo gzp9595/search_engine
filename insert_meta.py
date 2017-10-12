@@ -4,7 +4,7 @@ import json
 
 index = "law_meta"
 doc_type = "meta"
-dir_path = "/mnt/vec/"
+dir_path = "/mnt/new/"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
