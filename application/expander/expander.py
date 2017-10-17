@@ -32,13 +32,20 @@ def expand(sentence):
         if x in word_list:
             l.append(word_list[x])
 
+    print "Being calculation"
+    print_time()
     now_mat = np.dot(mat[:, l], mat)
     part_mat = np.argpartition(now_mat, size - app.confg["EXPAND_K"], axis=1)
+    print "Done"
+    print_time()
 
     for a in range(0, len(l)):
+        print "Expand ",arr[l[a]]
         for b in range(size - app.confg["EXPAND_K"], size):
             if now_mat[a][part_mat[a][b]] > app.config["EXPAND_alpha"]:
+                print arr[part_mat[a][b]],
                 origin += " " + arr[part_mat[a][b]]
+            print
 
     return origin
 
