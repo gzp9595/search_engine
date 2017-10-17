@@ -60,6 +60,9 @@ def search():
         args = request.args
 
         search_type = "content"
+        body.append({"match": {search_type: args["search_content"]}})
+
+        """
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {
                 "0": "content",
@@ -132,7 +135,7 @@ def search():
                 new_body.append({"match": {"FLYJ.tiao_num": args["num_of_tiao"]}})
             if "num_of_kuan" in args and args["num_of_kuan"] != "":
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
-            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
+            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})"""
 
         size = 25
         from_id = 0
@@ -145,7 +148,7 @@ def search():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],query_string,size,from_id)
+        query_result = elastic.search_doc("law_doc", "content_seg", query_string, size, from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -153,8 +156,10 @@ def search():
         print_time()
 
         for x in query_result["hits"]:
+            x = elastic.get_by_id("law_meta", "meta", x["_id"])
+            print x
             res = {"id": x["_id"], "title": x["_source"]["Title"],
-                   "shortcut": x["_source"]["AJJBQK"]}  # get_best(args["search_content"], x["_source"]["content"])}
+                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
             # res = {"id": x["_id"], "score": x["_source"]["score"]}
             # for y in x["_source"]:
             #    res[y] = x["_source"][y]
@@ -243,8 +248,8 @@ def add_data():
 @app.route('/doc')
 def get_doc_byid():
     if "doc_type" in request.args and "index" in request.args and "id" in request.args:
-        query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
-        response = make_response(json.dumps(query_result))
+        query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
+        response = make_response(query_result["content"])
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'POST'
         response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'

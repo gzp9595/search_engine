@@ -15,12 +15,12 @@ def train_tfidf(text):
 def get_best(search_content, document):
     text = cut(document)[0]
     arr = []
-    for a in range(0, len(text) - 50):
+    for a in range(0, len(text) - 50, 50):
         arr.append([])
         now = len(arr) - 1
         for b in range(0, 50):
             arr[now].append(text[a + b])
-    
+
     print "Begin tfidf"
     print_time()
     (dictionary, corpus, tfidf) = train_tfidf(arr)
@@ -41,13 +41,13 @@ def get_best(search_content, document):
     print_time()
 
     p = 0
-    for a in range(1,len(similarity)):
-        if similarity[a]>similarity[p]:
-            p=a
+    for a in range(1, len(similarity)):
+        if similarity[a] > similarity[p]:
+            p = a
 
     res = ""
     for x in arr[p]:
-        res =  res + x
+        res = res + x
 
     return res
 
