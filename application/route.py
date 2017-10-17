@@ -11,7 +11,7 @@ from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
 from application.util import print_time
-from application.expander import get_expand
+from application.expander import expand
 from . import app
 from matcher import get_best
 from application.cutter import cut
@@ -209,7 +209,7 @@ def search_new():
         args = request.args
 
         search_type = "content"
-        body.append({"term": {search_type: args["search_content"]}})
+        body.append({"term": {search_type: expand(args["search_content"])}})
 
         size = 25
         from_id = 0
@@ -218,11 +218,20 @@ def search_new():
             if "to" in request.args:
                 size = int(request.args["to"]) - int(request.args["from"]) + 1
 
+        size = 25
+        from_id = 0
+        if "from" in request.args:
+            from_id = int(request.args["from"])
+            if "to" in request.args:
+                size = int(request.args["to"]) - int(request.args["from"]) + 1
+        real_size = size + from_id
+
         print "Begin to search"
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc("law_doc", "content_seg", query_string, size, from_id)
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+                                          from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -230,8 +239,8 @@ def search_new():
         print_time()
 
         temp = []
-        for x in query_result["hits"]:
-            temp.append(json.loads(elastic.get_by_id("law_meta", "meta", x["_id"])["_source"]["content"]))
+        for x in query_result["hits"][from_id:]:
+            temp.append(x["_source"])
 
         print "Cut begin"
         print_time()

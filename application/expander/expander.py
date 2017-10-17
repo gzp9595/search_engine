@@ -1,9 +1,12 @@
 # coding: UTF-8
 from application import app
 from application.cutter import cut
+from application.util import print_time
 import numpy as np
 
 word_list = {}
+print "Begin read"
+print_time()
 f = open(app.config["WORD_FILE"], "r")
 cnt = 0
 arr = []
@@ -12,8 +15,12 @@ for line in f:
     arr.append(line[0:len(line) - 1])
     cnt += 1
 size = len(word_list)
+print "Begin matrix"
+print_time()
 
 mat = np.transpose(np.reshape(np.fromfile(app.config["VEC_FILE"], dtype=np.float32), (-1, app.config["VEC_SIZE"])))
+print "Done"
+print_time()
 
 
 def expand(sentence):
