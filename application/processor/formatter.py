@@ -271,16 +271,15 @@ def get_reason(obj):
     law_list = {}
 
     for x in result:
-        if not (x["law_name"] in law_list):
-            law_list[x["law_name"]] = set()
-        law_list[x["law_name"]].add((x["tiao_num"], x["kuan_num"]))
+        y = get_one_reason(obj["content"], x)
+        for z in y:
+            if not (z["law_name"] in law_list):
+                law_list[z["law_name"]] = set()
+            law_list[z["law_name"]].add((z["tiao_num"], z["kuan_num"]))
 
     for x in law_list:
         for (y, z) in law_list[x]:
             result_list.append({"law_name": x, "tiao_num": y, "kuan_num": z})
-
-    for x in result:
-        result_list = result_list + get_one_reason(obj["content"], x)
 
     # print
 
@@ -370,25 +369,6 @@ def test():
         print >> fout
         print x
         get_reason(content)
-        # get_type_of_doc(content)
-        # try:
-        #    get_date_of_judgement(content)
-        # except AttributeError:
-        #    continue
-
-        # if "WBSB" in content or "" in content:
-        #    continue
-        #    print >> fout,content["WBSB"].encode('utf8')
-        #    print >> fout
-        # else:
-        #    print >> fout,x
-        #    for y in content:
-        #        print >> fout, y, content[y].encode('utf8')
-        #    print >> fout
-        # if "WBSB" in content:
-        #    print get_name_of_court(content)
-        # if content["content"]!="":
-        #    get_number_of_case(content)
         cnt += 1
         if cnt >= 20:
             continue
@@ -412,11 +392,6 @@ def new_parse(obj):
 
     if obj["time"] == "0000-00-00":
         obj["time"] = "1900-01-01"
-
-    # if not(obj["docType"] is None):
-    #    for x in obj:
-    #        print x, type(obj[x]), obj[x]
-    # print obj["Title"], obj["AJLX"], obj["caseType"]
 
     return obj
 
