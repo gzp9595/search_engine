@@ -19,6 +19,9 @@ print "Begin matrix"
 print_time()
 
 mat = np.transpose(np.reshape(np.fromfile(app.config["VEC_FILE"], dtype=np.float32), (-1, app.config["VEC_SIZE"])))
+
+mat /= np.sqrt((mat ** 2.).sum(axis=0, keepdims=True))
+
 print "Done"
 print_time()
 
@@ -34,18 +37,17 @@ def expand(sentence):
 
     print "Being calculation"
     print_time()
-    now_mat = np.dot(mat[:, l], mat)
-    part_mat = np.argpartition(now_mat, size - app.confg["EXPAND_K"], axis=1)
+    now_mat = np.dot(np.transpose(mat[:, l]), mat)
+    part_mat = np.argpartition(now_mat, size - app.config["EXPAND_K"] -1, axis=1)
     print "Done"
     print_time()
 
     for a in range(0, len(l)):
         print "Expand ",arr[l[a]]
-        for b in range(size - app.confg["EXPAND_K"], size):
-            if now_mat[a][part_mat[a][b]] > app.config["EXPAND_alpha"]:
-                print arr[part_mat[a][b]],
+        for b in range(size - app.config["EXPAND_K"]-1, size-1):
+            if now_mat[a][part_mat[a][b]] > app.config["EXPAND_ALPHA"]:
+                print arr[part_mat[a][b]],now_mat[a][part_mat[a][b]]
                 origin += " " + arr[part_mat[a][b]]
-            print
 
     return origin
 

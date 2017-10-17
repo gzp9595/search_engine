@@ -209,7 +209,7 @@ def search_new():
         args = request.args
 
         search_type = "content"
-        body.append({"term": {search_type: expand(args["search_content"])}})
+        body.append({"match": {search_type: expand(args["search_content"])}})
 
         size = 25
         from_id = 0

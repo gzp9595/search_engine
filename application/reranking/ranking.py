@@ -87,14 +87,14 @@ def cmp(a, b):
         return 1
     if a["_source"]["score"] > b["_source"]["score"]:
         return -1
-    if a["_source"]["FYCJ"] < b["_source"]["FYCJ"]:
+    """if a["_source"]["FYCJ"] < b["_source"]["FYCJ"]:
         return 1
     if a["_source"]["FYCJ"] > b["_source"]["FYCJ"]:
         return -1
     if a["_source"]["Title"] < b["_source"]["Title"]:
         return 1
     if a["_source"]["Title"] < b["_source"]["Title"]:
-        return -1
+        return -1"""
     return 0
 
 

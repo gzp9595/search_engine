@@ -24,4 +24,4 @@ VEC_FILE = "/mnt/word2vec-master/result/100_vec_min"
 VEC_SIZE = 100
 
 EXPAND_K = 2
-EXPAND_alpha = 0.5
+EXPAND_ALPHA = 0.5
