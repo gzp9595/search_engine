@@ -143,12 +143,13 @@ def search():
             from_id = int(request.args["from"])
             if "to" in request.args:
                 size = int(request.args["to"]) - int(request.args["from"]) + 1
+        real_size = size+from_id
 
         print "Begin to search"
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, size, from_id)
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size, from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -156,7 +157,7 @@ def search():
         print_time()
 
         temp = []
-        for x in query_result["hits"]:
+        for x in query_result["hits"][from_id:]:
             temp.append(x["_source"])
 
         print "Cut begin"
@@ -280,7 +281,8 @@ def add_data():
 def get_doc_byid():
     if "id" in request.args:
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
-        response = make_response(query_result["content"])
+        data = json.dumps({"_source":json.loads(query_result["_source"]["content"])})
+        response = make_response(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'POST'
         response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
