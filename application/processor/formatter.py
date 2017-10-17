@@ -63,7 +63,7 @@ def get_level_of_court(obj):
     if not ("WBSB" in obj) or obj["WBSB"] == "":
         return 5
 
-    if re.search(u"最高人民法院  ", obj["WBSB"]) is None:
+    if re.search(u"最高人民法院", obj["WBSB"]) is None:
         if re.search(u"高级", obj["WBSB"]) is None:
             if re.search(u"中级", obj["WBSB"]) is None:
                 if re.search(u"法院", obj["WBSB"]) is None:

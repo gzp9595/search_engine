@@ -1,28 +1,40 @@
 # coding: UTF-8
 from application import app
 from application.cutter import cut
-import gensim
+import numpy as np
 
-#model = gensim.models.Word2Vec.load(app.config["DOC2VEC_PATH"])
+word_list = {}
+f = open(app.config["WORD_FILE"], "r")
+cnt = 0
+arr = []
+for line in f:
+    word_list[line[0:len(line) - 1]] = cnt
+    arr.append(line[0:len(line) - 1])
+    cnt += 1
+size = len(word_list)
+
+mat = np.transpose(np.reshape(np.fromfile(app.config["VEC_FILE"], dtype=np.float32), (-1, app.config["VEC_SIZE"])))
 
 
-def expand(word, mode, bound):
-    return model.most_similar(positive=[word], topn=bound)
+def expand(sentence):
+    origin = sentence
+    setence = cut(sentence)[0]
 
+    l = []
+    for x in setence:
+        if x in word_list:
+            l.append(word_list[x])
 
-def get_expand(text):
-    cut_result = cut(text)
-    result = []
-    for x in cut_result:
-        s = expand(x,0,2)
-        for y in s:
-            result.append(y)
+    now_mat = np.dot(mat[:, l], mat)
+    part_mat = np.argpartition(now_mat, size - app.confg["EXPAND_K"], axis=1)
 
-    for x in result:
-        text = text + " "+ x
-    print text
+    for a in range(0, len(l)):
+        for b in range(size - app.confg["EXPAND_K"], size):
+            if now_mat[a][part_mat[a][b]] > app.config["EXPAND_alpha"]:
+                origin += " " + arr[part_mat[a][b]]
 
-    return text
+    return origin
+
 
 if __name__ == "__main__":
     print expand(u"百科", 1, 5)

@@ -18,3 +18,10 @@ THULAC = "/mnt/thulac/"
 
 WORK_DIR = "work"
 TEMP_DIR = "temp"
+
+WORD_FILE = "/mnt/word2vec-master/result/100_str_min"
+VEC_FILE = "/mnt/word2vec-master/result/100_vec_min"
+VEC_SIZE = 100
+
+EXPAND_K = 2
+EXPAND_alpha = 0.5
