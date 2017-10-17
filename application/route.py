@@ -143,9 +143,9 @@ def search():
 
         print "Begin to search"
         print_time()
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],
-                                          json.dumps(
-                                              {"query": {"bool": {"must": body}}, "size": size, "from": from_id}))
+        query_string = json.dumps({"query": {"bool": {"must": body}}})
+        print query_string
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"],query_string,size,from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)

@@ -16,11 +16,12 @@ def insert_doc(index, doc_type, id, doc):
 
 
 def get_doc_byid(index, doc_type, id):
-    return es.get(index=index, doc_type=doc_type, id=id, request_timeout=app.config["ES_TIMEOUT"])['_source']
+    return es.get(index=index, doc_type=doc_type, id=id, timeout=app.config["ES_TIMEOUT"])['_source']
 
 
-def search_doc(index, doc_type, body):
-    res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m")
+def search_doc(index, doc_type, body,size=10,from_=0):
+    print size,from_
+    res = es.search(index=index, doc_type=doc_type, body=body, timeout=str(app.config["ES_TIMEOUT"])+"s", scroll="10m",size=size,from_=from_)
     for x in res:
         if x != "hits":
             print x, res[x]
