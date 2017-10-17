@@ -36,7 +36,11 @@ def cut(text):
         print(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
 
         f = open(temp_path2, "r")
+        cnt = 0
         for line in f:
+            cnt += 1
+            if cnt == 1:
+                continue
             data = line.replace("\n", " ").split(" ")
             for x in range(0, len(data)):
                 data[x].replace("%", " ")

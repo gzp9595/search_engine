@@ -105,8 +105,9 @@
 {% if result %}
     {% for data in result %}
         <div>
-			<a href="http://wenshu.court.gov.cn/content/content?DocID={{ data["docId"] }}" target="_blank?">Click me</a>
-            <div>{{ data["content"] }}</div>
+			<a href="/doc_new?id={{ data["id"] }}" target="_blank?">{{data["title"]}}</a>
+			<a href="http://wenshu.court.gov.cn/content/content?DocID={{ data["id"] }}" target="_blank?">Click me</a>
+            <div>{{ data["shortcut"] }}</div>
             <br>
         </div>
     {% endfor %}

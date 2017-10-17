@@ -14,6 +14,7 @@ from application.util import print_time
 from application.expander import get_expand
 from . import app
 from matcher import get_best
+from application.cutter import cut
 
 import urllib2
 import urllib
@@ -188,6 +189,9 @@ def search_new():
     print "Mission Start"
 
     result = []
+    print request.args
+    if len(request.args)==0:
+        request.args={}
     for x in request.form:
         request.args[x] = request.form[x]
 
@@ -197,7 +201,7 @@ def search_new():
         args = request.args
 
         search_type = "content"
-        body.append({"match": {search_type: args["search_content"]}})
+        body.append({"term": {search_type: args["search_content"]}})
 
         size = 25
         from_id = 0
@@ -214,14 +218,25 @@ def search_new():
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
-        print "All over"
+        print "Reranking Done"
         print_time()
 
+        temp = []
         for x in query_result["hits"]:
-            x = elastic.get_by_id("law_meta", "meta", x["_id"])
-            print x
-            res = {"id": x["_id"], "title": x["_source"]["Title"],
-                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
+            temp.append(json.loads(elastic.get_by_id("law_meta", "meta", x["_id"])["_source"]["content"]))
+       
+        print "Cut begin"
+        print_time()
+        need_to_cut = [args["search_content"]]
+        for x in temp:
+            need_to_cut.append(x["content"])
+        cutted = cut(need_to_cut)
+
+        print "Tfidf begin"
+        print_time()
+        for a in range(0,len(temp)):
+            res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
+                   "shortcut": get_best(cutted[0], cutted[a+1])}
             result.append(res)
         print "All over again"
         print_time()
@@ -276,8 +291,8 @@ def get_doc_byid():
 
 @app.route('/doc_new')
 def get_doc_byid_new():
-    if "doc_type" in request.args and "index" in request.args and "id" in request.args:
-        query_result = elastic.get_by_id(request.args["index"], request.args["doc_type"], request.args["id"])
+    if "id" in request.args:
+        query_result = {"_source":json.loads(elastic.get_by_id("law_meta","meta", request.args["id"])["_source"]["content"])}
         response = make_response(render_template("news.html", content=unicode(query_result["_source"]["content"]),
                                                  Title=query_result["_source"]["Title"],
                                                  PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
