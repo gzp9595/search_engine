@@ -63,7 +63,6 @@ def search():
         search_type = "content"
         body.append({"match": {search_type: args["search_content"]}})
 
-        """
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {
                 "0": "content",
@@ -136,7 +135,7 @@ def search():
                 new_body.append({"match": {"FLYJ.tiao_num": args["num_of_tiao"]}})
             if "num_of_kuan" in args and args["num_of_kuan"] != "":
                 new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
-            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})"""
+            body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
         size = 25
         from_id = 0
@@ -149,21 +148,29 @@ def search():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc("law_doc", "content_seg", query_string, size, from_id)
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, size, from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
-        print "All over"
+        print "Reranking Done"
         print_time()
 
+        temp = []
         for x in query_result["hits"]:
-            x = elastic.get_by_id("law_meta", "meta", x["_id"])
-            print x
-            res = {"id": x["_id"], "title": x["_source"]["Title"],
-                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
-            # res = {"id": x["_id"], "score": x["_source"]["score"]}
-            # for y in x["_source"]:
-            #    res[y] = x["_source"][y]
+            temp.append(x["_source"])
+
+        print "Cut begin"
+        print_time()
+        need_to_cut = [args["search_content"]]
+        for x in temp:
+            need_to_cut.append(x["content"])
+        cutted = cut(need_to_cut)
+
+        print "Tfidf begin"
+        print_time()
+        for a in range(0, len(temp)):
+            res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
+                   "shortcut": get_best(cutted[0], cutted[a + 1])}
             result.append(res)
         print "All over again"
         print_time()
@@ -190,8 +197,8 @@ def search_new():
 
     result = []
     print request.args
-    if len(request.args)==0:
-        request.args={}
+    if len(request.args) == 0:
+        request.args = {}
     for x in request.form:
         request.args[x] = request.form[x]
 
@@ -224,7 +231,7 @@ def search_new():
         temp = []
         for x in query_result["hits"]:
             temp.append(json.loads(elastic.get_by_id("law_meta", "meta", x["_id"])["_source"]["content"]))
-       
+
         print "Cut begin"
         print_time()
         need_to_cut = [args["search_content"]]
@@ -234,9 +241,9 @@ def search_new():
 
         print "Tfidf begin"
         print_time()
-        for a in range(0,len(temp)):
+        for a in range(0, len(temp)):
             res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
-                   "shortcut": get_best(cutted[0], cutted[a+1])}
+                   "shortcut": get_best(cutted[0], cutted[a + 1])}
             result.append(res)
         print "All over again"
         print_time()
@@ -271,7 +278,7 @@ def add_data():
 
 @app.route('/doc')
 def get_doc_byid():
-    if "doc_type" in request.args and "index" in request.args and "id" in request.args:
+    if "id" in request.args:
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         response = make_response(query_result["content"])
         response.headers['Access-Control-Allow-Origin'] = '*'
@@ -292,7 +299,8 @@ def get_doc_byid():
 @app.route('/doc_new')
 def get_doc_byid_new():
     if "id" in request.args:
-        query_result = {"_source":json.loads(elastic.get_by_id("law_meta","meta", request.args["id"])["_source"]["content"])}
+        query_result = {
+            "_source": json.loads(elastic.get_by_id("law_meta", "meta", request.args["id"])["_source"]["content"])}
         response = make_response(render_template("news.html", content=unicode(query_result["_source"]["content"]),
                                                  Title=query_result["_source"]["Title"],
                                                  PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
