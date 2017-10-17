@@ -185,41 +185,46 @@ def search():
 
 @app.route('/search_new', methods=["POST", "GET"])
 def search_new():
-    print "Mission start!"
+    print "Mission Start"
+
     result = []
-    # if request.args=={}:
-    request.args = request.form
+    for x in request.form:
+        request.args[x] = request.form[x]
 
-    body = []
+    if "doc_type" in request.args and "index" in request.args:
+        body = []
 
-    args = request.args
+        args = request.args
 
-    search_type = "content"
+        search_type = "content"
+        body.append({"match": {search_type: args["search_content"]}})
 
-    # body.append({"match": {"content": get_expand(args["search_content"])}})
-    if not ("search_content" in args):
-        return render_template("search_new.html", args=request.args)
-    body.append({"term": {"content": args["search_content"]}})
-    print body
+        size = 25
+        from_id = 0
+        if "from" in request.args:
+            from_id = int(request.args["from"])
+            if "to" in request.args:
+                size = int(request.args["to"]) - int(request.args["from"]) + 1
 
-    print "Begin to search"
-    print_time()
-    print json.dumps({"query": {"bool": {"must": body}}, "size": 20})
-    query_result = elastic.search_doc("law_doc", "content_seg",
-                                      json.dumps({"query": {"bool": {"must": body}}, "size": 20}))
+        print "Begin to search"
+        print_time()
+        query_string = json.dumps({"query": {"bool": {"must": body}}})
+        print query_string
+        query_result = elastic.search_doc("law_doc", "content_seg", query_string, size, from_id)
+        print "Begin to reranking"
+        print_time()
+        query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        print "All over"
+        print_time()
 
-    print "Begin to reranking"
-    print_time()
-    query_result["hits"] = ranking.reranking(query_result["hits"], args)
-    print "All over"
-    print_time()
-    query_result = query_result["hits"]
-    result = []
-    for x in query_result:
-        result.append(x["_source"])
-
-    print "All over again"
-    print_time()
+        for x in query_result["hits"]:
+            x = elastic.get_by_id("law_meta", "meta", x["_id"])
+            print x
+            res = {"id": x["_id"], "title": x["_source"]["Title"],
+                   "shortcut": get_best(args["search_content"], x["_source"]["content"])}
+            result.append(res)
+        print "All over again"
+        print_time()
 
     args = dict(request.args)
     if not ("search_content" in request.args):
@@ -230,6 +235,10 @@ def search_new():
         args["index"] = ""
     if not ("doc_type" in request.args):
         args["doc_type"] = ""
+    response = make_response(json.dumps(result))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET'
+    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
     return render_template("search_new.html", args=request.args, result=result, query=request.args)
 
 
