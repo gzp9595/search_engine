@@ -1,6 +1,8 @@
+print 'lda 0'
 from gensim import corpora,models,similarities
+print 'lda 0.5'
 import numpy as np
-
+print 'lda 1'
 class lda_model(object):
 	def __init__(self, save_path):
 
@@ -62,5 +64,7 @@ class lda_model(object):
 			result += embedding1[i]*embedding2[i]
 			l1 += embedding1[i]*embedding1[i]
 			l2 += embedding2[i]*embedding2[i]
+		if (l1 == 0 or l2 == 0):
+			return 0.0
 		return result/pow(l1, 0.5)/pow(l2, 0.5)
-	
+print 'lda 2'

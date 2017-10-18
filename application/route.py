@@ -61,7 +61,7 @@ def search():
         args = request.args
 
         search_type = "content"
-        body.append({"match": {search_type: args["search_content"]}})
+        body.append({"match": {search_type: expand(args["search_content"])}})
 
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {

@@ -22,4 +22,6 @@ class tfidf_model(object):
 			l1 += embedding1[i]*embedding1[i]
 		for i in embedding2:
 			l2 += embedding2[i]*embedding2[i]
+		if (l1 == 0 or l2 == 0):
+			return 0.0
 		return result/pow(l1,0.5)/pow(l2,0.5)

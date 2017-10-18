@@ -384,6 +384,8 @@ class cnn_model(object):
 			result += embedding1[i]*embedding2[i]
 			l1 += embedding1[i]*embedding1[i]
 			l2 += embedding2[i]*embedding2[i]
+		if (l1 == 0 or l2 == 0):
+			return 0.0
 		return result/pow(l1, 0.5)/pow(l2, 0.5)
 	# def Outout_Re(x_batch):
 

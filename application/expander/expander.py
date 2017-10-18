@@ -44,8 +44,8 @@ def expand(sentence):
 
     for a in range(0, len(l)):
         print "Expand ",arr[l[a]]
-        for b in range(size - app.config["EXPAND_K"]-1, size-1):
-            if now_mat[a][part_mat[a][b]] > app.config["EXPAND_ALPHA"]:
+        for b in range(size - app.config["EXPAND_K"]-1, size):
+            if part_mat[a][b]!=l[a] and now_mat[a][part_mat[a][b]] > app.config["EXPAND_ALPHA"]:
                 print arr[part_mat[a][b]],now_mat[a][part_mat[a][b]]
                 origin += " " + arr[part_mat[a][b]]
 
