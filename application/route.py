@@ -62,7 +62,7 @@ def search():
         args = request.args
 
         search_type = "content"
-        body.append({"match": {search_type: expand(args["search_content"])}})
+        #body.append({"match": {search_type: expand(args["search_content"])}})
 
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {
@@ -75,7 +75,7 @@ def search():
             }
             search_type = match_type[args["where_to_search"]]
 
-            body.append({"match": {search_type: args["search_content"]}})
+            body.append({"match": {search_type: expand(args["search_content"])}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
