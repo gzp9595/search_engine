@@ -51,6 +51,7 @@ def remove_all():
 
 @app.route('/search', methods=["POST", "GET"])
 def search():
+    print "Mission Start"
     result = []
     for x in request.form:
         request.args[x] = request.form[x]
