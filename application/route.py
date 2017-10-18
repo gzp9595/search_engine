@@ -15,6 +15,7 @@ from application.expander import expand
 from . import app
 from matcher import get_best
 from application.cutter import cut
+from application.counter import count
 
 import urllib2
 import urllib
@@ -62,7 +63,7 @@ def search():
         args = request.args
 
         search_type = "content"
-        #body.append({"match": {search_type: expand(args["search_content"])}})
+        # body.append({"match": {search_type: expand(args["search_content"])}})
 
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {
@@ -144,13 +145,14 @@ def search():
             from_id = int(request.args["from"])
             if "to" in request.args:
                 size = int(request.args["to"]) - int(request.args["from"]) + 1
-        real_size = size+from_id
+        real_size = size + from_id
 
         print "Begin to search"
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size, from_id)
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+                                          from_id)
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -243,6 +245,9 @@ def search_new():
         for x in query_result["hits"][from_id:]:
             temp.append(x["_source"])
 
+        meta = count(temp)
+        print meta
+
         print "Cut begin"
         print_time()
         need_to_cut = [args["search_content"]]
@@ -291,7 +296,7 @@ def add_data():
 def get_doc_byid():
     if "id" in request.args:
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
-        data = json.dumps({"_source":json.loads(query_result["_source"]["content"])})
+        data = json.dumps({"_source": json.loads(query_result["_source"]["content"])})
         response = make_response(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'POST'
