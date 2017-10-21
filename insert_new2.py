@@ -12,7 +12,7 @@ server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
 local_config_file = os.path.join(server_dir, 'local_config.py')
 
-cutter = thulac.thulac(seg_only=True, model_path=model_path)
+cutter = thulac.thulac(seg_only=True, model_path=model_path, T2S=True)
 
 
 def cut(text):
@@ -47,6 +47,9 @@ if __name__ == '__main__':
                   "keyword", "cause",
                   "docType", "punishment", "result", "docId", "document"]
 
+    need_cut = ["Title", "AJJBQK", "SSJL", "caseName", "content", "WBWB", "FYMC", "doc_name", "WBSB", "CPYZ", "DSRXX",
+                "PJJG"]
+
     for x in os.listdir(dir_path):
         file_name = dir_path + x
         f = open(file_name, "r")
@@ -78,8 +81,8 @@ if __name__ == '__main__':
                 if data["content"] == "":
                     continue
                 data["doc_name"] = data["docId"]
-                for x in data:
-                    print x
+                for x in need_cut:
+                    data[x] = cut(data[x])
 
                 update_by_id(index, doc_type, data["doc_name"], data)
 
