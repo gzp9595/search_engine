@@ -1,14 +1,32 @@
 import os
 import config
 import json
+import thulac
 
 index = "law_thulac"
 doc_type = "data"
 dir_path = "/mnt/new/"
+model_path = "~/elasticsearch-5.5.2/plugins/thulac/models"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
 local_config_file = os.path.join(server_dir, 'local_config.py')
+
+cutter = thulac.thulac(seg_only=True, model_path=model_path, T2S=True)
+
+
+def cut(text):
+    res = cutter.cut(text)
+    result = ""
+    first = True
+    for x in result:
+        if first:
+            first = False
+        else:
+            result = result + " "
+        result = result + x[0]
+    return result
+
 
 if __name__ == '__main__':
     from application import app, initialize
@@ -60,6 +78,8 @@ if __name__ == '__main__':
                 if data["content"] == "":
                     continue
                 data["doc_name"] = data["docId"]
+                for x in data:
+                    print x
 
                 update_by_id(index, doc_type, data["doc_name"], data)
 
@@ -71,3 +91,5 @@ if __name__ == '__main__':
                 of = open('fail_list2.txt', 'a')
                 print >> of, file_name, e, line.encode("utf8")
                 of.close()
+
+            gg
