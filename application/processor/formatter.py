@@ -281,7 +281,7 @@ def get_reason(obj):
         for (y, z) in law_list[x]:
             result_list.append({"law_name": x, "tiao_num": y, "kuan_num": z})
 
-    # print
+    result_list.sort()
 
     return result_list
 
