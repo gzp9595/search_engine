@@ -9,7 +9,8 @@ def count_level(obj_list):
         result[match_list[a]] = 0
 
     for x in obj_list:
-        result[x["FYCJ"]] += 1
+        if "FYCJ" in x:
+            result[match_list[x["FYCJ"]]] += 1
 
     return result
 
@@ -21,7 +22,8 @@ def count_case_type(obj_list):
         result[match_list[a]] = 0
 
     for x in obj_list:
-        result[x["AJLX"]] += 1
+        if "AJLX" in x:
+            result[match_list[x["AJLX"]]] += 1
 
     return result
 
@@ -33,7 +35,8 @@ def count_doc_type(obj_list):
         result[match_list[a]] = 0
 
     for x in obj_list:
-        result[x["WSLX"]] += 1
+        if "WSLX" in x:
+            result[match_list[x["WSLX"]]] += 1
 
     return result
 
@@ -41,6 +44,8 @@ def count_doc_type(obj_list):
 def count_judge_date(obj_list):
     result = {"year": {}, "month": {}, "day": {}}
     for x in obj_list:
+        if not("CPRQ" in x):
+            continue
         arr = x["CPRQ"].split("-")
         year = int(arr[0])
         month = int(arr[1])
@@ -61,6 +66,8 @@ def count_judge_date(obj_list):
 def count_pub_date(obj_list):
     result = {"year": {}, "month": {}, "day": {}}
     for x in obj_list:
+        if not("PubDate" in x):
+            continue
         arr = x["PubDate"].split("-")
         year = int(arr[0])
         month = int(arr[1])
@@ -78,7 +85,7 @@ def count_pub_date(obj_list):
     return result
 
 
-def count(obj_list):
+def get_info(obj_list):
     result = {}
 
     result["court_level"] = count_level(obj_list)

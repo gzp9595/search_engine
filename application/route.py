@@ -15,7 +15,7 @@ from application.expander import expand
 from . import app
 from matcher import get_best
 from application.cutter import cut
-from application.counter import count
+from application.counter import get_info
 
 import urllib2
 import urllib
@@ -242,10 +242,12 @@ def search_new():
         print_time()
 
         temp = []
+        tempg = []
         for x in query_result["hits"][from_id:]:
             temp.append(x["_source"])
+            tempg.append(json.loads(elastic.get_by_id("law_meta","meta",x["_id"])["_source"]["content"]))
 
-        meta = count(temp)
+        meta = get_info(tempg)
         print meta
 
         print "Cut begin"
