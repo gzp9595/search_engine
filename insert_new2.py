@@ -4,7 +4,7 @@ import json
 import thulac
 
 index = "law_thulac"
-doc_type = "data"
+doc_type = "big_data"
 dir_path = "/mnt/new/"
 model_path = "~/elasticsearch-5.5.2/plugins/thulac/models"
 
