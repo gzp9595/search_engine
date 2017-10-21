@@ -1,7 +1,7 @@
 DATA_DIR = "data/"
 ELASTIC_SEARCH_ADDRESS = "localhost"
 ELASTIC_SEARCH_PORT = 9200
-ES_TIMEOUT = 150
+ES_TIMEOUT = "150s"
 
 HOST = 'localhost'
 PORT = 8000

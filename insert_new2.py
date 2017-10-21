@@ -51,7 +51,7 @@ if __name__ == '__main__':
                     content[text_field[a]] = arr[a]
                 if len(content["document"]) == 3:
                     content["document"] = "{\"content\":\"\"}"
-                    of = open('no_content.txt', 'a')
+                    of = open('no_content2.txt', 'a')
                     print >> of, content["docId"]
                     of.close()
                 else:
