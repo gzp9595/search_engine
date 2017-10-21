@@ -6,13 +6,13 @@ import thulac
 index = "law_thulac"
 doc_type = "data"
 dir_path = "/mnt/new/"
-model_path = "~/elasticsearch-5.5.2/plugins/thulac/models"
+model_path = "/home/zhx/elasticsearch-5.5.2/plugins/thulac/models"
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
 config_file = os.path.join(server_dir, 'config.py')
 local_config_file = os.path.join(server_dir, 'local_config.py')
 
-cutter = thulac.thulac(seg_only=True, model_path=model_path, T2S=True)
+cutter = thulac.thulac(seg_only=True, model_path=model_path)
 
 
 def cut(text):
