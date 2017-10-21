@@ -15,31 +15,31 @@ def train_tfidf(text):
 def get_best(search_content, document):
     text = document
     arr = []
-    for a in range(0, max(1,len(text) - 100), 63):
+    for a in range(0, max(1, len(text) - 100), 63):
         arr.append([])
         now = len(arr) - 1
         for b in range(0, 100):
-            if a+b<len(text):
+            if a + b < len(text):
                 arr[now].append(text[a + b])
 
-    #print "Begin tfidf"
-    #print_time()
+    # print "Begin tfidf"
+    # print_time()
     (dictionary, corpus, tfidf) = train_tfidf(arr)
     corpus_tfidf = tfidf[corpus]
-    #print "End tfidf"
-    #print_time()
+    # print "End tfidf"
+    # print_time()
 
     vec_bow = dictionary.doc2bow(search_content)
     vec_tfidf = tfidf[vec_bow]
 
     index = similarities.MatrixSimilarity(corpus_tfidf)
     sims = index[vec_tfidf]
-    #print "Begin similarity"
-    #print_time()
+    # print "Begin similarity"
+    # print_time()
 
     similarity = list(sims)
-    #print "End similarity"
-    #print_time()
+    # print "End similarity"
+    # print_time()
 
     p = 0
     for a in range(1, len(similarity)):
@@ -47,8 +47,14 @@ def get_best(search_content, document):
             p = a
 
     res = ""
+    se = set()
+    for x in search_content:
+        se.add(x)
     for x in arr[p]:
-        res = res + x
+        if x in se:
+            res = res + "<highlight>" + x + "<highlight/>"
+        else:
+            res = res + x
 
     return res
 

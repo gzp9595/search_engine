@@ -63,6 +63,7 @@ def search():
         args = request.args
 
         search_type = "content"
+        expanded = ""
         # body.append({"match": {search_type: expand(args["search_content"])}})
 
         if "where_to_search" in args and args["search_content"] != "":
@@ -75,8 +76,8 @@ def search():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-
-            body.append({"match": {search_type: expand(args["search_content"])}})
+            expanded = expand(args["search_content"])
+            body.append({"match": {search_type: expanded}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
@@ -165,7 +166,7 @@ def search():
 
         print "Cut begin"
         print_time()
-        need_to_cut = [args["search_content"]]
+        need_to_cut = [expanded]
         for x in temp:
             need_to_cut.append(x["content"])
         cutted = cut(need_to_cut)
@@ -245,7 +246,7 @@ def search_new():
         tempg = []
         for x in query_result["hits"][from_id:]:
             temp.append(x["_source"])
-            tempg.append(json.loads(elastic.get_by_id("law_meta","meta",x["_id"])["_source"]["content"]))
+            tempg.append(json.loads(elastic.get_by_id("law_meta", "meta", x["_id"])["_source"]["content"]))
 
         meta = get_info(tempg)
         print meta
@@ -298,7 +299,9 @@ def add_data():
 def get_doc_byid():
     if "id" in request.args:
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
-        data = json.dumps({"_source": json.loads(query_result["_source"]["content"])})
+        data = {"_source": json.loads(query_result["_source"]["content"])}
+        data["_source"]["FLYJ"].sort()
+        data = json.dumps(data)
         response = make_response(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'POST'
