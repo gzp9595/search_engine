@@ -49,6 +49,7 @@ def expand(sentence):
                 print arr[part_mat[a][b]],now_mat[a][part_mat[a][b]]
                 origin += " " + arr[part_mat[a][b]]
 
+    print origin
     return origin
 
 

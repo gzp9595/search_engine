@@ -6,6 +6,7 @@ from tfidf_model import *
 from lawlstm import *
 from lawcnn import *
 from application.util import print_time
+from application import app
 
 import sys
 
@@ -49,6 +50,8 @@ def seg(data, lib):
 
 class Doc2vec(object):
     def __init__(self, save_path):
+        if not(app.config["LOAD_MODEL"]):
+            return
         print "Loading model"
         print_time()
 

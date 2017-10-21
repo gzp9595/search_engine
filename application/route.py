@@ -167,9 +167,11 @@ def search():
         print "Cut begin"
         print_time()
         need_to_cut = [expanded]
+        print expanded
         for x in temp:
             need_to_cut.append(x["content"])
         cutted = cut(need_to_cut)
+        print cutted[0]
 
         print "Tfidf begin"
         print_time()

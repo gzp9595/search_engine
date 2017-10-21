@@ -29,7 +29,7 @@ def cut(text):
         temp_path2 = os.path.join(app.config["TEMP_DIR"], str(uuid.uuid4()) + ".txt")
         f = open(temp_path, "w")
         for line in text:
-            print >> f, line.replace("\n", "").replace(" ", "%")
+            print >> f, line.replace("\n", "").replace(" ", "")
         f.close()
 
         os.system(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
