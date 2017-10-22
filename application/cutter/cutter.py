@@ -1,6 +1,7 @@
 import os
 from application import app
 import uuid
+import jieba
 
 cutter = None
 
@@ -22,6 +23,13 @@ def cut(text):
     if isinstance(text, basestring):
         text = [text]
 
+    if app.config["USING_JIEBA"]:
+        result = []
+        for x in text:
+            result.append(" ".join(jieba.cut_for_search(x)))
+
+        return result
+
     result = []
 
     if cutter is None:
@@ -32,8 +40,10 @@ def cut(text):
             print >> f, line.replace("\n", "").replace(" ", "")
         f.close()
 
-        os.system(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
-        print(app.config["THULAC"] + "thulac -model_dir " + app.config["THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
+        os.system(app.config["THULAC"] + "thulac -model_dir " + app.config[
+            "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
+        print(app.config["THULAC"] + "thulac -model_dir " + app.config[
+            "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
 
         f = open(temp_path2, "r")
         cnt = 0
