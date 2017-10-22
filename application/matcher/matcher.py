@@ -54,10 +54,12 @@ def get_best(search_content, document):
     for x in search_content:
         se.add(x)
     for x in arr[p]:
-        if x in se:
-            res = res + "<highlight>" + x + "</highlight>"
-        else:
-            res = res + x
+        find = False
+        for y in se:
+            if x in y:
+               res = res + "<highlight>" + x + "</highlight>"
+            else:
+                res = res + x
 
     print res
     return res
