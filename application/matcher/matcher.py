@@ -55,7 +55,7 @@ def get_best(search_content, document):
         se.add(x)
     for x in arr[p]:
         if x in se:
-            res = res + "<highlight>" + x + "<highlight/>"
+            res = res + "<highlight>" + x + "</highlight>"
         else:
             res = res + x
 

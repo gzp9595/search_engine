@@ -16,10 +16,10 @@ cutter = thulac.thulac(seg_only=True, model_path=model_path, T2S=True)
 
 
 def cut(text):
-    res = cutter.cut(text)
+    res = cutter.cut(text.encode('utf8'))
     result = ""
     first = True
-    for x in result:
+    for x in res:
         if first:
             first = False
         else:
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                   "keyword", "cause",
                   "docType", "punishment", "result", "docId", "document"]
 
-    need_cut = ["Title", "AJJBQK", "SSJL", "caseName", "content", "WBWB", "FYMC", "doc_name", "WBSB", "CPYZ", "DSRXX",
+    need_cut = ["Title", "AJJBQK", "SSJL", "caseName", "content", "WBWB", "FYMC", "WBSB", "CPYZ", "DSRXX",
                 "PJJG"]
 
     for x in os.listdir(dir_path):
@@ -94,5 +94,3 @@ if __name__ == '__main__':
                 of = open('fail_list2.txt', 'a')
                 print >> of, file_name, e, line.encode("utf8")
                 of.close()
-
-            gg
