@@ -51,9 +51,8 @@ def cut(text):
             cnt += 1
             if cnt == 1:
                 continue
-            data = line.replace("\n", " ").split(" ")
-            for x in range(0, len(data)):
-                data[x].replace("%", " ")
+            data = line.replace("\n", " ").replace("%"," ").split(" ")
+            data=data[0:len(data)-1]
             result.append(data)
     else:
         result = []

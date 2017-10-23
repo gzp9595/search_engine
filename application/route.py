@@ -81,7 +81,7 @@ def search():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            expanded = expand(args["search_content"])
+            #expanded = expand(args["search_content"])
             body.append({"match": {search_type: {"query": args["search_content"]}}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
@@ -161,6 +161,8 @@ def search():
                                           from_id)
 
         if "where_to_search" in args and args["search_content"] != "":
+            print "Begin second round search"
+            print_time()
             match_type = {
                 "0": "content",
                 "1": "WBSB",
@@ -176,7 +178,7 @@ def search():
                                           from_id)
             for x in new_result["hits"]:
                 x["_score"] *= float(ratio2)/ratio1
-                query_result.append(x)
+                query_result["hits"].append(x)
 
         print "Begin to reranking"
         print_time()
@@ -185,17 +187,20 @@ def search():
         print_time()
 
         temp = []
-        for x in query_result["hits"][from_id:]:
+        for x in query_result["hits"][from_id:min(len(query_result["hits"]),from_id+size)]:
             temp.append(x["_source"])
 
         print "Cut begin"
         print_time()
-        need_to_cut = [expanded]
+        need_to_cut = [args["search_content"]+expanded]
         print expanded
         for x in temp:
             need_to_cut.append(x["content"])
         cutted = cut(need_to_cut)
         print cutted[0]
+        for a in range(0,len(cutted)):
+            for b in range(0,len(cutted[a])):
+                cutted[a][b]=cutted[a][b].lower()
 
         print "Tfidf begin"
         print_time()

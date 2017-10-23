@@ -48,9 +48,9 @@ def get_best(search_content, document):
     # print "End similarity"
     # print_time()
 
-    #for a in range(0, len(similarity)):
-    #    print similarity[a],
-    #print
+    for a in range(0, len(similarity)):
+        print similarity[a],
+    print
     p = 0
     for a in range(1, len(similarity)):
         if similarity[a] > similarity[p]:
