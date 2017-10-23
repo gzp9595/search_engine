@@ -1,3 +1,4 @@
+#  -*- coding:utf-8 -*-
 import json
 import os
 import uuid
@@ -231,7 +232,7 @@ def search():
 def search_new():
     print "Mission Start"
     result = []
-    request.args=dict(request.args)
+    request.args = dict(request.args)
     for x in dict(request.form):
         request.args[x] = request.form[x]
 
@@ -239,7 +240,7 @@ def search_new():
         body = []
 
         args = request.args
-        #for x in args:
+        # for x in args:
         #    print x, args[x]
 
         search_type = "content"
@@ -322,6 +323,12 @@ def search_new():
         print expanded
         for x in temp:
             need_to_cut.append(x["content"])
+        filter_list = [65292, 12290, 65311, 65281, 65306, 65307, 8216, 8217, 8220, 8221, 12304, 12305,
+                       12289, 12298, 12299, 126, 183, 64, 124, 35, 65509, 37, 8230, 38, 42, 65288,
+                       65289, 8212, 45, 43, 61, 44, 46, 60, 62, 63, 47, 33, 59, 58, 39, 34, 123, 125,
+                       91, 93, 92, 124, 35, 36, 37, 94, 38, 42, 40, 41, 95, 45, 43, 61, 9700, 9734, 9733]
+        for x in filter_list:
+            need_to_cut[0] = need_to_cut[0].replace(unichr(x), '')
         cutted = cut(need_to_cut)
         print cutted[0]
         for a in range(0, len(cutted)):

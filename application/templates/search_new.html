@@ -94,15 +94,19 @@
 
     EXPAND_K
     <input type="number" name="EXPAND_K" {% if args["EXPAND_K"] %}
-           value="{{ args["EXPAND_K"] }}" {% else %} value="1"{% endif %}>
+           value="{{ args["EXPAND_K"] }}" {% else %} value="1"{% endif %}><br>
     EXPAND_ALPHA
     <input type="number" name="EXPAND_ALPHA" {% if args["EXPAND_ALPHA"] %}
-           value="{{ args["EXPAND_ALPHA"] }}" {% else %} value="0.8"{% endif %}>
+           value="{{ args["EXPAND_ALPHA"] }}" {% else %} value="0.8"{% endif %}><br>
     EXPAND_RATIO
     <input type="number" name="RATIO1" {% if args["RATIO1"] %}
            value="{{ args["RATIO1"] }}" {% else %} value="8"{% endif %}>
     <input type="number" name="RATIO2" {% if args["RATIO2"] %}
-           value="{{ args["RATIO2"] }}" {% else %} value="0"{% endif %}>
+           value="{{ args["RATIO2"] }}" {% else %} value="0"{% endif %}><br>
+
+    Origin
+    <input type="number" name="" {% if args["RATIO1"] %}
+           value="{{ args["RATIO1"] }}" {% else %} value="8"{% endif %}>
 
     <input type="submit" value="Search">
 </form>
