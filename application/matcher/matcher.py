@@ -32,7 +32,14 @@ def get_best(search_content, document):
     vec_bow = dictionary.doc2bow(search_content)
     vec_tfidf = tfidf[vec_bow]
 
-    index = similarities.MatrixSimilarity(corpus_tfidf)
+    try:
+        index = similarities.MatrixSimilarity(corpus_tfidf)
+    except ValueError:
+        result = ""
+        for a in range(0, min(len(text), 100)):
+            result = result + arr[a]
+        return result
+
     sims = index[vec_tfidf]
     # print "Begin similarity"
     # print_time()
