@@ -81,7 +81,7 @@ def search():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            #expanded = expand(args["search_content"])
+            # expanded = expand(args["search_content"])
             body.append({"match": {search_type: {"query": args["search_content"]}}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
@@ -173,11 +173,11 @@ def search():
             }
             search_type = match_type[args["where_to_search"]]
             expanded = expand(args["search_content"])
-            body[0]= {"match": {search_type: {"query": expanded}}}
+            body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
-                                          from_id)
+                                            from_id)
             for x in new_result["hits"]:
-                x["_score"] *= float(ratio2)/ratio1
+                x["_score"] *= float(ratio2) / ratio1
                 query_result["hits"].append(x)
 
         print "Begin to reranking"
@@ -187,20 +187,20 @@ def search():
         print_time()
 
         temp = []
-        for x in query_result["hits"][from_id:min(len(query_result["hits"]),from_id+size)]:
+        for x in query_result["hits"][from_id:min(len(query_result["hits"]), from_id + size)]:
             temp.append(x["_source"])
 
         print "Cut begin"
         print_time()
-        need_to_cut = [args["search_content"]+expanded]
+        need_to_cut = [args["search_content"] + expanded]
         print expanded
         for x in temp:
             need_to_cut.append(x["content"])
         cutted = cut(need_to_cut)
         print cutted[0]
-        for a in range(0,len(cutted)):
-            for b in range(0,len(cutted[a])):
-                cutted[a][b]=cutted[a][b].lower()
+        for a in range(0, len(cutted)):
+            for b in range(0, len(cutted[a])):
+                cutted[a][b] = cutted[a][b].lower()
 
         print "Tfidf begin"
         print_time()
@@ -230,11 +230,7 @@ def search():
 @app.route('/search_new', methods=["POST", "GET"])
 def search_new():
     print "Mission Start"
-
     result = []
-    print request.args
-    if len(request.args) == 0:
-        request.args = {}
     for x in request.form:
         request.args[x] = request.form[x]
 
@@ -242,16 +238,31 @@ def search_new():
         body = []
 
         args = request.args
+        # for x in args:
+        #    print x, args[x]
 
         search_type = "content"
-        body.append({"match": {search_type: expand(args["search_content"])}})
+        expanded = ""
+        # body.append({"match": {search_type: expand(args["search_content"])}})
 
-        size = 25
-        from_id = 0
-        if "from" in request.args:
-            from_id = int(request.args["from"])
-            if "to" in request.args:
-                size = int(request.args["to"]) - int(request.args["from"]) + 1
+        ratio1 = app.config["EXPAND_RATIO"][0]
+        ratio2 = app.config["EXPAND_RATIO"][1]
+        if "RATIO1" in args and "RATIO2" in args:
+            ratio1 = float(args["RATIO1"])
+            ratio2 = float(args["RATIO2"])
+
+        if "where_to_search" in args and args["search_content"] != "":
+            match_type = {
+                "0": "content",
+                "1": "WBSB",
+                "2": "AJJBQK",
+                "3": "CPYZ",
+                "4": "PJJG",
+                "5": "WBWB"
+            }
+            search_type = match_type[args["where_to_search"]]
+            # expanded = expand(args["search_content"])
+            body.append({"match": {search_type: {"query": args["search_content"]}}})
 
         size = 25
         from_id = 0
@@ -267,6 +278,33 @@ def search_new():
         print query_string
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
+
+        if "where_to_search" in args and args["search_content"] != "":
+            print "Begin second round search"
+            print_time()
+            match_type = {
+                "0": "content",
+                "1": "WBSB",
+                "2": "AJJBQK",
+                "3": "CPYZ",
+                "4": "PJJG",
+                "5": "WBWB"
+            }
+            search_type = match_type[args["where_to_search"]]
+            expand_k = None
+            expand_alpha = None
+            if "EXPAND_K" in args:
+                expand_k = int(args["EXPAND_K"])
+            if "EXPAND_ALPHA" in args:
+                expand_k = float(args["EXPAND_ALPHA"])
+            expanded = expand(args["search_content"], expand_k, expand_alpha)
+            body[0] = {"match": {search_type: {"query": expanded}}}
+            new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+                                            from_id)
+            for x in new_result["hits"]:
+                x["_score"] *= float(ratio2) / ratio1
+                query_result["hits"].append(x)
+
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
@@ -274,20 +312,20 @@ def search_new():
         print_time()
 
         temp = []
-        tempg = []
-        for x in query_result["hits"][from_id:]:
+        for x in query_result["hits"][from_id:min(len(query_result["hits"]), from_id + size)]:
             temp.append(x["_source"])
-            tempg.append(json.loads(elastic.get_by_id("law_meta", "meta", x["_id"])["_source"]["content"]))
-
-        meta = get_info(tempg)
-        print meta
 
         print "Cut begin"
         print_time()
-        need_to_cut = [args["search_content"]]
+        need_to_cut = [args["search_content"] + expanded]
+        print expanded
         for x in temp:
             need_to_cut.append(x["content"])
         cutted = cut(need_to_cut)
+        print cutted[0]
+        for a in range(0, len(cutted)):
+            for b in range(0, len(cutted[a])):
+                cutted[a][b] = cutted[a][b].lower()
 
         print "Tfidf begin"
         print_time()
