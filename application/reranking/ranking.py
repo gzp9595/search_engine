@@ -69,6 +69,7 @@ def get_score(obj, query, sc):
     if model_type == -2:
         return sc
     if model_type == -1:
+        #print "gg"
         arr = ["LDA", "TFIDF", "WORD embedding", "LSTM", "CNN"]
         match_type = {
             "0": "content",
@@ -81,10 +82,11 @@ def get_score(obj, query, sc):
         score = 0
         for a in range(0, len(arr)):
             ratio = 0
-            if arr[a] in query
+            if arr[a] in query:
                 ratio = float(query[arr[a]])
             else:
                 ratio = 0
+            #print arr[a],ratio
             if ratio > 0:
                 sc = doc2vec_model.get_similarity(
                     embedding1=doc2vec_model.get_embedding(
@@ -92,8 +94,14 @@ def get_score(obj, query, sc):
                     embedding2=doc2vec_model.get_embedding(
                         text=query["search_content"].encode("utf8"), mode=a),
                     mode=a
-                )
-                score = sc * ratio
+                ) * (1-float(query["title_ratio"])) +  doc2vec_model.get_similarity(
+                    embedding1=doc2vec_model.get_embedding(
+                        text=obj["Title"].encode("utf8"), mode=a),
+                    embedding2=doc2vec_model.get_embedding(
+                        text=query["search_content"].encode("utf8"), mode=a),
+                    mode=a
+                ) * float(query["title_ratio"])
+                score += sc * ratio
                 # with warnings.catch_warnings():
                 #    warnings.simplefilter("ignore")
                 #    return model.judge(get_feature(obj, query))

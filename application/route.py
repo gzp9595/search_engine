@@ -173,7 +173,7 @@ def search():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            expanded = expand(args["search_content"])
+            #expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                             from_id)
@@ -251,8 +251,8 @@ def search_new():
         body = []
 
         args = request.args
-        # for x in args:
-        #    print x, args[x]
+        for x in args:
+            print x, args[x]
 
         search_type = "content"
         expanded = ""
