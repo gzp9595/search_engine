@@ -332,7 +332,8 @@ def search_new():
         cutted = cut(need_to_cut)
         fs = []
         for a in range(0, len(cutted[0])):
-            if len(cutted[0][a]) > 1:
+            print cutted[0][a],len(cutted[0][a])
+            if len(cutted[0][a]) > 3:
                 fs.append(cutted[0][a])
         cutted[0] = fs
         print cutted[0]
