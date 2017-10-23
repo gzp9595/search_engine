@@ -81,8 +81,8 @@ def search():
             expanded = expand(args["search_content"])
             ratio1 = app.config["EXPAND_RATIO"][0]
             ratio2 = app.config["EXPAND_RATIO"][1]
-            body.append({"match": {search_type: args["search_content"], "boost": ratio1}})
-            body.append({"match": {search_type: expanded, "boost": ratio2}})
+            body.append({"match": {search_type: {"query": args["search_content"], "boost": ratio1}}})
+            body.append({"match": {search_type: {"query": expanded, "boost": ratio2}}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
