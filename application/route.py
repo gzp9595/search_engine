@@ -175,7 +175,7 @@ def search():
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
             for x in new_result["hits"]:
-                x["_source"]["score"] *= float(ratio2)/ratio1
+                x["_score"] *= float(ratio2)/ratio1
                 query_result.append(x)
 
         print "Begin to reranking"
