@@ -330,6 +330,11 @@ def search_new():
         for x in filter_list:
             need_to_cut[0] = need_to_cut[0].replace(unichr(x), '')
         cutted = cut(need_to_cut)
+        fs = []
+        for a in range(0, len(cutted[0])):
+            if len(cutted[0][a]) > 1:
+                fs.append(cutted[0][a])
+        cutted[0] = fs
         print cutted[0]
         for a in range(0, len(cutted)):
             for b in range(0, len(cutted[a])):
