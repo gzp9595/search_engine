@@ -28,9 +28,9 @@ print_time()
 
 def expand(sentence, expand_k=None, expand_alpha=None):
     if expand_k is None:
-        expand_k = app.config["EXPAND_K"]
+        expand_k = int(app.config["EXPAND_K"])
     if expand_alpha is None:
-        expand_alpha = app.config["EXPAND_ALPHA"]
+        expand_alpha = float(app.config["EXPAND_ALPHA"])
     origin = sentence
     setence = cut(sentence)[0]
 

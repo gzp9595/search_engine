@@ -231,14 +231,15 @@ def search():
 def search_new():
     print "Mission Start"
     result = []
-    for x in request.form:
+    request.args=dict(request.args)
+    for x in dict(request.form):
         request.args[x] = request.form[x]
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
 
         args = request.args
-        # for x in args:
+        #for x in args:
         #    print x, args[x]
 
         search_type = "content"
@@ -296,7 +297,7 @@ def search_new():
             if "EXPAND_K" in args:
                 expand_k = int(args["EXPAND_K"])
             if "EXPAND_ALPHA" in args:
-                expand_k = float(args["EXPAND_ALPHA"])
+                expand_alpha = float(args["EXPAND_ALPHA"])
             expanded = expand(args["search_content"], expand_k, expand_alpha)
             body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
