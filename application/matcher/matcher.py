@@ -37,7 +37,7 @@ def get_best(search_content, document):
     except ValueError:
         result = ""
         for a in range(0, min(len(text), 100)):
-            result = result + arr[a]
+            result = result + text[a]
         return result
 
     sims = index[vec_tfidf]
@@ -48,9 +48,9 @@ def get_best(search_content, document):
     # print "End similarity"
     # print_time()
 
-    for a in range(0, len(similarity)):
-        print similarity[a],
-    print
+    #for a in range(0, len(similarity)):
+    #    print similarity[a],
+    #print
     p = 0
     for a in range(1, len(similarity)):
         if similarity[a] > similarity[p]:
@@ -71,7 +71,6 @@ def get_best(search_content, document):
         else:
             res = res + x
 
-    print res
     return res
 
 

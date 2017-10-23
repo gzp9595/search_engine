@@ -61,6 +61,8 @@ def search():
         body = []
 
         args = request.args
+        for x in args:
+            print x,args[x]
 
         search_type = "content"
         expanded = ""
