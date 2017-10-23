@@ -79,7 +79,10 @@ def search():
             }
             search_type = match_type[args["where_to_search"]]
             expanded = expand(args["search_content"])
-            body.append({"match": {search_type: expanded}})
+            ratio1 = app.config["EXPAND_RATIO"][0]
+            ratio2 = app.config["EXPAND_RATIO"][1]
+            body.append({"match": {search_type: args["search_content"], "boost": ratio1}})
+            body.append({"match": {search_type: expanded, "boost": ratio2}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})

@@ -26,7 +26,11 @@ print "Done"
 print_time()
 
 
-def expand(sentence):
+def expand(sentence, expand_k=None, expand_alpha=None):
+    if expand_k is None:
+        expand_k = app.config["EXPAND_K"]
+    if expand_alpha is None:
+        expand_alpha = app.config["EXPAND_ALPHA"]
     origin = sentence
     setence = cut(sentence)[0]
 
@@ -38,15 +42,16 @@ def expand(sentence):
     print "Being calculation"
     print_time()
     now_mat = np.dot(np.transpose(mat[:, l]), mat)
-    part_mat = np.argpartition(now_mat, size - app.config["EXPAND_K"] -1, axis=1)
+    part_mat = np.argpartition(now_mat, size - expand_k - 1, axis=1)
     print "Done"
     print_time()
 
+    origin = ""
     for a in range(0, len(l)):
-        print "Expand ",arr[l[a]]
-        for b in range(size - app.config["EXPAND_K"]-1, size):
-            if part_mat[a][b]!=l[a] and now_mat[a][part_mat[a][b]] > app.config["EXPAND_ALPHA"]:
-                print arr[part_mat[a][b]],now_mat[a][part_mat[a][b]]
+        print "Expand ", arr[l[a]]
+        for b in range(size - expand_k - 1, size):
+            if part_mat[a][b] != l[a] and now_mat[a][part_mat[a][b]] > expand_alpha:
+                print arr[part_mat[a][b]], now_mat[a][part_mat[a][b]]
                 origin += " " + arr[part_mat[a][b]]
 
     print origin
