@@ -68,6 +68,9 @@ def search():
         expanded = ""
         # body.append({"match": {search_type: expand(args["search_content"])}})
 
+        ratio1 = app.config["EXPAND_RATIO"][0]
+        ratio2 = app.config["EXPAND_RATIO"][1]
+
         if "where_to_search" in args and args["search_content"] != "":
             match_type = {
                 "0": "content",
@@ -79,10 +82,7 @@ def search():
             }
             search_type = match_type[args["where_to_search"]]
             expanded = expand(args["search_content"])
-            ratio1 = app.config["EXPAND_RATIO"][0]
-            ratio2 = app.config["EXPAND_RATIO"][1]
-            body.append({"match": {search_type: {"query": args["search_content"], "boost": ratio1}}})
-            body.append({"match": {search_type: {"query": expanded, "boost": ratio2}}})
+            body.append({"match": {search_type: {"query": args["search_content"]}}})
 
         if "name_of_case" in args and args["name_of_case"] != "":
             body.append({"match": {"Title": args["name_of_case"]}})
@@ -159,6 +159,25 @@ def search():
         print query_string
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
+
+        if "where_to_search" in args and args["search_content"] != "":
+            match_type = {
+                "0": "content",
+                "1": "WBSB",
+                "2": "AJJBQK",
+                "3": "CPYZ",
+                "4": "PJJG",
+                "5": "WBWB"
+            }
+            search_type = match_type[args["where_to_search"]]
+            expanded = expand(args["search_content"])
+            body[0]= {"match": {search_type: {"query": expanded}}}
+            new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+                                          from_id)
+            for x in new_result["hits"]:
+                x["_source"]["score"] *= float(ratio2)/ratio1
+                query_result.append(x)
+
         print "Begin to reranking"
         print_time()
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
