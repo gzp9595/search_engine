@@ -64,14 +64,40 @@ def add_data(obj, query, score):
     f.close()
 
 
-def get_score(obj, query,sc):
-    model_type=int(query["type_of_model"])
+def get_score(obj, query, sc):
+    model_type = int(query["type_of_model"])
     if model_type == -2:
         return sc
     if model_type == -1:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            return model.judge(get_feature(obj, query))
+        arr = ["LDA", "TFIDF", "WORD embedding", "LSTM", "CNN"]
+        match_type = {
+            "0": "content",
+            "1": "WBSB",
+            "2": "AJJBQK",
+            "3": "CPYZ",
+            "4": "PJJG",
+            "5": "WBWB"
+        }
+        score = 0
+        for a in range(0, len(arr)):
+            ratio = 0
+            if arr[a] in query
+                ratio = float(query[arr[a]])
+            else:
+                ratio = 0
+            if ratio > 0:
+                sc = doc2vec_model.get_similarity(
+                    embedding1=doc2vec_model.get_embedding(
+                        text=obj[match_type[query["where_to_search"]]].encode("utf8"), mode=a),
+                    embedding2=doc2vec_model.get_embedding(
+                        text=query["search_content"].encode("utf8"), mode=a),
+                    mode=a
+                )
+                score = sc * ratio
+                # with warnings.catch_warnings():
+                #    warnings.simplefilter("ignore")
+                #    return model.judge(get_feature(obj, query))
+        return score
     else:
         return doc2vec_model.get_similarity(
             embedding1=doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=model_type),
@@ -104,7 +130,7 @@ def reranking(result, query):
     # return result
 
     for a in range(0, len(result)):
-        result[a]["_source"]["score"] = get_score(result[a]["_source"], query,result[a]["_score"])
+        result[a]["_source"]["score"] = get_score(result[a]["_source"], query, result[a]["_score"])
 
     # nowp = 0
     # while nowp < len(result):
