@@ -2,17 +2,20 @@ import datetime
 import time
 
 
-def check_date(year, month, day):
-    if len(month)==1:
-        month = "0"+month
-    if len(day)==1:
-        day = "0"+day
-    if len(year) != 4 or len(month) != 2 or len(day) != 2:
-        return False
+def form_date(year, month, day):
+    month = str(month)
+    if len(month) == 1:
+        month = "0" + month
+    day = str(day)
+    if len(day) == 1:
+        day = "0" + day
+    return str(year) + "-" + str(month) + "-" + str(day)
 
+
+def check_date(year, month, day):
     try:
         # print year,month,day
-        time.strptime(str(year) + "-" + str(month) + "-" + str(day), "%Y-%m-%d")
+        time.strptime(form_date(year, month, day), "%Y-%m-%d")
         # print "Accepted"
         return True
     except Exception as e:
@@ -21,4 +24,4 @@ def check_date(year, month, day):
 
 
 def print_time():
-    print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))

@@ -10,7 +10,7 @@ import util
 from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
-from application.util import print_time
+from application.util import print_time, form_date
 from application.expander import expand
 from . import app
 from matcher import get_best
@@ -61,8 +61,8 @@ def search():
         body = []
 
         args = request.args
-        for x in args:
-            print x,args[x]
+        # for x in args:
+        #    print x, args[x]
 
         search_type = "content"
         expanded = ""
@@ -113,26 +113,26 @@ def search():
 
         if "caipan_from_year" in args and "caipan_from_month" in args and "caipan_from_day" in args and util.check_date(
                 args["caipan_from_year"], args["caipan_from_month"], args["caipan_from_day"]):
-            body.append({"range": {"CPRQ": {"gte": args["caipan_from_year"] + "-" + args[
-                "caipan_from_month"] + "-" + args["caipan_from_day"]}}})
+            body.append({"range": {"CPRQ": {
+                "gte": form_date(args["caipan_from_year"], args["caipan_from_month"], args["caipan_from_day"])}}})
 
         if "caipan_to_year" in args and "caipan_to_month" in args and "caipan_to_day" in args and util.check_date(
                 args["caipan_to_year"], args["caipan_to_month"], args["caipan_to_day"]):
-            body.append({"range": {"CPRQ": {"lte": args["caipan_to_year"] + "-" + args[
-                "caipan_to_month"] + "-" + args["caipan_to_day"]}}})
+            body.append({"range": {
+                "CPRQ": {"lte": form_date(args["caipan_to_year"], args["caipan_to_month"], args["caipan_to_day"])}}})
 
         if "judgement" in args and args["judgement"] != "":
             body.append({"match": {"WBWB": args["judgement"]}})
 
         if "fabu_from_year" in args and "fabu_from_month" in args and "fabu_from_day" in args and util.check_date(
                 args["fabu_from_year"], args["fabu_from_month"], args["fabu_from_day"]):
-            body.append({"range": {"PubDate": {"gte": args["fabu_from_year"] + "-" + args[
-                "fabu_from_month"] + "-" + args["fabu_from_day"]}}})
+            body.append({"range": {
+                "PubDate": {"gte": form_date(args["fabu_from_year"], args["fabu_from_month"], args["fabu_from_day"])}}})
 
         if "fabu_to_year" in args and "fabu_to_month" in args and "fabu_to_day" in args and util.check_date(
                 args["fabu_to_year"], args["fabu_to_month"], args["fabu_to_day"]):
-            body.append({"range": {"PubDate": {"lte": args["fabu_to_year"] + "-" + args[
-                "fabu_to_month"] + "-" + args["fabu_to_day"]}}})
+            body.append({"range": {
+                "PubDate": {"lte": form_date(args["fabu_to_year"], args["fabu_to_month"], args["fabu_to_day"])}}})
 
         if "name_of_law" in args and args["name_of_law"] != "":
             new_body = [{"match": {"FLYJ.law_name": args["name_of_law"]}}]
