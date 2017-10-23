@@ -51,6 +51,7 @@
     模型:
     <select name="type_of_model">
         <option value="-2" {% if args["type_of_model"] and args["type_of_model"] == "-2"  or not("type_of_model" in args)%}selected{% endif %}>Origin</option>
+        <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "-1" %}selected{% endif %}>Merged</option>
         <option value="0" {% if args["type_of_model"] and args["type_of_model"] == "0" %}selected{% endif %}>LDA</option>
         <option value="1" {% if args["type_of_model"] and args["type_of_model"] == "1" %}selected{% endif %}>tfidf</option>
         <option value="2" {% if args["type_of_model"] and args["type_of_model"] == "2" %}selected{% endif %}>word embedding</option>
@@ -104,9 +105,24 @@
     <input type="number" name="RATIO2" {% if args["RATIO2"] %}
            value="{{ args["RATIO2"] }}" {% else %} value="0"{% endif %}><br>
 
-    Origin
-    <input type="number" name="" {% if args["RATIO1"] %}
-           value="{{ args["RATIO1"] }}" {% else %} value="8"{% endif %}>
+    LDA
+    <input type="number" name="" {% if args["LDA"] %}
+           value="{{ args["LDA"] }}" {% else %} value="0"{% endif %}><br>
+    TFIDF
+    <input type="number" name="" {% if args["TFIDF"] %}
+           value="{{ args["TFIDF"] }}" {% else %} value="0"{% endif %}><br>
+
+    WORD embedding
+    <input type="number" name="" {% if args["WORD embedding"] %}
+           value="{{ args["WORD embedding"] }}" {% else %} value="0"{% endif %}><br>
+
+    LSTM
+    <input type="number" name="" {% if args["LSTM"] %}
+           value="{{ args["LSTM"] }}" {% else %} value="0"{% endif %}><br>
+
+    CNN
+    <input type="number" name="" {% if args["CNN"] %}
+           value="{{ args["CNN"] }}" {% else %} value="0"{% endif %}><br>
 
     <input type="submit" value="Search">
 </form>
