@@ -41,7 +41,7 @@ def cut(text):
         f.close()
 
         os.system(app.config["THULAC"] + "thulac -model_dir " + app.config[
-            "THULAC"] + "models -seg_only -t2s -filter < " + temp_path + " > " + temp_path2)
+            "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
         #print(app.config["THULAC"] + "thulac -model_dir " + app.config[
         #    "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
 

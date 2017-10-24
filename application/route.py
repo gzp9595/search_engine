@@ -206,7 +206,8 @@ def search():
         cutted = cut(need_to_cut)
         fs = []
         for a in range(0, len(cutted[0])):
-            if len(cutted[0][a]) > 1:
+            print cutted[0][a],len(cutted[0][a].decode("utf8"))
+            if len(cutted[0][a].decode("utf8")) > 1:
                 fs.append(cutted[0][a])
         cutted[0] = fs
         print cutted[0]
