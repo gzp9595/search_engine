@@ -311,17 +311,17 @@ def search_new():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            expand_k = None
-            expand_alpha = None
-            if "EXPAND_K" in args:
-                expand_k = int(args["EXPAND_K"])
-            if "EXPAND_ALPHA" in args:
-                expand_alpha = float(args["EXPAND_ALPHA"])
-            expanded = expand(args["search_content"], expand_k, expand_alpha)
+            # expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                             from_id)
+            id_list = set()
+            for x in query_result["hits"]:
+                id_list.add(x["_id"])
             for x in new_result["hits"]:
+                if x["_id"] in id_list:
+                    continue
+                id_list.add(x["_id"])
                 x["_score"] *= float(ratio2) / ratio1
                 query_result["hits"].append(x)
 
@@ -350,8 +350,8 @@ def search_new():
         cutted = cut(need_to_cut)
         fs = []
         for a in range(0, len(cutted[0])):
-            print cutted[0][a], len(cutted[0][a])
-            if len(cutted[0][a]) > 3:
+            print cutted[0][a], len(cutted[0][a].decode("utf8"))
+            if len(cutted[0][a].decode("utf8")) > 1:
                 fs.append(cutted[0][a])
         cutted[0] = fs
         print cutted[0]
