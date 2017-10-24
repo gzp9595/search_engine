@@ -61,9 +61,11 @@ def get_best(search_content, document):
     for x in search_content:
         se.add(x)
     for x in arr[p]:
+        if len(x.decode("utf8"))==1:
+			continue
         find = False
         for y in se:
-            if x in y:
+            if x == y:
                 find = True
                 break
         if find:

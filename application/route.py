@@ -217,6 +217,8 @@ def search():
                 fs.append(cutted[0][a])
         cutted[0] = fs
         print cutted[0]
+        for x in cutted[0]:
+            print x,len(x)
         for a in range(0, len(cutted)):
             for b in range(0, len(cutted[a])):
                 cutted[a][b] = cutted[a][b].lower()
