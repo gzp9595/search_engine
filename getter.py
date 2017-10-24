@@ -18,8 +18,9 @@ def form(x):
 
 
 def add_to_set(res):
-    for x in res["hits"]["hits"]["_soucre"]:
-        res.append(form(x["FLYJ"]))
+    for x in res["hits"]["hits"]:
+        for y in x["_soucre"]["FLYJ"]:
+            res.append(form(y))
 
 
 if __name__ == '__main__':
