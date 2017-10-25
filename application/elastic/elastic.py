@@ -21,7 +21,7 @@ def get_doc_byid(index, doc_type, id):
 
 def search_doc(index, doc_type, body,size=10,from_=0):
     print size,from_
-    res = es.search(index=index, doc_type=doc_type, body=body, timeout=str(app.config["ES_TIMEOUT"])+"h", scroll="10m",size=size,from_=from_)
+    res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m",size=size,from_=from_)
     for x in res:
         if x != "hits":
             print x, res[x]

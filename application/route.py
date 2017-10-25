@@ -161,7 +161,7 @@ def search():
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
 
-        if "where_to_search" in args and args["search_content"] != "":
+        if "where_to_search" in args and args["search_content"] != "" and False:
             print "Begin second round search"
             print_time()
             match_type = {
@@ -216,9 +216,9 @@ def search():
             if len(cutted[0][a].decode("utf8")) > 1:
                 fs.append(cutted[0][a])
         cutted[0] = fs
-        print cutted[0]
-        for x in cutted[0]:
-            print x,len(x)
+        #print cutted[0]
+        #for x in cutted[0]:
+        #    print x,len(x)
         for a in range(0, len(cutted)):
             for b in range(0, len(cutted[a])):
                 cutted[a][b] = cutted[a][b].lower()
