@@ -19,8 +19,11 @@ def form(x):
 
 def add_to_set(res):
     for x in res["hits"]["hits"]:
-        for y in x["_soucre"]["FLYJ"]:
-            res.append(form(y))
+        if "FLYJ" in x["_source"]:
+            for y in x["_source"]["FLYJ"]:
+                se.add(form(y))
+        else:
+            print x
 
 
 if __name__ == '__main__':
@@ -35,11 +38,25 @@ if __name__ == '__main__':
     size = 50
 
     body = {"query": {"match_all": {}}, "_source": ["FLYJ"]}
+    cnt = 0
 
-    res = es.search(index=index, doc_type=doc_type, body=body, scroll="10m")
+    res = es.search(index=index, doc_type=doc_type, body=body, scroll="20s")
     add_to_set(res)
 
     while True:
-        res = es.scroll(scroll_id=res["_scroll_id"])
+        cnt += 1
+        if cnt%100==0:
+            print cnt,len(se)
+        res = es.scroll(scroll_id=res["_scroll_id"],scroll="20s")
         add_to_set(res)
-        print len(se)
+        if len(res["hits"]["hits"])==0:
+            break
+
+
+    se = list(se)
+    se.sort()
+
+    f = open("law_list.txt","w")
+
+    for (x,y,z) in se:
+        print >> f,x.encode("utf8"),y,z
