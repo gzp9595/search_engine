@@ -18,8 +18,8 @@ size = len(word_list)
 
 print "Begin string"
 print_time()
-mat_id = np.reshape(np.fromfile(app.config["DIS_FILE_ID"], dtype=np.int32), (-1, app.config["MAX_K"]))
-mat_value = np.reshape(np.fromfile(app.config["DIS_FILE_VALUE"], dtype=np.float32), (-1, app.config["MAX_K"]))
+mat_id = np.reshape(np.fromfile(app.config["DIS_ID_FILE"], dtype=np.int32), (-1, app.config["MAX_K"]))
+mat_value = np.reshape(np.fromfile(app.config["DIS_VALUE_FILE"], dtype=np.float32), (-1, app.config["MAX_K"]))
 
 """print "Begin matrix"
 print_time()

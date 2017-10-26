@@ -161,7 +161,7 @@ def search():
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
 
-        if "where_to_search" in args and args["search_content"] != "" and False:
+        if "where_to_search" in args and args["search_content"] != "":
             print "Begin second round search"
             print_time()
             match_type = {
@@ -173,7 +173,7 @@ def search():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            # expanded = expand(args["search_content"])
+            expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                             from_id)
@@ -212,7 +212,7 @@ def search():
         cutted = cut(need_to_cut)
         fs = []
         for a in range(0, len(cutted[0])):
-            print cutted[0][a], len(cutted[0][a].decode("utf8"))
+            #print cutted[0][a], len(cutted[0][a].decode("utf8"))
             if len(cutted[0][a].decode("utf8")) > 1:
                 fs.append(cutted[0][a])
         cutted[0] = fs
@@ -313,7 +313,7 @@ def search_new():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            # expanded = expand(args["search_content"])
+            expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                             from_id)
