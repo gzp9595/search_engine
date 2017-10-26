@@ -45,7 +45,7 @@ def cut(text):
 
         os.system(app.config["THULAC"] + "thulac -model_dir " + app.config[
             "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
-        #print(app.config["THULAC"] + "thulac -model_dir " + app.config[
+        # print(app.config["THULAC"] + "thulac -model_dir " + app.config[
         #    "THULAC"] + "models -seg_only -t2s < " + temp_path + " > " + temp_path2)
 
         f = open(temp_path2, "r")
@@ -54,8 +54,8 @@ def cut(text):
             cnt += 1
             if cnt == 1:
                 continue
-            data = line.replace("\n", " ").replace("%"," ").split(" ")
-            data=data[0:len(data)-1]
+            data = line.replace("\n", " ").replace("%", " ").split(" ")
+            data = data[0:len(data) - 1]
             result.append(data)
     else:
         result = []
