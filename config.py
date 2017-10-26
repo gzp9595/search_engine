@@ -21,7 +21,9 @@ TEMP_DIR = "temp"
 
 WORD_FILE = "/mnt/expand/100_str_min"
 VEC_FILE = "/mnt/expand/100_vec_min"
-DIS_FILE = "/mnt/expand/100_dis_min"
+DIS_ID_FILE = "/mnt/expand/100_dis_min_id"
+DIS_VALUE_FILE = "/mnt/expand/100_dis_min_value"
+MAX_K = 25
 VEC_SIZE = 100
 
 EXPAND_K = 2

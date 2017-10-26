@@ -18,16 +18,8 @@ size = len(word_list)
 
 print "Begin string"
 print_time()
-expand_result = []
-f = open(app.config["DIS_FILE"], "r")
-for line in f:
-    ar = line[0:len(line) - 1].split(" ")
-    res = []
-    for x in ar:
-        a, b = x[1:-1].split(',')
-        a, b = int(a), float(b)
-        res.append((a, b))
-    expand_result.append(res)
+mat_id = np.reshape(np.fromfile(app.config["DIS_FILE_ID"], dtype=np.int32), (-1, app.config["MAX_K"]))
+mat_value = np.reshape(np.fromfile(app.config["DIS_FILE_VALUE"], dtype=np.float32), (-1, app.config["MAX_K"]))
 
 """print "Begin matrix"
 print_time()
@@ -72,7 +64,7 @@ def expand(sentence, expand_k=None, expand_alpha=None):
     for a in range(0, len(l)):
         print "Expand ", arr[l[a]]
         for b in range(1, expand_k + 1):
-            (id_, value_) = expand_result[l[a]][b]
+            (id_, value_) = (mat_id[l[a]][b], mat_value[l[a]][b])
             if value_ > expand_alpha:
                 print id_, value_
                 origin += " " + arr[id_]
