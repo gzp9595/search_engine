@@ -15,13 +15,27 @@ for line in f:
     arr.append(line[0:len(line) - 1])
     cnt += 1
 size = len(word_list)
-print "Begin matrix"
+
+print "Begin string"
+print_time()
+expand_result = []
+f = open(app.config["DIS_FILE"], "r")
+for line in f:
+    ar = line[0:len(line) - 1].split(" ")
+    res = []
+    for x in ar:
+        a, b = x[1:-1].split(',')
+        a, b = int(a), float(b)
+        res.append((a, b))
+    expand_result.append(res)
+
+"""print "Begin matrix"
 print_time()
 
 mat = np.transpose(np.reshape(np.fromfile(app.config["VEC_FILE"], dtype=np.float32), (-1, app.config["VEC_SIZE"])))
 
 mat /= np.sqrt((mat ** 2.).sum(axis=0, keepdims=True))
-
+"""
 print "Done"
 print_time()
 
@@ -39,7 +53,7 @@ def expand(sentence, expand_k=None, expand_alpha=None):
         if x in word_list:
             l.append(word_list[x])
 
-    print "Being calculation"
+    """print "Being calculation"
     print_time()
     now_mat = np.dot(np.transpose(mat[:, l]), mat)
     part_mat = np.argpartition(now_mat, size - expand_k - 1, axis=1)
@@ -52,7 +66,16 @@ def expand(sentence, expand_k=None, expand_alpha=None):
         for b in range(size - expand_k - 1, size):
             if part_mat[a][b] != l[a] and now_mat[a][part_mat[a][b]] > expand_alpha:
                 print arr[part_mat[a][b]], now_mat[a][part_mat[a][b]]
-                origin += " " + arr[part_mat[a][b]]
+                origin += " " + arr[part_mat[a][b]]"""
+
+    origin = ""
+    for a in range(0, len(l)):
+        print "Expand ", arr[l[a]]
+        for b in range(1, expand_k + 1):
+            (id_, value_) = expand_result[l[a]][b]
+            if value_ > expand_alpha:
+                print id_, value_
+                origin += " " + arr[id_]
 
     print origin
     return origin
