@@ -1,3 +1,4 @@
+#  -*- coding:utf-8 -*-
 import os
 import config
 import json
@@ -19,11 +20,10 @@ def form(x):
 
 def add_to_set(res):
     for x in res["hits"]["hits"]:
-        if "FLYJ" in x["_source"]:
-            for y in x["_source"]["FLYJ"]:
-                se.add(form(y))
-        else:
-            print x
+        for y in x["_source"]["FLYJ"]:
+            if form(y)==(u"中华人民共和国刑法",0,2):
+                print x
+                gg
 
 
 if __name__ == '__main__':
@@ -56,7 +56,3 @@ if __name__ == '__main__':
     se = list(se)
     se.sort()
 
-    f = open("law_list.txt","w")
-
-    for (x,y,z) in se:
-        print >> f,x.encode("utf8"),y,z
