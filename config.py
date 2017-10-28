@@ -32,3 +32,6 @@ EXPAND_RATIO = [8, 0]
 
 LOAD_MODEL = True
 USING_JIEBA = False
+
+ELASTIC_USER = "no_user"
+ELASTIC_PASS = "no_pass"
