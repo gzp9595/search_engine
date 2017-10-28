@@ -232,6 +232,7 @@ def search():
             result.append(res)
         print "All over again"
         print_time()
+        result = {"document":result,"information":{}}
 
     args = dict(request.args)
     if not ("search_content" in request.args):
