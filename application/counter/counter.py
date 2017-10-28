@@ -10,32 +10,38 @@ def count_level(obj_list):
 
     for x in obj_list:
         if "FYCJ" in x:
+            if x["FYCJ"]==0:
+                continue
             result[match_list[x["FYCJ"]]] += 1
 
     return result
 
 
 def count_case_type(obj_list):
-    match_list = ["", u"刑事", u"民事", u"行政", u"赔偿", u"执行"]
+    match_list = ["", u"刑事", u"民事", u"行政", u"赔偿", u"执行",u"其他"]
     result = {}
     for a in range(1, len(match_list)):
         result[match_list[a]] = 0
 
     for x in obj_list:
         if "AJLX" in x:
+            if x["AJLX"]==0:
+                continue
             result[match_list[x["AJLX"]]] += 1
 
     return result
 
 
 def count_doc_type(obj_list):
-    match_list = ["", u"判决书", u"裁定书", u"调解书", u"决定书", u"通知书", u"批复", u"答复", u"函", u"令"]
+    match_list = ["", u"判决书", u"裁定书", u"调解书", u"决定书", u"通知书", u"批复", u"答复", u"函", u"令",u"其他"]
     result = {}
     for a in range(1, len(match_list)):
         result[match_list[a]] = 0
 
     for x in obj_list:
         if "WSLX" in x:
+            if x["WSLX"]==0:
+                continue
             result[match_list[x["WSLX"]]] += 1
 
     return result
@@ -86,6 +92,10 @@ def count_pub_date(obj_list):
 
 
 def get_info(obj_list):
+    l = []
+    for x in obj_list:
+        l.append(x["_source"])
+    obj_list=l
     result = {}
 
     result["court_level"] = count_level(obj_list)

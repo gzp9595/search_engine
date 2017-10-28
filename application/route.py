@@ -328,6 +328,8 @@ def search_new():
             search_type = match_type[args["where_to_search"]]
             expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
+            query_string = json.dumps({"query": {"bool": {"must": body}}})
+            print query_string
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                             from_id)
             id_list = set()
@@ -390,7 +392,6 @@ def search_new():
             result.append(res)
         print "All over again"
         print_time()
-        result = {"document":result,"information":inf}
 
     args = dict(request.args)
     if not ("search_content" in request.args):
