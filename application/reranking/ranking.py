@@ -64,12 +64,37 @@ def add_data(obj, query, score):
     f.close()
 
 
+def try_get(obj, mode):
+    from application.elastic import get_by_id
+    import numpy as np
+    have_vector = {"TFIDF": "tfidf", "WORD embedding": "word"}
+    arr = ["LDA", "TFIDF", "WORD embedding", "LSTM", "CNN"]
+    if arr[mode] == "TFIDF":
+        data = get_by_id("law_vector", have_vector[arr[mode]], obj["docId"])
+        data = data[0:len(data) - 1].split(" ")
+        res = {}
+        for x in data:
+            if ":" in x:
+                t = x.split(":")
+                res[int(t[0])] = float(t[1])
+        return res
+    elif arr[mode] == "WORD embedding":
+        data = get_by_id("law_vector", have_vector[arr[mode]], obj["docId"])
+        data = data[0:len(data) - 1].split(" ")
+        for a in range(0, len(data)):
+            data[a] = float(data[a])
+        return np.array(data, dtype=np.float32)
+    else:
+        return doc2vec_model.get_embedding(text=obj["Title"].encode('utf8'), mode=mode)
+
+
 def get_score(obj, query, sc):
     model_type = int(query["type_of_model"])
     if model_type == -2:
         return sc
     if model_type == -1:
-        #print "gg"
+        # print "gg"
+        have_vector = {"TFIDF": "tfidf", "WORD embedding": "word"}
         arr = ["LDA", "TFIDF", "WORD embedding", "LSTM", "CNN"]
         match_type = {
             "0": "content",
@@ -86,15 +111,15 @@ def get_score(obj, query, sc):
                 ratio = float(query[arr[a]])
             else:
                 ratio = 0
-            #print arr[a],ratio
+            # print arr[a],ratio
             if ratio > 0:
                 sc = doc2vec_model.get_similarity(
                     embedding1=doc2vec_model.get_embedding(
-                        text=obj[match_type[query["where_to_search"]]].encode("utf8"), mode=a),
+                        text=try_get(obj, a)),
                     embedding2=doc2vec_model.get_embedding(
                         text=query["search_content"].encode("utf8"), mode=a),
                     mode=a
-                ) * (1-float(query["title_ratio"])) +  doc2vec_model.get_similarity(
+                ) * (1 - float(query["title_ratio"])) + doc2vec_model.get_similarity(
                     embedding1=doc2vec_model.get_embedding(
                         text=obj["Title"].encode("utf8"), mode=a),
                     embedding2=doc2vec_model.get_embedding(
