@@ -60,13 +60,14 @@ def expand(sentence, expand_k=None, expand_alpha=None):
                 print arr[part_mat[a][b]], now_mat[a][part_mat[a][b]]
                 origin += " " + arr[part_mat[a][b]]"""
 
+    print expand_k,expand_alpha
     origin = ""
     for a in range(0, len(l)):
         print "Expand ", arr[l[a]]
         for b in range(1, expand_k + 1):
             (id_, value_) = (mat_id[l[a]][b], mat_value[l[a]][b])
             if value_ > expand_alpha:
-                print id_, value_
+                print arr[id_], value_
                 origin += " " + arr[id_]
 
     print origin
