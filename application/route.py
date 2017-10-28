@@ -337,7 +337,11 @@ def search_new():
                 id_list.add(x["_id"])
                 x["_score"] *= float(ratio2) / ratio1
                 query_result["hits"].append(x)
+        print "Results return:"
         print len(query_result["hits"])
+        inf = {}
+        if from_id==0:
+            inf = get_info(query_result["hits"])
 
         print "Begin to reranking"
         print_time()
@@ -351,7 +355,7 @@ def search_new():
 
         print "Cut begin"
         print_time()
-        need_to_cut = [args["search_content"] + expanded]
+        need_to_cut = [args["search_content"] + "," + expanded]
         print expanded
         for x in temp:
             need_to_cut.append(x["content"])
@@ -359,9 +363,10 @@ def search_new():
                        12289, 12298, 12299, 126, 183, 64, 124, 35, 65509, 37, 8230, 38, 42, 65288,
                        65289, 8212, 45, 43, 61, 44, 46, 60, 62, 63, 47, 33, 59, 58, 39, 34, 123, 125,
                        91, 93, 92, 124, 35, 36, 37, 94, 38, 42, 40, 41, 95, 45, 43, 61, 9700, 9734, 9733]
-        for x in filter_list:
-            need_to_cut[0] = need_to_cut[0].replace(unichr(x), '')
         cutted = cut(need_to_cut)
+        for x in filter_list:
+            for y in range(0,len(cutted[0])):
+                cutted[0][y] = cutted[0][y].replace(unichr(x), '')
         fs = []
         for a in range(0, len(cutted[0])):
             # print cutted[0][a], len(cutted[0][a].decode("utf8"))
@@ -383,6 +388,7 @@ def search_new():
             result.append(res)
         print "All over again"
         print_time()
+        result = {"document":result,"information":inf}
 
     args = dict(request.args)
     if not ("search_content" in request.args):

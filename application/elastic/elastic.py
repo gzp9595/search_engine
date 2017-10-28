@@ -22,8 +22,8 @@ def get_doc_byid(index, doc_type, id):
 
 def search_doc(index, doc_type, body,size=10,from_=0):
     #print size,from_
-    s = Search(using=es,index=index,doc_type=doc_type).query(body)
-    response = s.execute()
+    #s = Search(using=es,index=index,doc_type=doc_type).query(body)
+    #response = s.execute()
     print response
     res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m",size=size)
     for x in res:
