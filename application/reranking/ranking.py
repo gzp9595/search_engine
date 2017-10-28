@@ -1,5 +1,6 @@
 from application import app
 from application.reranking import classifer, feature
+from application.util import print_time
 
 import json
 import os
@@ -65,28 +66,48 @@ def add_data(obj, query, score):
 
 
 def try_get(obj, mode):
+    #print "Try get begin"
+    #print_time()
     from application.elastic import get_by_id
     import numpy as np
     have_vector = {"TFIDF": "tfidf", "WORD embedding": "word"}
     arr = ["LDA", "TFIDF", "WORD embedding", "LSTM", "CNN"]
-    if arr[mode] == "TFIDF":
-        data = get_by_id("law_vector", have_vector[arr[mode]], obj["docId"])
-        data = data[0:len(data) - 1].split(" ")
-        res = {}
-        for x in data:
-            if ":" in x:
-                t = x.split(":")
-                res[int(t[0])] = float(t[1])
-        return res
-    elif arr[mode] == "WORD embedding":
-        data = get_by_id("law_vector", have_vector[arr[mode]], obj["docId"])
-        data = data[0:len(data) - 1].split(" ")
-        for a in range(0, len(data)):
-            data[a] = float(data[a])
-        return np.array(data, dtype=np.float32)
-    else:
-        return doc2vec_model.get_embedding(text=obj["Title"].encode('utf8'), mode=mode)
+    if arr[mode] == "TFIDF" and False:
+        data = get_by_id("law_vector", have_vector[arr[mode]], obj["doc_name"])
+        if not(data is None):
+            data = data["_source"]["vector"]
+            data = data[0:len(data) - 1].split(" ")
+            res = {}
+            for x in data:
+                if ":" in x:
+                    t = x.split(":")
+                    res[int(t[0])] = float(t[1])
+            #print "Try get end"
+            #print_time()
+            return res
+    elif arr[mode] == "WORD embedding" and False:
+        data = get_by_id("law_vector", have_vector[arr[mode]], obj["doc_name"])
+        if not(data is None):
+            data = data["_source"]["vector"]
+            data = data[0:len(data) - 1].split(" ")
+            for a in range(0, len(data)):
+                data[a] = float(data[a])
+            #print "Try get end"
+            #print_time()
+            return np.array(data, dtype=np.float32)
+    
+    #print obj["doc_name"]
+    
+    return doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=mode)
 
+
+pre_text = ["","","","",""]
+embed = ["","","","",""]
+
+def update_text(s,t):
+    if s != pre_text[t]:
+        pre_text[t] = s
+        embed[t] = doc2vec_model.get_embedding(text=s.encode("utf8"),mode=t)
 
 def get_score(obj, query, sc):
     model_type = int(query["type_of_model"])
@@ -113,17 +134,16 @@ def get_score(obj, query, sc):
                 ratio = 0
             # print arr[a],ratio
             if ratio > 0:
+                update_text(query["search_content"],a)
                 sc = doc2vec_model.get_similarity(
                     embedding1=doc2vec_model.get_embedding(
                         text=try_get(obj, a)),
-                    embedding2=doc2vec_model.get_embedding(
-                        text=query["search_content"].encode("utf8"), mode=a),
+                    embedding2=embed[a],
                     mode=a
                 ) * (1 - float(query["title_ratio"])) + doc2vec_model.get_similarity(
                     embedding1=doc2vec_model.get_embedding(
                         text=obj["Title"].encode("utf8"), mode=a),
-                    embedding2=doc2vec_model.get_embedding(
-                        text=query["search_content"].encode("utf8"), mode=a),
+                    embedding2=embed[a],
                     mode=a
                 ) * float(query["title_ratio"])
                 score += sc * ratio
@@ -132,12 +152,13 @@ def get_score(obj, query, sc):
                 #    return model.judge(get_feature(obj, query))
         return score
     else:
+        update_text(query["search_content"],model_type)
         return doc2vec_model.get_similarity(
-            embedding1=doc2vec_model.get_embedding(text=obj["content"].encode('utf8'), mode=model_type),
-            embedding2=doc2vec_model.get_embedding(text=query["search_content"].encode('utf8'), mode=model_type),
+            embedding1=try_get(obj,model_type),
+            embedding2=embed[model_type],
             mode=model_type) * 0.6 + doc2vec_model.get_similarity(
             embedding1=doc2vec_model.get_embedding(text=obj["Title"].encode('utf8'), mode=model_type),
-            embedding2=doc2vec_model.get_embedding(text=query["search_content"].encode('utf8'), mode=model_type),
+            embedding2=embed[model_type],
             mode=model_type) * 0.4
 
 

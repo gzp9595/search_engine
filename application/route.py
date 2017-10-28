@@ -349,6 +349,7 @@ def search_new():
 
         print "Begin to reranking"
         print_time()
+        args["search_content"] += expanded
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
         print "Reranking Done"
         print_time()
