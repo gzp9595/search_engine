@@ -3,6 +3,7 @@ from application import app
 from elasticsearch import Elasticsearch
 from elasticsearch import exceptions
 from elasticsearch import helpers
+from elasticsearch_dsl import Search
 import json
 
 es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"],http_auth=(app.config["ELASTIC_USER"],app.config["ELASTIC_PASS"]))
@@ -21,6 +22,9 @@ def get_doc_byid(index, doc_type, id):
 
 def search_doc(index, doc_type, body,size=10,from_=0):
     #print size,from_
+    s = Search(using=es,index=index,doc_type=doc_type).query(body)
+    response = s.execute()
+    print response
     res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m",size=size)
     for x in res:
         if x != "hits":
