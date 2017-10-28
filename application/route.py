@@ -299,7 +299,7 @@ def search_new():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                           from_id)
 
         if "where_to_search" in args and args["search_content"] != "":
@@ -316,7 +316,7 @@ def search_new():
             search_type = match_type[args["where_to_search"]]
             expanded = expand(args["search_content"])
             body[0] = {"match": {search_type: {"query": expanded}}}
-            new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
+            new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                             from_id)
             id_list = set()
             for x in query_result["hits"]:
@@ -327,6 +327,7 @@ def search_new():
                 id_list.add(x["_id"])
                 x["_score"] *= float(ratio2) / ratio1
                 query_result["hits"].append(x)
+        print len(query_result["hits"])
 
         print "Begin to reranking"
         print_time()
