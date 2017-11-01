@@ -12,3 +12,5 @@ def initialize():
     app.config.from_pyfile(config_file)
     if os.path.exists(local_config_file):
         app.config.from_pyfile(local_config_file)
+
+    from . import route
