@@ -35,3 +35,7 @@ USING_JIEBA = False
 
 ELASTIC_USER = "no_user"
 ELASTIC_PASS = "no_pass"
+
+DATABASE_IP = "135.246.79.80:6666"
+DATABASE_USER = "user"
+DATABASE_PASS = "nopass"

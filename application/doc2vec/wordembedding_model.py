@@ -1,4 +1,5 @@
 import numpy as np
+import numpy as np
 class wordembedding_model(object):
 	def __init__(self, wordembedding_path = '../train/words.vec'):
 
