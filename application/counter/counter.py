@@ -102,7 +102,7 @@ def count_region(obj_list):
 
     for x in obj_list:
         for y in l:
-            if y in x["content"]:
+            if "FYMC" in x and y in x["FYMC"]:
                 result[y] += 1
 
     return result

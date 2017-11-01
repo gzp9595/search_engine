@@ -314,6 +314,8 @@ def search_new():
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                           from_id)
 
+        for a in range(0,len(query_result["hits"])):
+            query_result["hits"][len(query_result["hits"])-a-1]["_score"] /= query_result["hits"][0]["_score"]
         if "where_to_search" in args and args["search_content"] != "":
             print "Begin second round search"
             print_time()
@@ -332,6 +334,8 @@ def search_new():
             print query_string
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                             from_id)
+            for a in range(0,len(new_result["hits"])):
+                new_result["hits"][len(new_result["hits"])-a-1]["_score"] /= new_result["hits"][0]["_score"]
             id_list = set()
             for x in query_result["hits"]:
                 id_list.add(x["_id"])
@@ -349,8 +353,10 @@ def search_new():
 
         print "Begin to reranking"
         print_time()
+        fff = args["search_content"]
         args["search_content"] += expanded
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        args["search_content"] = fff
         print "Reranking Done"
         print_time()
 
@@ -427,7 +433,7 @@ def get_doc_byid():
     if "id" in request.args:
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
-        data["_source"]["FLYJ"].sort()
+        data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
         data = json.dumps(data)
         response = make_response(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
