@@ -444,19 +444,22 @@ def gen_code():
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
-    request.args = dict(request.args)
+    print request.args
     for x in request.form:
         request.args[x] = request.form[x]
 
+    if not("code" in request.args):
+        return "GG"
+    if not(database.check_code(request.args["code"])):
+        return "GG"
     if database.add_user(request.args):
         return "Success"
     else:
         return "GG"
 
 
-@app.route('/login', method=["POST", "GET"])
+@app.route('/login', methods=["POST", "GET"])
 def login():
-    request.args = dict(request.args)
     for x in request.form:
         request.args[x] = request.form[x]
 

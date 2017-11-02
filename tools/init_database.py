@@ -3,7 +3,9 @@ if __name__ == "__main__":
 
     initialize(False)
 
-    from application.databaser import cursor
+    from application.databaser import database
+
+    cursor = database.db.cursor()
 
     sql = """CREATE TABLE IF NOT EXISTS user(
           username VARCHAR(20) NOT NULL,
@@ -25,3 +27,4 @@ if __name__ == "__main__":
           create_time DATETIME NOT NULL,
           PRIMARY KEY (code)
         )"""
+    cursor.execute(sql)

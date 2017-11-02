@@ -11,7 +11,8 @@ def execute_write(sql):
         cursor.execute(sql)
         db.commit()
         return True
-    except:
+    except Exception as e:
+        print e	
         db.rollback()
         return False
 
@@ -21,7 +22,8 @@ def execute_read(sql):
     try:
         cursor.execute(sql)
         return cursor
-    except:
+    except Exception as e:
+        print e	
         return None
 
 
@@ -70,8 +72,8 @@ def gen_code():
     import random
     code = str(random.randint(100000, 999999))
     execute_write("""
-        INSERT INTO law(code,create_time)
-        VAKUES ('%s',NOW())
+        INSERT INTO code(code,create_time)
+        VALUES ('%s',NOW())
     """ % code)
 
     return code
@@ -90,7 +92,7 @@ def check_user(args):
     if cursor is None:
         return False
 
-    result = cursor.fetch_all()
+    result = cursor.fetchall()
     if len(result) > 0:
         return True
     else:
