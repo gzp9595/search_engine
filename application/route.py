@@ -17,48 +17,20 @@ from . import app
 from matcher import get_best
 from application.cutter import cut
 from application.counter import get_info
+from application.databaser import database
 
 import urllib2
 import urllib
-
-cnt = 0
-count = 0
-
-
-@app.route('/insert_all')
-def insert_all():
-    return "Disabled"
-    if not ("index" in request.args) or not ("doc_type" in request.args):
-        return "No specific data"
-    global count
-    global cnt
-    count = 0
-    cnt = 0
-    index = request.args["index"]
-    doc_type = request.args["doc_type"]
-    dfs_insert(index, doc_type, config.DATA_DIR + index + "/" + doc_type + "/")
-    return "Failed:" + str(count)
-
-
-@app.route('/get_count')
-def get_count():
-    return str(elastic.get_count(request.args["index"], request.args["doc_type"])["count"])
-
-
-@app.route('/remove_all')
-def remove_all():
-    return "I won't allow you to do this"
-    return "Succeed delete " + str(elastic.remove_all(request.args["index"], request.args["doc_type"])["deleted"])
 
 
 @app.route('/search', methods=["POST", "GET"])
 def search():
     print "Mission Start"
     result = []
-    print request.args
+    request.args = dict(request.args)
     for x in request.form:
         request.args[x] = request.form[x]
-    #for x in request.args:
+    # for x in request.args:
     #    request.args[x] = request.args[x][0]
     print request.args
 
@@ -195,7 +167,7 @@ def search():
         print "Results return:"
         print len(query_result["hits"])
         inf = {}
-        if from_id==0:
+        if from_id == 0:
             inf = get_info(query_result["hits"])
 
         print "Begin to reranking"
@@ -220,7 +192,7 @@ def search():
                        91, 93, 92, 124, 35, 36, 37, 94, 38, 42, 40, 41, 95, 45, 43, 61, 9700, 9734, 9733]
         cutted = cut(need_to_cut)
         for x in filter_list:
-            for y in range(0,len(cutted[0])):
+            for y in range(0, len(cutted[0])):
                 cutted[0][y] = cutted[0][y].replace(unichr(x), '')
         fs = []
         for a in range(0, len(cutted[0])):
@@ -243,7 +215,7 @@ def search():
             result.append(res)
         print "All over again"
         print_time()
-        result = {"document":result,"information":inf}
+        result = {"document": result, "information": inf}
 
     args = dict(request.args)
     if not ("search_content" in request.args):
@@ -314,8 +286,8 @@ def search_new():
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                           from_id)
 
-        for a in range(0,len(query_result["hits"])):
-            query_result["hits"][len(query_result["hits"])-a-1]["_score"] /= query_result["hits"][0]["_score"]
+        for a in range(0, len(query_result["hits"])):
+            query_result["hits"][len(query_result["hits"]) - a - 1]["_score"] /= query_result["hits"][0]["_score"]
         if "where_to_search" in args and args["search_content"] != "":
             print "Begin second round search"
             print_time()
@@ -334,8 +306,8 @@ def search_new():
             print query_string
             new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
                                             from_id)
-            for a in range(0,len(new_result["hits"])):
-                new_result["hits"][len(new_result["hits"])-a-1]["_score"] /= new_result["hits"][0]["_score"]
+            for a in range(0, len(new_result["hits"])):
+                new_result["hits"][len(new_result["hits"]) - a - 1]["_score"] /= new_result["hits"][0]["_score"]
             id_list = set()
             for x in query_result["hits"]:
                 id_list.add(x["_id"])
@@ -348,7 +320,7 @@ def search_new():
         print "Results return:"
         print len(query_result["hits"])
         inf = {}
-        if from_id==0:
+        if from_id == 0:
             inf = get_info(query_result["hits"])
 
         print "Begin to reranking"
@@ -376,7 +348,7 @@ def search_new():
                        91, 93, 92, 124, 35, 36, 37, 94, 38, 42, 40, 41, 95, 45, 43, 61, 9700, 9734, 9733]
         cutted = cut(need_to_cut)
         for x in filter_list:
-            for y in range(0,len(cutted[0])):
+            for y in range(0, len(cutted[0])):
                 cutted[0][y] = cutted[0][y].replace(unichr(x), '')
         fs = []
         for a in range(0, len(cutted[0])):
@@ -414,18 +386,6 @@ def search_new():
     response.headers['Access-Control-Allow-Methods'] = 'GET'
     response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
     return render_template("search_new.html", args=request.args, result=result, query=request.args)
-
-
-@app.route('/adddata', methods=["POST", "GET"])
-def add_data():
-    print "GG"
-    print request.form
-    query = json.loads(request.form["query"])
-    obj = elastic.get_by_id(query["index"], query["doc_type"], request.form["id"])
-    score = int(request.form["score"])
-    print request.form["id"], score
-    ranking.add_data(obj["_source"], query, score)
-    return ""
 
 
 @app.route('/doc')
@@ -469,25 +429,6 @@ def get_doc_byid_new():
     return "Error"
 
 
-@app.route("/addclickdata", methods=["POST", "GET"])
-def addclickdata():
-    print request.form
-    file_name = str(uuid.uuid4())
-    f = open(config.CLICK_DIR + file_name + ".json", "w")
-    print >> f, json.dumps(request.form)
-    f.close()
-
-
-@app.route("/train_model")
-def train_model():
-    train_new_model()
-
-
-@app.route("/")
-def main():
-    return render_template("main.html")
-
-
 @app.route('/static/<path:filetype>/<path:filename>')
 def serve_static(filetype, filename):
     root_dir = os.path.dirname(os.getcwd())
@@ -495,22 +436,31 @@ def serve_static(filetype, filename):
                                filename)
 
 
-@app.route('/document')
-def get_document():
-    return render_template("document.html", id=request.args["id"])
+@app.route('/gen_code')
+def gen_code():
+    code = database.gen_code()
+    return code
 
 
-@app.route('/search_new2')
-def search_new2():
-    url = "http://bc2.citr.me:8000/search"
-    first = True
-    for x in request.args:
-        if first:
-            url += "?"
-        else:
-            url += "&"
-        url += x + "=" + request.args[x]
-        first = False
-    result = json.loads(urllib2.urlopen(url=url.encode('utf8'), timeout=1000000).read())
+@app.route('/register', methods=["POST", "GET"])
+def register():
+    request.args = dict(request.args)
+    for x in request.form:
+        request.args[x] = request.form[x]
 
-    return render_template("search_new2.html", result=result, s=len(result), args=request.args)
+    if database.add_user(request.args):
+        return "Success"
+    else:
+        return "GG"
+
+
+@app.route('/login', method=["POST", "GET"])
+def login():
+    request.args = dict(request.args)
+    for x in request.form:
+        request.args[x] = request.form[x]
+
+    if database.check_user(request.args):
+        return "Success"
+    else:
+        return "GG"

@@ -18,3 +18,10 @@ if __name__ == "__main__":
           PRIMARY KEY (username)
         )"""
     cursor.execute(sql)
+
+    sql = """CREATE TABLE IF NOT EXISTS code(
+          code VARCHAR(100) NOT NULL,
+          leveltype INT NOT NULL DEFAULT 0,
+          create_time DATETIME NOT NULL,
+          PRIMARY KEY (code)
+        )"""
