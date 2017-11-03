@@ -74,13 +74,17 @@ def check_code(code):
     if len(result) == 0:
         return False
     else:
-        if execute_write("""
-            DELETE FROM law WHERE
-              code = '%s'
-        """ % code):
-            return True
-        else:
-            return False
+        return True
+
+
+def move_code(code):
+    if execute_write("""
+        DELETE FROM code WHERE
+          code = '%s'
+    """ % code):
+        return True
+    else:
+        return False
 
 
 def gen_code():

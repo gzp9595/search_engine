@@ -453,8 +453,10 @@ def register():
     if not(database.check_code(request.args["code"])):
         return json.dumps(util.create_error("Code not correct"))
 
-    return json.dumps(database.add_user(request.args))
-
+    result = database.add_user(request.args)
+    if result["code"]==0:
+        database.move_code(request.args["code"])
+    return json.dumps(result)
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
