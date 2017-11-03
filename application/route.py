@@ -11,7 +11,7 @@ import util
 from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
-from application.util import print_time, form_date
+from application.util import print_time, form_date, merge_dict
 from application.expander import expand
 from . import app
 from matcher import get_best
@@ -27,12 +27,7 @@ import urllib
 def search():
     print "Mission Start"
     result = []
-    request.args = dict(request.args)
-    #for x in request.form:
-    #    request.args[x] = request.form[x]
-    for x in request.args:
-        request.args[x] = request.args[x][0]
-    print request.args
+    request.args = merge_dict([request.args,request.form])
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -237,9 +232,7 @@ def search():
 def search_new():
     print "Mission Start"
     result = []
-    request.args = dict(request.args)
-    for x in dict(request.form):
-        request.args[x] = request.form[x]
+    request.args = merge_dict([request.args,request.form])
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -444,9 +437,7 @@ def gen_code():
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
-    print request.args
-    for x in request.form:
-        request.args[x] = request.form[x]
+    request.args = merge_dict([request.args,request.form])
 
     if not("code" in request.args):
         return json.dumps(util.create_error("Code not found"))
@@ -460,6 +451,7 @@ def register():
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
+    request.args = merge_dict([request.args,request.form])
     for x in request.form:
         request.args[x] = request.form[x]
 

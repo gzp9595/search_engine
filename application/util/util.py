@@ -33,3 +33,11 @@ def create_success(msg):
 
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
+def merge_dict(arr):
+    dic = {}
+    for x in arr:
+        x=dict(x)
+        for y in x:
+            dic[y]=x[y][0]
+    return dic
