@@ -1,5 +1,6 @@
 from application import app
 import MySQLdb
+from application.util import *
 
 db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                      app.config["DATABASE_NAME"])
@@ -12,7 +13,7 @@ def execute_write(sql):
         db.commit()
         return True
     except Exception as e:
-        print e	
+        print e
         db.rollback()
         return False
 
@@ -23,26 +24,40 @@ def execute_read(sql):
         cursor.execute(sql)
         return cursor
     except Exception as e:
-        print e	
+        print e
         return None
 
 
 def add_user(obj):
     if not ("username" in obj):
-        return False
+        return create_error("Username not found")
     if not ("password" in obj):
-        return False
+        return create_error("Password not found")
     if not ("nickname" in obj):
         obj["nickname"] = obj["username"]
     if not ("phone_number" in obj):
-        return False
+        return create_error("phone_numer not found")
     if not ("mail" in obj):
-        return False
+        return create_error("mail not found")
 
-    return execute_write("""
+    cursor = execute_read("""
+        SELECT * FROM user WHERE
+          username='%s'
+    """ % obj["username"])
+
+    if not (cursor is None):
+        if len(cursor.fetchall()) > 0:
+            return create_error("User exists")
+
+    success = execute_write("""
         INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type)
         VALUES (NOW(),'%s','%s','%s','%s','%s','%d')
     """ % (obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], 0))
+
+    if success:
+        return create_success("Success")
+    else:
+        return create_error("Unknown error")
 
 
 def check_code(code):
@@ -81,19 +96,19 @@ def gen_code():
 
 def check_user(args):
     if not ("username" in args):
-        return False
+        return create_error("Username not found")
     if not ("password" in args):
-        return False
+        return create_error("Password not found")
 
     cursor = execute_read("""SELECT * FROM user WHERE
       username='%s' AND password='%s'
     """ % (args["username"], args["password"]))
 
     if cursor is None:
-        return False
+        return create_error("Unknown error")
 
     result = cursor.fetchall()
     if len(result) > 0:
-        return True
+        return create_success("Success")
     else:
-        return False
+        return create_error("Password doesn't match")

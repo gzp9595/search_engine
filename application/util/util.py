@@ -23,5 +23,13 @@ def check_date(year, month, day):
         return False
 
 
+def create_error(msg):
+    return {"code": 1, "msg": msg}
+
+
+def create_success(msg):
+    return {"code": 0, "msg": msg}
+
+
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))

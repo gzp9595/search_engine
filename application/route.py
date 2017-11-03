@@ -449,13 +449,11 @@ def register():
         request.args[x] = request.form[x]
 
     if not("code" in request.args):
-        return "GG"
+        return json.dumps(util.create_error("Code not found"))
     if not(database.check_code(request.args["code"])):
-        return "GG"
-    if database.add_user(request.args):
-        return "Success"
-    else:
-        return "GG"
+        return json.dumps(util.create_error("Code not correct"))
+
+    return json.dumps(database.add_user(request.args))
 
 
 @app.route('/login', methods=["POST", "GET"])
@@ -463,7 +461,4 @@ def login():
     for x in request.form:
         request.args[x] = request.form[x]
 
-    if database.check_user(request.args):
-        return "Success"
-    else:
-        return "GG"
+    return json.dumps(database.check_user(request.args))
