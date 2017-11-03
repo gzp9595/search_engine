@@ -28,10 +28,10 @@ def search():
     print "Mission Start"
     result = []
     request.args = dict(request.args)
-    for x in request.form:
-        request.args[x] = request.form[x]
-    # for x in request.args:
-    #    request.args[x] = request.args[x][0]
+    #for x in request.form:
+    #    request.args[x] = request.form[x]
+    for x in request.args:
+        request.args[x] = request.args[x][0]
     print request.args
 
     if "doc_type" in request.args and "index" in request.args:
