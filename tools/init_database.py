@@ -1,4 +1,6 @@
 if __name__ == "__main__":
+    import sys
+    sys.path.insert(0,"/home/zhx/search_engine/")
     from application import app, initialize
 
     initialize(False)
@@ -27,7 +29,7 @@ if __name__ == "__main__":
           create_time DATETIME NOT NULL,
           type_number INT NOT NULL,
           doc_id VARCHAR(60) NOT NULL DEFAULT '',
-          query_parameter VARCHAR(65536) NOT NULL DEFAULT '',
+          query_parameter TEXT NOT NULL,
           user_ip VARCHAR(50) NOT NULL DEFAULT  '',
           PRIMARY KEY (log_id)
         )"""
