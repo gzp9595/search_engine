@@ -21,6 +21,18 @@ if __name__ == "__main__":
         )"""
     cursor.execute(sql)
 
+    sql = """CREATE TABLE IF NOT EXISTS log(
+          log_id INT UNSIGNED AUTO_INCREMENT,
+          username VARCHAR(20) NOT NULL,
+          create_time DATETIME NOT NULL,
+          type_number INT NOT NULL,
+          doc_id VARCHAR(60) NOT NULL DEFAULT '',
+          query_parameter VARCHAR(65536) NOT NULL DEFAULT '',
+          user_ip VARCHAR(50) NOT NULL DEFAULT  '',
+          PRIMARY KEY (log_id)
+        )"""
+    cursor.execute(sql)
+
     sql = """CREATE TABLE IF NOT EXISTS code(
           code VARCHAR(100) NOT NULL,
           leveltype INT NOT NULL DEFAULT 0,

@@ -1,1 +1,1 @@
-from application import app, initialize
+import application
