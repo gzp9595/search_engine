@@ -36,7 +36,7 @@ def add_user(obj):
     if not ("nickname" in obj):
         obj["nickname"] = obj["username"]
     if not ("phone_number" in obj):
-        return create_error("phone_numer not found")
+        return create_error("phone_number not found")
     if not ("mail" in obj):
         return create_error("mail not found")
 
