@@ -27,7 +27,7 @@ import urllib
 def search():
     print "Mission Start"
     result = []
-    request.args = merge_dict([request.args,request.form])
+    request.args = merge_dict([request.args, request.form])
     for x in request.args:
         print x
 
@@ -431,9 +431,10 @@ def serve_static(filetype, filename):
                                filename)
 
 
-@app.route('/gen_code')
+@app.route('/gen_code', methods=["POST", "GET"])
 def gen_code():
-    code = database.gen_code()
+    request.args = merge_dict([request.args, request.form])
+    code = database.gen_code(request.args)
     return code
 
 
@@ -443,10 +444,11 @@ def register():
 
     if not ("code" in request.args):
         return json.dumps(util.create_error(100, "Code not found"))
-    if not (database.check_code(request.args["code"])):
+    data = database.check_code(request.args["code"])
+    if data == -1:
         return json.dumps(util.create_error(101, "Code not correct"))
 
-    result = database.add_user(request.args)
+    result = database.add_user(request.args, data)
     if result["code"] == 0:
         database.move_code(request.args["code"])
     return json.dumps(result)

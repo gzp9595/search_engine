@@ -32,7 +32,7 @@ def execute_read(sql):
         return None
 
 
-def add_user(obj):
+def add_user(obj, code_level):
     if not ("username" in obj):
         return create_error(1, "Username not found")
     if not ("password" in obj):
@@ -43,6 +43,12 @@ def add_user(obj):
         return create_error(3, "phone_number not found")
     if not ("mail" in obj):
         return create_error(4, "mail not found")
+    if not ("user_photo" in obj):
+        obj["user_phoho"] = ""
+    if not ("user_org" in obj):
+        obj["user_org"] = ""
+    if not ("user_identity" in obj):
+        obj["user_identity"] = 0
 
     cursor = execute_read("""
         SELECT * FROM user WHERE
@@ -54,9 +60,12 @@ def add_user(obj):
             return create_error(5, "User exists")
 
     success = execute_write("""
-        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type)
-        VALUES (NOW(),'%s','%s','%s','%s','%s','%d')
-    """ % (obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], 0))
+        INSERT INTO user(username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
+        VALUES ('%s','%s','%s','%s','%s',%d,'%s','%s',%d)
+    """ % (
+        obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
+        obj["user_photo"],
+        obj["user_org"], obj["user_identity"]))
 
     if success:
         return create_success("Success")
@@ -66,7 +75,7 @@ def add_user(obj):
 
 def check_code(code):
     cursor = execute_read("""
-        SELECT * FROM code WHERE
+        SELECT leveltype FROM code WHERE
           code = '%s'
     """ % code)
 
@@ -76,9 +85,9 @@ def check_code(code):
     result = cursor.fetchall()
 
     if len(result) == 0:
-        return False
+        return -1
     else:
-        return True
+        return result[0][0]
 
 
 def move_code(code):
@@ -91,13 +100,16 @@ def move_code(code):
         return False
 
 
-def gen_code():
+def gen_code(args):
     import random
+    level = 0
+    if "type" in args:
+        level = int(args["type"])
     code = str(random.randint(100000, 999999))
     execute_write("""
-        INSERT INTO code(code,create_time)
-        VALUES ('%s',NOW())
-    """ % code)
+        INSERT INTO code(code,leveltype)
+        VALUES ('%s',%d)
+    """ % (code, level))
 
     return code
 
@@ -138,4 +150,78 @@ def get_user_info(args):
     if len(result) == 0:
         return create_error(2, "User not found")
     else:
-        return create_success(result[0])
+        one = {
+            "username": result[0][0],
+            "nickname": result[0][2],
+            "rest_money": result[0][3],
+            "phone_number": result[0][4],
+            "mail": result[0][5],
+            "user_type": result[0][6],
+            "user_photo": result[0][7],
+            "user_org": result[0][8],
+            "user_identity": result[0][9]
+        }
+
+        return create_success(one)
+
+def check_searchable(args):
+    if not("username" in args):
+        return create_error(1,"Username not found")
+
+    cursor = execute_read("""SELECT usertype FROM user WHERE
+      username='%s'
+    """ % args["username"])
+
+    if cursor is None:
+        return create_error(255,"Unkonwn error")
+
+    result = cursor.fetchall()
+    if len(result)==0:
+        return create_error(2,"No such user")
+
+    leveltype = result[0][0]
+    cursor = execute_read("""SELECT * FROM usertype WHERE
+      type_id = %d""" % leveltype)
+
+    if cursor is None:
+        return create_error(255,"Unknown error")
+
+    result = cursor.fetchall()
+
+    search_perminute = result[0][1]
+    search_perday = result[0][2]
+
+
+def check_viewable(args):
+    if not("username" in args):
+        return create_error(1,"Username not found")
+
+    cursor = execute_read("""SELECT usertype FROM user WHERE
+      username='%s'
+    """ % args["username"])
+
+    if cursor is None:
+        return create_error(255,"Unkonwn error")
+
+    result = cursor.fetchall()
+    if len(result)==0:
+        return create_error(2,"No such user")
+
+    leveltype = result[0][0]
+    cursor = execute_read("""SELECT * FROM usertype WHERE
+      type_id = %d""" % leveltype)
+
+    if cursor is None:
+        return create_error(255,"Unknown error")
+
+    result = cursor.fetchall()
+
+    view_perminute = result[0][1]
+    view_perday = result[0][2]
+
+def add_favor_list(args):
+    if not("username" in args):
+        return create_error(1,"Username not found")
+    if not("favor_name" in args):
+        return create_error(2,"Favorite list name not found")
+    
