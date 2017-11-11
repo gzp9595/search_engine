@@ -13,5 +13,5 @@ if __name__ == "__main__":
     cursor = database.db.cursor()
 
     for x in table_list:
-        sql = """DROP TABLE %s IF EXISTS""" % x
+        sql = """DROP TABLE %s""" % x
         cursor.execute(sql)
