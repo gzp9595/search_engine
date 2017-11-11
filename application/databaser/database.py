@@ -224,4 +224,3 @@ def add_favor_list(args):
         return create_error(1,"Username not found")
     if not("favor_name" in args):
         return create_error(2,"Favorite list name not found")
-    
