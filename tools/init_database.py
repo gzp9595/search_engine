@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     for a in range(0, 4):
         sql = """
-            INSERT INTO TABLE usertype(type_id,search_perminute,search_perday,view_perminute,view_perday)
+            INSERT INTO usertype(type_id,search_perminute,search_perday,view_perminute,view_perday)
             VALUES (%d,%d,%d,%d,%d)
         """ % (a, int(3 * (1.5 ** a)), int(3000 * (1.5 ** a)), int(12 * (1.5 ** a)), int(10000 * (1.5 ** a)))
         cursor.execute(sql)
