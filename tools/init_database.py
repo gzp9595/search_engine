@@ -69,7 +69,7 @@ if __name__ == "__main__":
           favorite_id INT UNSIGNED AUTO_INCREMENT,
           create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           username VARCHAR(20) NOT NULL,
-          favoirte_name VARCHAR(20) NOT NULL,
+          favorite_name VARCHAR(20) NOT NULL,
           PRIMARY KEY (favorite_id)
     )"""
 

@@ -465,3 +465,27 @@ def login():
 def get_user_info():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.get_user_info(request.args), cls=util.CJsonEncoder)
+
+
+@app.route('/add_favor_list', methods=["POST", "GET"])
+def get_user_info():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.add_favor_list(request.args), cls=util.CJsonEncoder)
+
+
+@app.route('/get_favor_list', methods=["POST", "GET"])
+def get_user_info():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.get_favor_list(request.args), cls=util.CJsonEncoder)
+
+
+@app.route('/get_favor_list_item', methods=["POST", "GET"])
+def get_user_info():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.get_favor_list_item(request.args), cls=util.CJsonEncoder)
+
+
+@app.route('/add_favor_item', methods=["POST", "GET"])
+def get_user_info():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.add_favor_item(request.args), cls=util.CJsonEncoder)

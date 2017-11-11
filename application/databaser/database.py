@@ -68,7 +68,11 @@ def add_user(obj, code_level):
         obj["user_org"], obj["user_identity"]))
 
     if success:
-        return create_success("Success")
+        res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
+        if res["code"] == 0:
+            create_success("Success")
+        else:
+            return res
     else:
         return create_error(255, "Unknown error")
 
@@ -164,63 +168,141 @@ def get_user_info(args):
 
         return create_success(one)
 
+
 def check_searchable(args):
-    if not("username" in args):
-        return create_error(1,"Username not found")
+    if not ("username" in args):
+        return create_error(1, "Username not found")
 
     cursor = execute_read("""SELECT usertype FROM user WHERE
       username='%s'
     """ % args["username"])
 
     if cursor is None:
-        return create_error(255,"Unkonwn error")
+        return create_error(255, "Unkonwn error")
 
     result = cursor.fetchall()
-    if len(result)==0:
-        return create_error(2,"No such user")
+    if len(result) == 0:
+        return create_error(2, "No such user")
 
     leveltype = result[0][0]
     cursor = execute_read("""SELECT * FROM usertype WHERE
       type_id = %d""" % leveltype)
 
     if cursor is None:
-        return create_error(255,"Unknown error")
+        return create_error(255, "Unknown error")
 
     result = cursor.fetchall()
 
     search_perminute = result[0][1]
     search_perday = result[0][2]
 
+    # cursor = execute_read("""SELECT count(*) FROM log WHERE username = '%s' and """)
+
 
 def check_viewable(args):
-    if not("username" in args):
-        return create_error(1,"Username not found")
+    if not ("username" in args):
+        return create_error(1, "Username not found")
 
     cursor = execute_read("""SELECT usertype FROM user WHERE
       username='%s'
     """ % args["username"])
 
     if cursor is None:
-        return create_error(255,"Unkonwn error")
+        return create_error(255, "Unkonwn error")
 
     result = cursor.fetchall()
-    if len(result)==0:
-        return create_error(2,"No such user")
+    if len(result) == 0:
+        return create_error(2, "No such user")
 
     leveltype = result[0][0]
     cursor = execute_read("""SELECT * FROM usertype WHERE
       type_id = %d""" % leveltype)
 
     if cursor is None:
-        return create_error(255,"Unknown error")
+        return create_error(255, "Unknown error")
 
     result = cursor.fetchall()
 
     view_perminute = result[0][1]
     view_perday = result[0][2]
 
+
 def add_favor_list(args):
-    if not("username" in args):
-        return create_error(1,"Username not found")
-    if not("favor_name" in args):
-        return create_error(2,"Favorite list name not found")
+    if not ("username" in args):
+        return create_error(1, "Username not found")
+    if not ("favor_name" in args):
+        return create_error(2, "Favorite list name not found")
+
+    cursor = execute_read("""SELECT * FROM favorite WHERE
+      username='%s' AND favorite_name='%s'
+    """ % (args["username"], args["favor_name"]))
+
+    if cursor is None:
+        return create_error(255, "Unknown error")
+
+    result = cursor.fetchall()
+
+    if len(result) > 0:
+        return create_error(3, "Favor list already exist")
+
+    if execute_write("""
+      INSERT INTO favorite(username,favorite_name)
+      VALUES ('%s','%s')
+    """ % (args["username"], args["favor_name"])):
+        return create_success("Success")
+    else:
+        return create_error(255, "Unknown error")
+
+
+def get_favor_list(args):
+    if not ("username" in args):
+        return create_error(1, "Username not found")
+
+    cursor = execute_read(
+        """SELECT (favorite_id,favorite_name) FROM favorite WHERE username = '%s'""" % args["username"])
+
+    if cursor is None:
+        return create_error(255, "Unknown error")
+
+    result = cursor.fetchall()
+
+    res = []
+
+    for x in result:
+        res.append({"favorite_id": x[0], "favorite_name": x[1]})
+
+    return create_success(res)
+
+
+def get_favor_list_item(args):
+    if not ("favorite_id" in args):
+        return create_error(1, "Favorite_id not found")
+
+    cursor = execute_read(
+        """SELECT (doc_id) FROM favorite_item WHERE favorite_id = %d""" % int(args["favorite_id"]))
+
+    if cursor is None:
+        return create_error(255, "Unknown error")
+
+    result = cursor.fetchall()
+
+    res = []
+
+    for x in result:
+        res.append({"doc_id": x[0]})
+
+    return create_success(res)
+
+def add_favor_item(args):
+    if not ("docid" in args):
+        return create_error(1, "docid not found")
+    if not ("favorite_id" in args):
+        return create_error(2, "Favorite_id not found")
+
+    if execute_write("""
+      INSERT INTO favorite_item(favorite_id,doc_id)
+      VALUES (%d,'%s')
+    """ % (args["favorite_id"], args["docid"])):
+        return create_success("Success")
+    else:
+        return create_error(255, "Unknown error")
