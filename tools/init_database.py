@@ -22,8 +22,8 @@ if __name__ == "__main__":
           user_photo VARCHAR(5000) NOT NULL,
           user_org VARCHAR(100),
           user_identity INT,
-          create_time NULL,
-          last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
           PRIMARY KEY (user_id)
         )"""
     cursor.execute(sql)
