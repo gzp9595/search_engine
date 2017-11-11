@@ -457,7 +457,7 @@ def login():
     return json.dumps(database.check_user(request.args))
 
 
-@app.route('/get_info', methods=["POST", "GET"])
-def get_info():
+@app.route('/get_user_info', methods=["POST", "GET"])
+def get_user_info():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.get_user_info(request.args))
