@@ -10,6 +10,7 @@ if __name__ == "__main__":
     cursor = database.db.cursor()
 
     sql = """CREATE TABLE IF NOT EXISTS user(
+          user_id  INT UNSIGNED AUTO_INCREMENT,
           username VARCHAR(20) NOT NULL,
           password VARCHAR(5000) NOT NULL,
           nickname VARCHAR(50) NOT NULL,
@@ -19,7 +20,7 @@ if __name__ == "__main__":
           user_type INT NOT NULL DEFAULT 0,
           create_time DATETIME NOT NULL,
           last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          PRIMARY KEY (username)
+          PRIMARY KEY (user_id)
         )"""
     cursor.execute(sql)
 

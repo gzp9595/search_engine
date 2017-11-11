@@ -27,7 +27,7 @@ import urllib
 def search():
     print "Mission Start"
     result = []
-    request.args = merge_dict([request.args,request.form])
+    request.args = merge_dict([request.args, request.form])
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -232,7 +232,7 @@ def search():
 def search_new():
     print "Mission Start"
     result = []
-    request.args = merge_dict([request.args,request.form])
+    request.args = merge_dict([request.args, request.form])
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
@@ -293,7 +293,7 @@ def search_new():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            expanded = expand(args["search_content"],int(args["EXPAND_K"]),float(args["EXPAND_ALPHA"]))
+            expanded = expand(args["search_content"], int(args["EXPAND_K"]), float(args["EXPAND_ALPHA"]))
             body[0] = {"match": {search_type: {"query": expanded}}}
             query_string = json.dumps({"query": {"bool": {"must": body}}})
             print query_string
@@ -437,22 +437,27 @@ def gen_code():
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
-    request.args = merge_dict([request.args,request.form])
+    request.args = merge_dict([request.args, request.form])
 
-    if not("code" in request.args):
-        return json.dumps(util.create_error("Code not found"))
-    if not(database.check_code(request.args["code"])):
-        return json.dumps(util.create_error("Code not correct"))
+    if not ("code" in request.args):
+        return json.dumps(util.create_error(100,"Code not found"))
+    if not (database.check_code(request.args["code"])):
+        return json.dumps(util.create_error(101,"Code not correct"))
 
     result = database.add_user(request.args)
-    if result["code"]==0:
+    if result["code"] == 0:
         database.move_code(request.args["code"])
     return json.dumps(result)
 
+
 @app.route('/login', methods=["POST", "GET"])
 def login():
-    request.args = merge_dict([request.args,request.form])
-    for x in request.form:
-        request.args[x] = request.form[x]
+    request.args = merge_dict([request.args, request.form])
 
     return json.dumps(database.check_user(request.args))
+
+
+@app.route('/get_info', methods=["POST", "GET"])
+def get_info():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.get_user_info(request.args))
