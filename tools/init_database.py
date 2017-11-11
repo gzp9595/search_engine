@@ -53,7 +53,7 @@ if __name__ == "__main__":
           search_perminute INT NOT NULL DEFAULT 3,
           search_perday INT NOT NULL DEFAULT 3000,
           view_perminute INT NOT NULL DEFAULT 12,
-          view_perday INT NOT NULL DEFAULT 10000
+          view_perday INT NOT NULL DEFAULT 10000,
           PRIMARY KEY (type_id)
         )"""
     cursor.execute(sql)
