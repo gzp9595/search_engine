@@ -27,7 +27,9 @@ import urllib
 def search():
     print "Mission Start"
     result = []
-    request.args = merge_dict([request.args, request.form])
+    request.args = merge_dict([request.args,request.form])
+    for x in request.args:
+        print x
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
