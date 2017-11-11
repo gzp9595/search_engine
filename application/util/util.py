@@ -23,8 +23,8 @@ def check_date(year, month, day):
         return False
 
 
-def create_error(msg):
-    return {"code": 1, "msg": msg}
+def create_error(code=1, msg=''):
+    return {"code": code, "msg": msg}
 
 
 def create_success(msg):
@@ -34,10 +34,11 @@ def create_success(msg):
 def print_time():
     print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
+
 def merge_dict(arr):
     dic = {}
     for x in arr:
-        x=dict(x)
+        x = dict(x)
         for y in x:
-            dic[y]=x[y][0]
+            dic[y] = x[y][0]
     return dic

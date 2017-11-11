@@ -8,7 +8,7 @@ db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app
 
 def execute_write(sql):
     db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
-                     app.config["DATABASE_NAME"])
+                         app.config["DATABASE_NAME"])
     cursor = db.cursor()
     try:
         cursor.execute(sql)
@@ -22,7 +22,7 @@ def execute_write(sql):
 
 def execute_read(sql):
     db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
-                     app.config["DATABASE_NAME"])
+                         app.config["DATABASE_NAME"])
     cursor = db.cursor()
     try:
         cursor.execute(sql)
@@ -34,15 +34,15 @@ def execute_read(sql):
 
 def add_user(obj):
     if not ("username" in obj):
-        return create_error("Username not found")
+        return create_error(1, "Username not found")
     if not ("password" in obj):
-        return create_error("Password not found")
+        return create_error(2, "Password not found")
     if not ("nickname" in obj):
         obj["nickname"] = obj["username"]
     if not ("phone_number" in obj):
-        return create_error("phone_number not found")
+        return create_error(3, "phone_number not found")
     if not ("mail" in obj):
-        return create_error("mail not found")
+        return create_error(4, "mail not found")
 
     cursor = execute_read("""
         SELECT * FROM user WHERE
@@ -51,7 +51,7 @@ def add_user(obj):
 
     if not (cursor is None):
         if len(cursor.fetchall()) > 0:
-            return create_error("User exists")
+            return create_error(5, "User exists")
 
     success = execute_write("""
         INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type)
@@ -61,7 +61,7 @@ def add_user(obj):
     if success:
         return create_success("Success")
     else:
-        return create_error("Unknown error")
+        return create_error(255, "Unknown error")
 
 
 def check_code(code):
@@ -104,19 +104,38 @@ def gen_code():
 
 def check_user(args):
     if not ("username" in args):
-        return create_error("Username not found")
+        return create_error(1, "Username not found")
     if not ("password" in args):
-        return create_error("Password not found")
+        return create_error(2, "Password not found")
 
     cursor = execute_read("""SELECT * FROM user WHERE
       username='%s' AND password='%s'
     """ % (args["username"], args["password"]))
 
     if cursor is None:
-        return create_error("Unknown error")
+        return create_error(255, "Unknown error")
 
     result = cursor.fetchall()
     if len(result) > 0:
         return create_success("Success")
     else:
-        return create_error("Password doesn't match")
+        return create_error(3, "Password doesn't match")
+
+
+def get_user_info(args):
+    if not ("username" in args):
+        return create_error(1, "Username not found")
+
+    cursor = execute_read("""SELECT * FROM user WHERE
+      username='%s'
+    """ % args["username"])
+
+    if cursor is None:
+        return create_error(255, "Unknown error")
+
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        return create_error(2, "User not found")
+    else:
+        return create_success(result[0])
