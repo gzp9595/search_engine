@@ -462,4 +462,4 @@ def login():
 @app.route('/get_user_info', methods=["POST", "GET"])
 def get_user_info():
     request.args = merge_dict([request.args, request.form])
-    return json.dumps(database.get_user_info(request.args), util.CJsonEncoder)
+    return json.dumps(database.get_user_info(request.args), cls=util.CJsonEncoder)
