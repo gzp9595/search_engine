@@ -44,7 +44,7 @@ def add_user(obj, code_level):
     if not ("mail" in obj):
         return create_error(4, "mail not found")
     if not ("user_photo" in obj):
-        obj["user_phoho"] = ""
+        obj["user_photo"] = ""
     if not ("user_org" in obj):
         obj["user_org"] = ""
     if not ("user_identity" in obj):
