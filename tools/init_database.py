@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     sql = """CREATE TABLE IF NOT EXISTS favorite(
           favorite_id INT UNSIGNED AUTO_INCREMENT,
-          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL.
+          create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           username VARCHAR(20) NOT NULL,
           favoirte_name VARCHAR(20) NOT NULL,
           PRIMARY KEY (favorite_id)
