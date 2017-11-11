@@ -60,8 +60,8 @@ def add_user(obj, code_level):
             return create_error(5, "User exists")
 
     success = execute_write("""
-        INSERT INTO user(username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
-        VALUES ('%s','%s','%s','%s','%s',%d,'%s','%s',%d)
+        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
+        VALUES (NOW,'%s','%s','%s','%s','%s',%d,'%s','%s',%d)
     """ % (
         obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
         obj["user_photo"],
