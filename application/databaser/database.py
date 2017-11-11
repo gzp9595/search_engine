@@ -61,7 +61,7 @@ def add_user(obj, code_level):
 
     success = execute_write("""
         INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
-        VALUES (NOW,'%s','%s','%s','%s','%s',%d,'%s','%s',%d)
+        VALUES (NOW(),'%s','%s','%s','%s','%s',%d,'%s','%s',%d)
     """ % (
         obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
         obj["user_photo"],
@@ -151,15 +151,15 @@ def get_user_info(args):
         return create_error(2, "User not found")
     else:
         one = {
-            "username": result[0][0],
-            "nickname": result[0][2],
-            "rest_money": result[0][3],
-            "phone_number": result[0][4],
-            "mail": result[0][5],
-            "user_type": result[0][6],
-            "user_photo": result[0][7],
-            "user_org": result[0][8],
-            "user_identity": result[0][9]
+            "username": result[0][1],
+            "nickname": result[0][3],
+            "rest_money": result[0][4],
+            "phone_number": result[0][5],
+            "mail": result[0][6],
+            "user_type": result[0][7],
+            "user_photo": result[0][8],
+            "user_org": result[0][9],
+            "user_identity": result[0][10]
         }
 
         return create_success(one)
