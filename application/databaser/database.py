@@ -293,6 +293,7 @@ def get_favor_list_item(args):
 
     return create_success(res)
 
+
 def add_favor_item(args):
     if not ("docid" in args):
         return create_error(1, "docid not found")
