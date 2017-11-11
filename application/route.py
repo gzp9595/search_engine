@@ -440,9 +440,9 @@ def register():
     request.args = merge_dict([request.args, request.form])
 
     if not ("code" in request.args):
-        return json.dumps(util.create_error(100,"Code not found"))
+        return json.dumps(util.create_error(100, "Code not found"))
     if not (database.check_code(request.args["code"])):
-        return json.dumps(util.create_error(101,"Code not correct"))
+        return json.dumps(util.create_error(101, "Code not correct"))
 
     result = database.add_user(request.args)
     if result["code"] == 0:
@@ -460,4 +460,4 @@ def login():
 @app.route('/get_user_info', methods=["POST", "GET"])
 def get_user_info():
     request.args = merge_dict([request.args, request.form])
-    return json.dumps(database.get_user_info(request.args))
+    return json.dumps(database.get_user_info(request.args), util.CJsonEncoder)
