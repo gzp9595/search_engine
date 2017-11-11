@@ -293,7 +293,7 @@ def search_new():
                 "5": "WBWB"
             }
             search_type = match_type[args["where_to_search"]]
-            expanded = expand(args["search_content"])
+            expanded = expand(args["search_content"],int(args["EXPAND_K"]),float(args["EXPAND_ALPHA"]))
             body[0] = {"match": {search_type: {"query": expanded}}}
             query_string = json.dumps({"query": {"bool": {"must": body}}})
             print query_string

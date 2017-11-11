@@ -7,6 +7,8 @@ db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app
 
 
 def execute_write(sql):
+    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+                     app.config["DATABASE_NAME"])
     cursor = db.cursor()
     try:
         cursor.execute(sql)
@@ -19,6 +21,8 @@ def execute_write(sql):
 
 
 def execute_read(sql):
+    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+                     app.config["DATABASE_NAME"])
     cursor = db.cursor()
     try:
         cursor.execute(sql)
