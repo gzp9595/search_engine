@@ -1,3 +1,5 @@
+#  -*- coding:utf-8 -*-
+
 from application import app
 import MySQLdb
 from application.util import *
@@ -34,15 +36,15 @@ def execute_read(sql):
 
 def add_user(obj, code_level):
     if not ("username" in obj):
-        return create_error(1, "Username not found")
+        return create_error(1, u"没有用户参数")
     if not ("password" in obj):
-        return create_error(2, "Password not found")
+        return create_error(2, u"没有密码参数")
     if not ("nickname" in obj):
         obj["nickname"] = obj["username"]
     if not ("phone_number" in obj):
-        return create_error(3, "phone_number not found")
+        return create_error(3, u"没有电话号码")
     if not ("mail" in obj):
-        return create_error(4, "mail not found")
+        return create_error(4, u"没有邮件地址")
     if not ("user_photo" in obj):
         obj["user_photo"] = ""
     if not ("user_org" in obj):
@@ -57,7 +59,7 @@ def add_user(obj, code_level):
 
     if not (cursor is None):
         if len(cursor.fetchall()) > 0:
-            return create_error(5, "User exists")
+            return create_error(5, u"用户已存在")
 
     success = execute_write("""
         INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
@@ -69,12 +71,13 @@ def add_user(obj, code_level):
 
     if success:
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
+        print res
         if res["code"] == 0:
             return create_success("Success")
         else:
             return res
     else:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
 
 def check_code(code):
@@ -120,39 +123,39 @@ def gen_code(args):
 
 def check_user(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"没有用户名")
     if not ("password" in args):
-        return create_error(2, "Password not found")
+        return create_error(2, u"没有密码")
 
     cursor = execute_read("""SELECT * FROM user WHERE
       username='%s' AND password='%s'
     """ % (args["username"], args["password"]))
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
     if len(result) > 0:
         return create_success("Success")
     else:
-        return create_error(3, "Password doesn't match")
+        return create_error(3, u"密码不正确")
 
 
 def get_user_info(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"没有用户名")
 
     cursor = execute_read("""SELECT * FROM user WHERE
       username='%s'
     """ % args["username"])
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
     if len(result) == 0:
-        return create_error(2, "User not found")
+        return create_error(2, u"用户不存在")
     else:
         one = {
             "username": result[0][1],
@@ -171,25 +174,25 @@ def get_user_info(args):
 
 def check_searchable(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"未找到用户名")
 
     cursor = execute_read("""SELECT usertype FROM user WHERE
       username='%s'
     """ % args["username"])
 
     if cursor is None:
-        return create_error(255, "Unkonwn error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
     if len(result) == 0:
-        return create_error(2, "No such user")
+        return create_error(2, u"用户不存在")
 
     leveltype = result[0][0]
     cursor = execute_read("""SELECT * FROM usertype WHERE
       type_id = %d""" % leveltype)
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
@@ -201,25 +204,25 @@ def check_searchable(args):
 
 def check_viewable(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"未找到用户名")
 
     cursor = execute_read("""SELECT usertype FROM user WHERE
       username='%s'
     """ % args["username"])
 
     if cursor is None:
-        return create_error(255, "Unkonwn error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
     if len(result) == 0:
-        return create_error(2, "No such user")
+        return create_error(2, u"用户不存在")
 
     leveltype = result[0][0]
     cursor = execute_read("""SELECT * FROM usertype WHERE
       type_id = %d""" % leveltype)
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
@@ -229,21 +232,21 @@ def check_viewable(args):
 
 def add_favor_list(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"未找到用户名")
     if not ("favor_name" in args):
-        return create_error(2, "Favorite list name not found")
+        return create_error(2, u"未找到收藏夹名字")
 
     cursor = execute_read("""SELECT * FROM favorite WHERE
       username='%s' AND favorite_name='%s'
     """ % (args["username"], args["favor_name"]))
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
     if len(result) > 0:
-        return create_error(3, "Favor list already exist")
+        return create_error(3, u"收藏夹已存在")
 
     if execute_write("""
       INSERT INTO favorite(username,favorite_name)
@@ -251,18 +254,18 @@ def add_favor_list(args):
     """ % (args["username"], args["favor_name"])):
         return create_success("Success")
     else:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
 
 def get_favor_list(args):
     if not ("username" in args):
-        return create_error(1, "Username not found")
+        return create_error(1, u"没有用户名")
 
     cursor = execute_read(
         """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s'""" % args["username"])
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
@@ -276,13 +279,13 @@ def get_favor_list(args):
 
 def get_favor_list_item(args):
     if not ("favorite_id" in args):
-        return create_error(1, "Favorite_id not found")
+        return create_error(1, u"没有收藏夹id")
 
     cursor = execute_read(
         """SELECT doc_id FROM favorite_item WHERE favorite_id = %d""" % int(args["favorite_id"]))
 
     if cursor is None:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
 
     result = cursor.fetchall()
 
@@ -296,9 +299,9 @@ def get_favor_list_item(args):
 
 def add_favor_item(args):
     if not ("docid" in args):
-        return create_error(1, "docid not found")
+        return create_error(1, u"没有文书id")
     if not ("favorite_id" in args):
-        return create_error(2, "Favorite_id not found")
+        return create_error(2, u"没有收藏夹id")
 
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)
@@ -306,4 +309,4 @@ def add_favor_item(args):
     """ % (int(args["favorite_id"]), args["docid"])):
         return create_success("Success")
     else:
-        return create_error(255, "Unknown error")
+        return create_error(255, u"未知错误")
