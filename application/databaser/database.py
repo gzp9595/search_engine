@@ -12,6 +12,10 @@ def execute_write(sql):
     db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
+    db.set_character_set('utf8')
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
     try:
         cursor.execute(sql)
         db.commit()
@@ -26,6 +30,10 @@ def execute_read(sql):
     db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
+    db.set_character_set('utf8')
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
     try:
         cursor.execute(sql)
         return cursor
@@ -176,7 +184,7 @@ def check_searchable(args):
     if not ("username" in args):
         return create_error(1, u"未找到用户名")
 
-    cursor = execute_read("""SELECT usertype FROM user WHERE
+    cursor = execute_read("""SELECT user_type FROM user WHERE
       username='%s'
     """ % args["username"])
 
@@ -199,17 +207,20 @@ def check_searchable(args):
     search_perminute = result[0][1]
     search_perday = result[0][2]
 
-    cursor1 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d""" % pre_minute())
-    cursor2 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d""" % pre_day())
+    print pre_minute(),pre_day()
+
+    cursor1 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_minute())
+    cursor2 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_day())
 
     count1 = cursor1.fetchall()[0][0]
     count2 = cursor2.fetchall()[0][0]
+    print count1,count2
 
     limit1 = \
-    execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d AND type_number=1""" % leveltype).fetchall()[
+    execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[
         0][0]
     limit2 = \
-    execute_read("""SELECT search_perday FROM usertype WHERE type_id=%d AND type_number=1""" % leveltype).fetchall()[0][
+    execute_read("""SELECT search_perday FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[0][
         0]
 
     if count1 >= limit1:
@@ -218,14 +229,14 @@ def check_searchable(args):
     if count2 >= limit2:
         return create_error(74, u"超过小时数搜索限制")
 
-    return create_success(0, "Success")
+    return create_success("Success")
 
 
 def check_viewable(args):
     if not ("username" in args):
         return create_error(1, u"未找到用户名")
 
-    cursor = execute_read("""SELECT usertype FROM user WHERE
+    cursor = execute_read("""SELECT user_type FROM user WHERE
       username='%s'
     """ % args["username"])
 
@@ -248,8 +259,8 @@ def check_viewable(args):
     search_perminute = result[0][3]
     search_perday = result[0][4]
 
-    cursor1 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d AND type_number=2""" % pre_minute())
-    cursor2 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d AND type_number=2""" % pre_day())
+    cursor1 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_minute())
+    cursor2 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_day())
 
     count1 = cursor1.fetchall()[0][0]
     count2 = cursor2.fetchall()[0][0]
@@ -263,7 +274,7 @@ def check_viewable(args):
     if count2 >= limit2:
         return create_error(74, u"超过小时数查看限制")
 
-    return create_success(0, "Success")
+    return create_success("Success")
 
 
 def add_favor_list(args):
@@ -287,7 +298,7 @@ def add_favor_list(args):
     if execute_write("""
       INSERT INTO favorite(username,favorite_name)
       VALUES ('%s','%s')
-    """ % (args["username"], args["favor_name"])):
+    """ % (args["username"], args["favor_name"].decode("utf8"))):
         return create_success("Success")
     else:
         return create_error(255, u"未知错误")
@@ -295,7 +306,7 @@ def add_favor_list(args):
 
 def add_search_log(args):
     if execute_write("""
-        INSERT INTO log(username,type_number,query_paramter)
+        INSERT INTO log(username,type_number,query_parameter)
         VALUES ('%s',1,'%s')
     """ % (args["username"], json.dumps(args).replace("'", "\\'"))):
         return create_success("Success")

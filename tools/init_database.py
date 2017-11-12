@@ -71,14 +71,14 @@ if __name__ == "__main__":
           username VARCHAR(20) NOT NULL,
           favorite_name VARCHAR(20) NOT NULL,
           PRIMARY KEY (favorite_id)
-    )"""
+    ) character set = utf8"""
 
     cursor.execute(sql)
 
     sql = """CREATE TABLE IF NOT EXISTS favorite_item(
           item_id INT UNSIGNED AUTO_INCREMENT,
           favorite_id INT UNSIGNED NOT NULL,
-          doc_id VARCHAR(100) UNSIGNED NOT NULL,
+          doc_id VARCHAR(100) NOT NULL,
           create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY (item_id)
     )"""
