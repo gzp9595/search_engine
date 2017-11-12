@@ -32,6 +32,22 @@ def search():
         print x
 
     if "doc_type" in request.args and "index" in request.args:
+        if "username" in request.args:
+            res_check = database.check_searchable(request.args)
+            if res_check["code"] != 0:
+                response = make_response(json.dumps(res_check))
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                response.headers['Access-Control-Allow-Methods'] = 'GET'
+                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                return response
+            res_add = database.add_search_log(request.args)
+            if res_add["code"] != 0:
+                response = make_response(json.dumps(res_add))
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                response.headers['Access-Control-Allow-Methods'] = 'GET'
+                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                return response
+
         body = []
 
         args = request.args
@@ -212,17 +228,8 @@ def search():
             result.append(res)
         print "All over again"
         print_time()
-        result = {"document": result, "information": inf}
+        result = {"code": 0, "document": result, "information": inf}
 
-    args = dict(request.args)
-    if not ("search_content" in request.args):
-        args["search_content"] = ""
-    if not ("where_to_search" in request.args):
-        args["where_to_search"] = ""
-    if not ("index" in request.args):
-        args["index"] = ""
-    if not ("doc_type" in request.args):
-        args["doc_type"] = ""
     response = make_response(json.dumps(result))
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET'
@@ -386,6 +393,21 @@ def search_new():
 @app.route('/doc')
 def get_doc_byid():
     if "id" in request.args:
+        if "username" in request.args:
+            res_check = database.check_viewable(request.args)
+            if res_check["code"] != 0:
+                response = make_response(json.dumps(res_check))
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                response.headers['Access-Control-Allow-Methods'] = 'GET'
+                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                return response
+            res_add = database.add_view_log(request.args)
+            if res_add["code"] != 0:
+                response = make_response(json.dumps(res_add))
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                response.headers['Access-Control-Allow-Methods'] = 'GET'
+                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                return response
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])

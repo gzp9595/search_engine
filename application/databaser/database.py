@@ -199,7 +199,26 @@ def check_searchable(args):
     search_perminute = result[0][1]
     search_perday = result[0][2]
 
-    # cursor = execute_read("""SELECT count(*) FROM log WHERE username = '%s' and """)
+    cursor1 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d""" % pre_minute())
+    cursor2 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d""" % pre_day())
+
+    count1 = cursor1.fetchall()[0][0]
+    count2 = cursor2.fetchall()[0][0]
+
+    limit1 = \
+    execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d AND type_number=1""" % leveltype).fetchall()[
+        0][0]
+    limit2 = \
+    execute_read("""SELECT search_perday FROM usertype WHERE type_id=%d AND type_number=1""" % leveltype).fetchall()[0][
+        0]
+
+    if count1 >= limit1:
+        return create_error(73, u"超过分钟数搜索限制")
+
+    if count2 >= limit2:
+        return create_error(74, u"超过小时数搜索限制")
+
+    return create_success(0, "Success")
 
 
 def check_viewable(args):
@@ -226,8 +245,25 @@ def check_viewable(args):
 
     result = cursor.fetchall()
 
-    view_perminute = result[0][1]
-    view_perday = result[0][2]
+    search_perminute = result[0][3]
+    search_perday = result[0][4]
+
+    cursor1 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d AND type_number=2""" % pre_minute())
+    cursor2 = execute_read("""SELECT COUNT(*) FORM log WHERE create_time>=%d AND type_number=2""" % pre_day())
+
+    count1 = cursor1.fetchall()[0][0]
+    count2 = cursor2.fetchall()[0][0]
+
+    limit1 = execute_read("""SELECT view_perminute FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[0][0]
+    limit2 = execute_read("""SELECT view_perday FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[0][0]
+
+    if count1 >= limit1:
+        return create_error(73, u"超过分钟数查看限制")
+
+    if count2 >= limit2:
+        return create_error(74, u"超过小时数查看限制")
+
+    return create_success(0, "Success")
 
 
 def add_favor_list(args):
@@ -252,6 +288,26 @@ def add_favor_list(args):
       INSERT INTO favorite(username,favorite_name)
       VALUES ('%s','%s')
     """ % (args["username"], args["favor_name"])):
+        return create_success("Success")
+    else:
+        return create_error(255, u"未知错误")
+
+
+def add_search_log(args):
+    if execute_write("""
+        INSERT INTO log(username,type_number,query_paramter)
+        VALUES ('%s',1,'%s')
+    """ % (args["username"], json.dumps(args).replace("'", "\\'"))):
+        return create_success("Success")
+    else:
+        return create_error(255, u"未知错误")
+
+
+def add_view_log(args):
+    if execute_write("""
+        INSERT INTO log(username,type_number,query_parameter,doc_id)
+        VALUES ('%s',2,'','%s')
+    """ % (args["username"], args["id"])):
         return create_success("Success")
     else:
         return create_error(255, u"未知错误")

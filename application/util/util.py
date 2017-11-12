@@ -53,9 +53,9 @@ def merge_dict(arr):
             dic[y] = x[y][0]
     return dic
 
-def pre_hour():
+def pre_minute():
     now = datetime.datetime.now()
-    ph = now - datetime.timedelta(hours=1)
+    ph = now - datetime.timedelta(minutes=1)
 
     return time.mktime(ph.timetuple())
 
