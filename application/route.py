@@ -411,6 +411,7 @@ def get_doc_byid():
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
+        data["code"] = 0
         data = json.dumps(data)
         response = make_response(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
