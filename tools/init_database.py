@@ -78,7 +78,7 @@ if __name__ == "__main__":
     sql = """CREATE TABLE IF NOT EXISTS favorite_item(
           item_id INT UNSIGNED AUTO_INCREMENT,
           favorite_id INT UNSIGNED NOT NULL,
-          doc_id INT UNSIGNED NOT NULL,
+          doc_id VARCHAR(100) UNSIGNED NOT NULL,
           create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY (item_id)
     )"""

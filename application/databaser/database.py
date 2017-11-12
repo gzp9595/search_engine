@@ -70,7 +70,7 @@ def add_user(obj, code_level):
     if success:
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
         if res["code"] == 0:
-            create_success("Success")
+            return create_success("Success")
         else:
             return res
     else:
@@ -259,7 +259,7 @@ def get_favor_list(args):
         return create_error(1, "Username not found")
 
     cursor = execute_read(
-        """SELECT (favorite_id,favorite_name) FROM favorite WHERE username = '%s'""" % args["username"])
+        """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s'""" % args["username"])
 
     if cursor is None:
         return create_error(255, "Unknown error")
@@ -279,7 +279,7 @@ def get_favor_list_item(args):
         return create_error(1, "Favorite_id not found")
 
     cursor = execute_read(
-        """SELECT (doc_id) FROM favorite_item WHERE favorite_id = %d""" % int(args["favorite_id"]))
+        """SELECT doc_id FROM favorite_item WHERE favorite_id = %d""" % int(args["favorite_id"]))
 
     if cursor is None:
         return create_error(255, "Unknown error")
@@ -303,7 +303,7 @@ def add_favor_item(args):
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)
       VALUES (%d,'%s')
-    """ % (args["favorite_id"], args["docid"])):
+    """ % (int(args["favorite_id"]), args["docid"])):
         return create_success("Success")
     else:
         return create_error(255, "Unknown error")
