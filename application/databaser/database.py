@@ -411,13 +411,14 @@ def add_favor_item(args):
         return create_error(255, u"未知错误")
 
     if cursor.fetchall()[0][0] > 0:
-        if execute_write("""
-          DELETE FROM favorite_item WHERE
-          favorite_id=%d AND doc_id='%s'
-        """ % (int(args["favorite_id"]), args["docid"])):
-            return create_success("Success")
-        else:
-            return create_error(255, u"未知错误")
+        return create_success("Success")
+        #if execute_write("""
+        #  DELETE FROM favorite_item WHERE
+        #  favorite_id=%d AND doc_id='%s'
+        #""" % (int(args["favorite_id"]), args["docid"])):
+        #    return create_success("Success")
+        #else:
+        #   return create_error(255, u"未知错误")
 
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)
