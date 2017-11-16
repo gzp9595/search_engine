@@ -26,6 +26,24 @@ def execute_write(sql):
         return False
 
 
+def execute_write_return_cursor(sql):
+    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+                         app.config["DATABASE_NAME"])
+    cursor = db.cursor()
+    db.set_character_set('utf8')
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
+    try:
+        cursor.execute(sql)
+        db.commit()
+        return cursor
+    except Exception as e:
+        print e
+        db.rollback()
+        return None
+
+
 def execute_read(sql):
     db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
@@ -316,13 +334,15 @@ def add_favor_list(args):
 
 
 def add_search_log(args):
-    if execute_write("""
+    cursor = execute_write_return_cursor("""
         INSERT INTO log(username,type_number,query_parameter)
         VALUES ('%s',1,'%s')
-    """ % (args["username"], json.dumps(args).replace("'", "\\'"))):
-        return create_success("Success")
-    else:
+    """ % (args["username"], json.dumps(args).replace("'", "\\'")))
+
+    if cursor is None:
         return create_error(255, u"未知错误")
+
+    return create_success(cursor.lastrowid)
 
 
 def add_view_log(args):
@@ -340,7 +360,8 @@ def get_favor_list(args):
         return create_error(1, u"没有用户名")
 
     cursor = execute_read(
-        """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s' ORDER BY favorite_id DESC""" % args["username"])
+        """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s' ORDER BY favorite_id DESC""" % args[
+            "username"])
 
     if cursor is None:
         return create_error(255, u"未知错误")
@@ -380,6 +401,23 @@ def add_favor_item(args):
         return create_error(1, u"没有文书id")
     if not ("favorite_id" in args):
         return create_error(2, u"没有收藏夹id")
+
+    cursor = execute_read("""
+        SELECT COUNT(*) FROM favorite_item WHERE
+        favorite_id=%d AND doc_id='%s'
+    """ % (int(args["favorite_id"]), args["docid"]))
+
+    if cursor is None:
+        return create_error(255, u"未知错误")
+
+    if cursor.fetchall()[0][0] > 0:
+        if execute_write("""
+          DELETE FROM favorite_item WHERE
+          favorite_id=%d AND doc_id='%s'
+        """ % (int(args["favorite_id"]), args["docid"])):
+            return create_success("Success")
+        else:
+            return create_error(255, u"未知错误")
 
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)

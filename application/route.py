@@ -32,6 +32,7 @@ def search():
         print x
 
     if "doc_type" in request.args and "index" in request.args:
+        log_id = -1
         if "username" in request.args:
             res_check = database.check_searchable(request.args)
             if res_check["code"] != 0:
@@ -47,6 +48,7 @@ def search():
                 response.headers['Access-Control-Allow-Methods'] = 'GET'
                 response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
                 return response
+            log_id = res_add["msg"]
 
         body = []
 
@@ -229,6 +231,8 @@ def search():
         print "All over again"
         print_time()
         result = {"code": 0, "document": result, "information": inf}
+        if log_id != -1:
+            result["log_id"] = log_id
 
     response = make_response(json.dumps(result))
     response.headers['Access-Control-Allow-Origin'] = '*'
@@ -513,8 +517,8 @@ def add_favor_item():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.add_favor_item(request.args), cls=util.CJsonEncoder)
 
-@app.route('/get_history',methods=["POST","GET"])
+
+@app.route('/get_history', methods=["POST", "GET"])
 def get_history():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.get_history(request.args), cls=util.CJsonEncoder)
-
