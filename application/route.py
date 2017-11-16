@@ -522,3 +522,9 @@ def add_favor_item():
 def get_history():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.get_history(request.args), cls=util.CJsonEncoder)
+
+
+@app.route('/remove_favor_item', methods=["POST", "GET"])
+def remove_favor_item():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.remove_favor_item(request.args), cls=util.CJsonEncoder)

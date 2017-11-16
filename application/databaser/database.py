@@ -412,17 +412,43 @@ def add_favor_item(args):
 
     if cursor.fetchall()[0][0] > 0:
         return create_success("Success")
-        #if execute_write("""
+        # if execute_write("""
         #  DELETE FROM favorite_item WHERE
         #  favorite_id=%d AND doc_id='%s'
-        #""" % (int(args["favorite_id"]), args["docid"])):
+        # """ % (int(args["favorite_id"]), args["docid"])):
         #    return create_success("Success")
-        #else:
+        # else:
         #   return create_error(255, u"未知错误")
 
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)
       VALUES (%d,'%s')
+    """ % (int(args["favorite_id"]), args["docid"])):
+        return create_success("Success")
+    else:
+        return create_error(255, u"未知错误")
+
+
+def remove_favor_item(args):
+    if not ("docid" in args):
+        return create_error(1, u"没有文书id")
+    if not ("favorite_id" in args):
+        return create_error(2, u"没有收藏夹id")
+
+    cursor = execute_read("""
+        SELECT COUNT(*) FROM favorite_item WHERE
+        favorite_id=%d AND doc_id='%s'
+    """ % (int(args["favorite_id"]), args["docid"]))
+
+    if cursor is None:
+        return create_error(255, u"未知错误")
+
+    if cursor.fetchall()[0][0] == 0:
+        return create_success("Success")
+
+    if execute_write("""
+      DELETE FROM favorite_item WHERE
+      favorite_id=%d AND doc_id='%s'
     """ % (int(args["favorite_id"]), args["docid"])):
         return create_success("Success")
     else:
