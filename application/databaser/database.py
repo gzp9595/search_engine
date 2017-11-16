@@ -346,10 +346,12 @@ def add_search_log(args):
 
 
 def add_view_log(args):
+    if not ("log_id" in args):
+        args["log_id"] = ""
     if execute_write("""
         INSERT INTO log(username,type_number,query_parameter,doc_id)
-        VALUES ('%s',2,'','%s')
-    """ % (args["username"], args["id"])):
+        VALUES ('%s',2,'%s','%s')
+    """ % (args["username"], args["log_id"], args["id"])):
         return create_success("Success")
     else:
         return create_error(255, u"未知错误")
@@ -412,13 +414,6 @@ def add_favor_item(args):
 
     if cursor.fetchall()[0][0] > 0:
         return create_success("Success")
-        # if execute_write("""
-        #  DELETE FROM favorite_item WHERE
-        #  favorite_id=%d AND doc_id='%s'
-        # """ % (int(args["favorite_id"]), args["docid"])):
-        #    return create_success("Success")
-        # else:
-        #   return create_error(255, u"未知错误")
 
     if execute_write("""
       INSERT INTO favorite_item(favorite_id,doc_id)
