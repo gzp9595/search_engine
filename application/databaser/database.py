@@ -60,6 +60,13 @@ def add_user(obj, code_level):
     if not ("user_identity" in obj):
         obj["user_identity"] = 0
 
+    if execute_read("""SELECT COUNT(*) FROM user WHERE mail='%s'""" % obj["mail"]).fetchall()[0][0] != 0:
+        return create_error(53, u"邮箱已被使用")
+
+    if execute_read("""SELECT COUNT(*) FROM user WHERE phone_number='%s'""" % obj["phone_number"]).fetchall()[0][
+        0] != 0:
+        return create_error(54, u"电话号码已被使用")
+
     cursor = execute_read("""
         SELECT * FROM user WHERE
           username='%s'
@@ -207,21 +214,23 @@ def check_searchable(args):
     search_perminute = result[0][1]
     search_perday = result[0][2]
 
-    print pre_minute(),pre_day()
+    print pre_minute(), pre_day()
 
-    cursor1 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_minute())
-    cursor2 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_day())
+    cursor1 = execute_read(
+        """SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_minute())
+    cursor2 = execute_read(
+        """SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_day())
 
     count1 = cursor1.fetchall()[0][0]
     count2 = cursor2.fetchall()[0][0]
-    print count1,count2
+    print count1, count2
 
     limit1 = \
-    execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[
-        0][0]
+        execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[
+            0][0]
     limit2 = \
-    execute_read("""SELECT search_perday FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[0][
-        0]
+        execute_read("""SELECT search_perday FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[0][
+            0]
 
     if count1 >= limit1:
         return create_error(73, u"超过分钟数搜索限制")
@@ -259,8 +268,10 @@ def check_viewable(args):
     search_perminute = result[0][3]
     search_perday = result[0][4]
 
-    cursor1 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_minute())
-    cursor2 = execute_read("""SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_day())
+    cursor1 = execute_read(
+        """SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_minute())
+    cursor2 = execute_read(
+        """SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=2""" % pre_day())
 
     count1 = cursor1.fetchall()[0][0]
     count2 = cursor2.fetchall()[0][0]
@@ -329,7 +340,7 @@ def get_favor_list(args):
         return create_error(1, u"没有用户名")
 
     cursor = execute_read(
-        """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s'""" % args["username"])
+        """SELECT favorite_id,favorite_name FROM favorite WHERE username = '%s' ORDER BY favorite_id DESC""" % args["username"])
 
     if cursor is None:
         return create_error(255, u"未知错误")
@@ -349,7 +360,7 @@ def get_favor_list_item(args):
         return create_error(1, u"没有收藏夹id")
 
     cursor = execute_read(
-        """SELECT doc_id FROM favorite_item WHERE favorite_id = %d""" % int(args["favorite_id"]))
+        """SELECT doc_id FROM favorite_item WHERE favorite_id = %d ORDER BY item_id DESC""" % int(args["favorite_id"]))
 
     if cursor is None:
         return create_error(255, u"未知错误")
@@ -377,3 +388,30 @@ def add_favor_item(args):
         return create_success("Success")
     else:
         return create_error(255, u"未知错误")
+
+
+def get_history(args):
+    if not ("username" in args):
+        return create_error(1, u"没有用户名")
+
+    cursor = execute_read("""
+        SELECT * FROM log WHERE username='%s' ORDER BY log_id DESC LIMIT 100
+    """ % args["username"])
+
+    if cursor is None:
+        return create_error(255, u"未知错误")
+
+    res = cursor.fetchall()
+    arr = []
+    for a in res:
+        arr.append({
+            "log_id": a[0],
+            "username": a[1],
+            "create_time": a[2],
+            "type_number": a[3],
+            "doc_id": a[4],
+            "query_parameter": a[5],
+            "user_ip": a[6]
+        })
+
+    return create_success(arr)

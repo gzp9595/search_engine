@@ -512,3 +512,9 @@ def get_favor_list_item():
 def add_favor_item():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.add_favor_item(request.args), cls=util.CJsonEncoder)
+
+@app.route('/get_history',methods=["POST","GET"])
+def get_history():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.get_history(request.args), cls=util.CJsonEncoder)
+
