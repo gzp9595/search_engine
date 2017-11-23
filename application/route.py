@@ -29,26 +29,32 @@ def search():
     result = []
     request.args = merge_dict([request.args, request.form])
     for x in request.args:
-        print x
+        print x,request.args[x]
 
     if "doc_type" in request.args and "index" in request.args:
         log_id = -1
         if "username" in request.args:
-            res_check = database.check_searchable(request.args)
-            if res_check["code"] != 0:
-                response = make_response(json.dumps(res_check))
-                response.headers['Access-Control-Allow-Origin'] = '*'
-                response.headers['Access-Control-Allow-Methods'] = 'GET'
-                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
-                return response
-            res_add = database.add_search_log(request.args)
-            if res_add["code"] != 0:
-                response = make_response(json.dumps(res_add))
-                response.headers['Access-Control-Allow-Origin'] = '*'
-                response.headers['Access-Control-Allow-Methods'] = 'GET'
-                response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
-                return response
-            log_id = res_add["msg"]
+            gg_id = 0
+            if "from" in request.args:
+                gg_id = int(request.args["from"])
+            if gg_id == 0:
+                res_check = database.check_searchable(request.args)
+                if res_check["code"] != 0:
+                    response = make_response(json.dumps(res_check))
+                    response.headers['Access-Control-Allow-Origin'] = '*'
+                    response.headers['Access-Control-Allow-Methods'] = 'GET'
+                    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                    return response
+                res_add = database.add_search_log(request.args)
+                if res_add["code"] != 0:
+                    response = make_response(json.dumps(res_add))
+                    response.headers['Access-Control-Allow-Origin'] = '*'
+                    response.headers['Access-Control-Allow-Methods'] = 'GET'
+                    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+                    return response
+                log_id = res_add["msg"]
+        else:
+            return ""
 
         body = []
 
@@ -396,6 +402,7 @@ def search_new():
 
 @app.route('/doc')
 def get_doc_byid():
+    request.args = merge_dict([request.args, request.form])
     if "id" in request.args:
         if "username" in request.args:
             res_check = database.check_viewable(request.args)
@@ -412,6 +419,8 @@ def get_doc_byid():
                 response.headers['Access-Control-Allow-Methods'] = 'GET'
                 response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
                 return response
+        else:
+            return ""
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
