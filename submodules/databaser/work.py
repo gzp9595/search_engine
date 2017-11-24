@@ -39,4 +39,7 @@ if os.path.exists(local_config_file):
     app.config.from_pyfile(local_config_file)
 
 
+app.secret_key = app.config["SECRET"]
+
+
 app.run(host=app.config["HOST"], port=app.config["PORT"], debug=app.config["DEBUG"], threaded=True)
