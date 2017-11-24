@@ -2,7 +2,7 @@ from flask import Flask
 import os
 
 from flask import Flask, redirect, url_for, request, flash, render_template
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
 
 app = Flask(__name__)
 
@@ -10,6 +10,7 @@ login_manger = LoginManager()
 login_manger.init_app(app)
 login_manger.login_view = "login"
 login_manger.login_message = "233"
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,15 +20,15 @@ def login():
         if name != app.config["NAME"] or pwd != app.config["PWD"]:
             flash('GG')
         else:
-            login_user(name, remember=True)
-            next_url = request.args.get('next')
-            return redirect(next_url or url_for('login_success'))
+            login_user(UserMixin(), remember=True)
+            return redirect("/")
     return render_template("login.html")
+
 
 @app.route('/')
 @login_required
 def index():
-    return "gg"
+    return "login success"
 
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
@@ -38,8 +39,6 @@ app.config.from_pyfile(config_file)
 if os.path.exists(local_config_file):
     app.config.from_pyfile(local_config_file)
 
-
 app.secret_key = app.config["SECRET"]
-
 
 app.run(host=app.config["HOST"], port=app.config["PORT"], debug=app.config["DEBUG"], threaded=True)
