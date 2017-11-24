@@ -77,6 +77,8 @@ def add_user(obj, code_level):
         obj["user_org"] = ""
     if not ("user_identity" in obj):
         obj["user_identity"] = 0
+    if not ("user_code" in obj):
+        return create_error(999,u"???")
 
     if execute_read("""SELECT COUNT(*) FROM user WHERE mail='%s'""" % obj["mail"]).fetchall()[0][0] != 0:
         return create_error(53, u"邮箱已被使用")

@@ -29,7 +29,7 @@ def search():
     result = []
     request.args = merge_dict([request.args, request.form])
     for x in request.args:
-        print x,request.args[x]
+        print x, request.args[x]
 
     if "doc_type" in request.args and "index" in request.args:
         log_id = -1
@@ -54,7 +54,7 @@ def search():
                     return response
                 log_id = res_add["msg"]
         else:
-            return util.create_error(666,u"用户未登录")
+            return util.create_error(666, u"用户未登录")
 
         body = []
 
@@ -420,7 +420,7 @@ def get_doc_byid():
                 response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
                 return response
         else:
-            return util.create_error(666,u"用户未登录")
+            return util.create_error(666, u"用户未登录")
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
@@ -484,6 +484,7 @@ def register():
     if data == -1:
         return json.dumps(util.create_error(101, "Code not correct"))
 
+    request.args["user_code"] = request.args["code"]
     result = database.add_user(request.args, data)
     if result["code"] == 0:
         database.move_code(request.args["code"])
