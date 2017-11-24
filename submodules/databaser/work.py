@@ -11,7 +11,7 @@ login_manger.init_app(app)
 login_manger.login_view = "login"
 login_manger.login_message = "233"
 
-@app.route('/login/', method=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         name = request.form.get('name')
