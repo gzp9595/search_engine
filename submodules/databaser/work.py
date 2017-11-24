@@ -11,9 +11,21 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "233"
 
+
+class User(UserMixin):
+    def set_id(self, id):
+        self.id = id
+
+    def get_id(self):
+        return self.id
+
+
 @login_manager.user_loader
 def load_user(user_id):
-    return UserMixin()
+    user = User()
+    user.set_id(user_id)
+    return user
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -23,7 +35,9 @@ def login():
         if name != app.config["NAME"] or pwd != app.config["PWD"]:
             flash('GG')
         else:
-            login_user(UserMixin(), remember=True)
+            user = User()
+            user.set_id(name)
+            login_user(user, remember=True)
             return redirect("/")
     return render_template("login.html")
 
