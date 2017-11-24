@@ -54,7 +54,7 @@ def search():
                     return response
                 log_id = res_add["msg"]
         else:
-            return ""
+            return util.create_error(666,u"用户未登录")
 
         body = []
 
@@ -420,7 +420,7 @@ def get_doc_byid():
                 response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
                 return response
         else:
-            return ""
+            return util.create_error(666,u"用户未登录")
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
         data = {"_source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
