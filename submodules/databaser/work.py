@@ -4,7 +4,7 @@ import os
 from flask import Flask, redirect, url_for, request, flash, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user
 
-app = Flask(__name__, static_folder='static_dist', static_url_path='/static')
+app = Flask(__name__)
 
 login_manger = LoginManager()
 login_manger.init_app(app)
@@ -22,7 +22,7 @@ def login():
             login_user(name, remember=True)
             next_url = request.args.get('next')
             return redirect(next_url or url_for('login_success'))
-    return "gg"
+    return render_template("login.html")
 
 @app.route('/')
 @login_required
