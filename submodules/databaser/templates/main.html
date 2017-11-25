@@ -12,15 +12,15 @@
         SELECT * FROM
         <select name="where_to_search">
             <option value="user" selected>user</option>
-            <option value="code">code</option>
-            <option value="log">log</option>
-            <option value="usertype">usertype</option>
-            <option value="favorite">favorite</option>
-            <option value="favorite_item">favorite_item</option>
-            <option value="charge">charge</option>
+            <option value="code" {% if args["where_to_search"]=="code" %}selected{% endif %}>code</option>
+            <option value="log" {% if args["where_to_search"]=="log" %}selected{% endif %}>log</option>
+            <option value="usertype" {% if args["where_to_search"]=="usertype" %}selected{% endif %}>usertype</option>
+            <option value="favorite" {% if args["where_to_search"]=="favorite" %}selected{% endif %}>favorite</option>
+            <option value="favorite_item" {% if args["where_to_search"]=="favorite_item" %}selected{% endif %}>favorite_item</option>
+            <option value="charge" {% if args["where_to_search"]=="charge" %}selected{% endif %}>charge</option>
         </select>
         WHERE
-        <input name="condition" placeholder="optional"><br>
+        <input name="condition" placeholder="optional" content="{{ args["condition"] }}"><br>
         <input type="submit" value="Search">
     </form>
 {% if result %}

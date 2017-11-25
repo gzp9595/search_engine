@@ -84,7 +84,7 @@ def index():
 
         cursor = execute_read(sql)
         if cursor is None:
-            return render_template("main.html",error=True)
+            return render_template("main.html", error=True, args=request.form)
         result = cursor.fetchall()
         if where_to_search == "user":
             gg_result = []
@@ -92,10 +92,10 @@ def index():
                 gg_result.append(result[a][0:2] + result[a][3:len(result[a])])
             result = gg_result
 
-        return render_template("main.html", result=result, column_name=column_name[where_to_search])
+        return render_template("main.html", result=result, column_name=column_name[where_to_search], args=request.form)
 
     else:
-        return render_template("main.html")
+        return render_template("main.html", args={"where_to_search": "user", "condition": ""})
 
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
