@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    {% if error %}
+        something happened
+    {% endif %}
+    <form method="post">
+        SELECT * FROM
+        <select name="where_to_search">
+            <option value="user" selected>user</option>
+            <option value="code" selected>code</option>
+            <option value="log" selected>log</option>
+            <option value="usertype" selected>usertype</option>
+            <option value="favorite" selected>favorite</option>
+            <option value="favorite_item" selected>favorite_item</option>
+            <option value="charge" selected>charge</option>
+        </select>
+        WHERE
+        <input name="condition" placeholder="optional">
+        <input type="submit" value="Search">
+    </form>
+{% if result %}
+    <table>
+        <tr>
+            {% for x in column_name %}
+                <th>{{ x }}</th>
+            {% endfor %}
+        </tr>
+        {% for x in result %}
+            <tr>
+                {% for y in x %}
+                    <th>{{ y }}</th>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+</body>
+</html>
