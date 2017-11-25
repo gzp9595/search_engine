@@ -1,5 +1,6 @@
 from flask import Flask
 import os
+import MySQLdb
 
 from flask import Flask, redirect, url_for, request, flash, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
@@ -18,6 +19,22 @@ class User(UserMixin):
 
     def get_id(self):
         return self.id
+
+
+def execute_read(sql):
+    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+                         app.config["DATABASE_NAME"])
+    cursor = db.cursor()
+    db.set_character_set('utf8')
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
+    try:
+        cursor.execute(sql)
+        return cursor
+    except Exception as e:
+        print e
+        return None
 
 
 @login_manager.user_loader
@@ -42,10 +59,40 @@ def login():
     return render_template("login.html")
 
 
-@app.route('/')
+column_name = {}
+column_name["user"] = ["user_id", "username", "nickname", "rest_money", "phone_number", "mail", "user_type",
+                       "user_photo", "user_org", "user_identity", "user_code", "create_time", "last_modified"]
+column_name["log"] = ["log_id", "username", "create_time", "type_number", "doc_id", "query_paramenter", "user_ip"]
+column_name["code"] = ["code", "leveltype", "create_time"]
+column_name["usertype"] = ["type_id", "search_perminute", "search_perday", "view_perminute", "view_perday"]
+column_name["favorite"] = ["favoite_id", "create_time", "usernmae", "favorite_name"]
+column_name["favorite_item"] = ["item_id", "favorite_id", "doc_id", "create_time"]
+
+
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    return "login success"
+    if request.method == 'POST':
+        where_to_search = request.form.get("where_to_serach")
+        condition = ""
+        if "condition" in request.form:
+            condition = request.form.get("condition")
+        sql = """SELECT * FROM %s""" % where_to_search
+        if condition != "":
+            sql = sql + "WHERE " + condition
+
+        cursor = execute_read(sql)
+        if cursor is None:
+            return render_template("main.html",error=True)
+        result = cursor.fetchall()
+        if where_to_search == "user":
+            for a in range(0, len(result)):
+                result[a] = result[a][0:2] + result[a][3:len(result[a])]
+
+        return render_template("main.html", result=result, column_name=column_name[where_to_search])
+
+    else:
+        return render_template("main.html")
 
 
 server_dir = os.path.dirname(os.path.realpath(__file__))
