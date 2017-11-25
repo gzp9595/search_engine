@@ -12,19 +12,19 @@
         SELECT * FROM
         <select name="where_to_search">
             <option value="user" selected>user</option>
-            <option value="code" selected>code</option>
-            <option value="log" selected>log</option>
-            <option value="usertype" selected>usertype</option>
-            <option value="favorite" selected>favorite</option>
-            <option value="favorite_item" selected>favorite_item</option>
-            <option value="charge" selected>charge</option>
+            <option value="code">code</option>
+            <option value="log">log</option>
+            <option value="usertype">usertype</option>
+            <option value="favorite">favorite</option>
+            <option value="favorite_item">favorite_item</option>
+            <option value="charge">charge</option>
         </select>
         WHERE
-        <input name="condition" placeholder="optional">
+        <input name="condition" placeholder="optional"><br>
         <input type="submit" value="Search">
     </form>
 {% if result %}
-    <table>
+    <table border="1">
         <tr>
             {% for x in column_name %}
                 <th>{{ x }}</th>
@@ -33,7 +33,7 @@
         {% for x in result %}
             <tr>
                 {% for y in x %}
-                    <th>{{ y }}</th>
+                    <td>{{ y }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

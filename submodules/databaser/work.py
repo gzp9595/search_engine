@@ -73,21 +73,24 @@ column_name["favorite_item"] = ["item_id", "favorite_id", "doc_id", "create_time
 @login_required
 def index():
     if request.method == 'POST':
-        where_to_search = request.form.get("where_to_serach")
+        where_to_search = request.form.get("where_to_search")
         condition = ""
         if "condition" in request.form:
             condition = request.form.get("condition")
         sql = """SELECT * FROM %s""" % where_to_search
         if condition != "":
-            sql = sql + "WHERE " + condition
+            sql = sql + " WHERE " + condition
+        print sql
 
         cursor = execute_read(sql)
         if cursor is None:
             return render_template("main.html",error=True)
         result = cursor.fetchall()
         if where_to_search == "user":
+            gg_result = []
             for a in range(0, len(result)):
-                result[a] = result[a][0:2] + result[a][3:len(result[a])]
+                gg_result.append(result[a][0:2] + result[a][3:len(result[a])])
+            result = gg_result
 
         return render_template("main.html", result=result, column_name=column_name[where_to_search])
 
