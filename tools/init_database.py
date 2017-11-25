@@ -26,7 +26,7 @@ if __name__ == "__main__":
           create_time DATETIME NOT NULL,
           last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           PRIMARY KEY (user_id)
-        )"""
+        ) character set = utf8"""
     cursor.execute(sql)
 
     sql = """CREATE TABLE IF NOT EXISTS log(
@@ -38,7 +38,7 @@ if __name__ == "__main__":
           query_parameter TEXT NOT NULL,
           user_ip VARCHAR(50) NOT NULL DEFAULT  '',
           PRIMARY KEY (log_id)
-        )"""
+        ) character set = utf8"""
     cursor.execute(sql)
 
     sql = """CREATE TABLE IF NOT EXISTS code(
@@ -46,7 +46,7 @@ if __name__ == "__main__":
           leveltype INT NOT NULL DEFAULT 0,
           create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY (code)
-        )"""
+        ) character set = utf8"""
     cursor.execute(sql)
 
     sql = """CREATE TABLE IF NOT EXISTS usertype(
@@ -56,7 +56,7 @@ if __name__ == "__main__":
           view_perminute INT NOT NULL DEFAULT 12,
           view_perday INT NOT NULL DEFAULT 10000,
           PRIMARY KEY (type_id)
-        )"""
+        ) character set = utf8"""
     cursor.execute(sql)
 
     for a in range(0, 4):
@@ -82,6 +82,6 @@ if __name__ == "__main__":
           doc_id VARCHAR(100) NOT NULL,
           create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY (item_id)
-    )"""
+    ) character set = utf8"""
 
     cursor.execute(sql)
