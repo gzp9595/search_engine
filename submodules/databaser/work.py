@@ -12,6 +12,22 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "233"
 
+from elasticsearch import Elasticsearch
+from elasticsearch import exceptions
+from elasticsearch import helpers
+from elasticsearch_dsl import Search
+import json
+
+es = Elasticsearch(app.config["ELASTIC_SEARCH_ADDRESS"], port=app.config["ELASTIC_SEARCH_PORT"],
+                   http_auth=(app.config["ELASTIC_USER"], app.config["ELASTIC_PASS"]))
+
+
+def get_by_id(index, doc_type, id):
+    try:
+        return es.get(index=index, doc_type=doc_type, id=id, request_timeout=app.config["ES_TIMEOUT"])
+    except exceptions.NotFoundError:
+        return None
+
 
 class User(UserMixin):
     def set_id(self, id):
@@ -99,11 +115,20 @@ def index():
             for a in range(0, len(result)):
                 ff_result = []
                 for b in result[a]:
-                    if isinstance(b,str):
+                    if isinstance(b, str):
                         b = b.decode("utf8")
                     ff_result.append(b)
                 gg_result.append(ff_result)
             result = gg_result
+
+        if where_to_search == "log":
+            for a in range(0, len(result)):
+                if result[a][3] == 2:
+                    gg_result = get_by_id("law","big_data",result[a][[4]])
+                    print gg_result
+                    result[a][3] = """
+                        <a href="powerlaw.ai:8888/document?id=%s" target="_blank?">%</a>
+                    """ % ("a","b")
 
         return render_template("main.html", result=result, column_name=column_name[where_to_search], args=request.form)
 
