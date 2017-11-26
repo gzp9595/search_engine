@@ -58,15 +58,20 @@ app.config.from_pyfile(config_file)
 if os.path.exists(local_config_file):
     app.config.from_pyfile(local_config_file)
 
-result = execute_read("""SELECT log_id,query_parameter FROM log WHERE type_number=2""").fetchall()
+result = execute_read("""SELECT log_id,query_parameter FROM log WHERE type_number=1""").fetchall()
 
 import json
 
+f = open("gg","w")
+
 for a in result:
-    id = a[0]
-    par = a[1]
+    idx = a[0]
+    par = a[1].replace("\n","")
     obj = json.loads(par)
     if obj["search_content"][0] == "u":
         obj["search_content"] = eval('u' + '"' + obj["search_content"].replace('u', '\u') + '"')
-    par = json.dumps(obj)
-    execute_write("""UPDATE log SET query_parameter="%s" WHERE log_id=%d""" % (par,id))
+    par = json.dumps(obj, ensure_ascii=False)
+    # print(par)
+    sql="""UPDATE log SET query_parameter='%s' WHERE log_id=%d""" % (par,idx)
+    print sql
+    #execute_write(sql)

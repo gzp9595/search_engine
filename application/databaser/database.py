@@ -339,7 +339,7 @@ def add_search_log(args):
     cursor = execute_write_return_cursor("""
         INSERT INTO log(username,type_number,query_parameter)
         VALUES ('%s',1,'%s')
-    """ % (args["username"], json.dumps(args).replace("'", "\\'")))
+    """ % (args["username"], json.dumps(args).replace("'", "\\'").encode("utf8")))
 
     if cursor is None:
         return create_error(255, u"未知错误")

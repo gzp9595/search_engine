@@ -33,7 +33,7 @@ def execute_read(sql):
         cursor.execute(sql)
         return cursor
     except Exception as e:
-        print e
+        print(e)
         return None
 
 
@@ -80,7 +80,7 @@ def index():
         sql = """SELECT * FROM %s""" % where_to_search
         if condition != "":
             sql = sql + " WHERE " + condition
-        print sql
+        print(sql)
 
         cursor = execute_read(sql)
         if cursor is None:
@@ -89,7 +89,20 @@ def index():
         if where_to_search == "user":
             gg_result = []
             for a in range(0, len(result)):
-                gg_result.append(result[a][0:2] + result[a][3:len(result[a])])
+                ff_result = []
+                for b in result[a]:
+                    ff_result.append(b)
+                gg_result.append(ff_result[0:2] + ff_result[3:len(result[a])])
+            result = gg_result
+        else:
+            gg_result = []
+            for a in range(0, len(result)):
+                ff_result = []
+                for b in result[a]:
+                    if isinstance(b,str):
+                        b = b.decode("utf8")
+                    ff_result.append(b)
+                gg_result.append(ff_result)
             result = gg_result
 
         return render_template("main.html", result=result, column_name=column_name[where_to_search], args=request.form)

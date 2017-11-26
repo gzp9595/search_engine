@@ -20,7 +20,7 @@
             <option value="charge" {% if args["where_to_search"]=="charge" %}selected{% endif %}>charge</option>
         </select>
         WHERE
-        <input name="condition" placeholder="optional" content="{{ args["condition"] }}"><br>
+        <input name="condition" placeholder="optional" value="{{ args["condition"] }}"><br>
         <input type="submit" value="Search">
     </form>
 {% if result %}
