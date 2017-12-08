@@ -54,7 +54,7 @@ def search():
                     return response
                 log_id = res_add["msg"]
         else:
-            return util.create_error(666, u"用户未登录")
+            return json.dumps(util.create_error(666, u"用户未登录"),cls=util.CJsonEncoder)
 
         body = []
 

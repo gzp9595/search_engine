@@ -68,10 +68,11 @@ for a in result:
     idx = a[0]
     par = a[1].replace("\n","")
     obj = json.loads(par)
-    if obj["search_content"][0] == "u":
-        obj["search_content"] = eval('u' + '"' + obj["search_content"].replace('u', '\u') + '"')
+    for x in obj:
+        if len(obj[x])>0 and obj[x][0] == "u":
+            obj[x] = eval('u' + '"' + obj[x].replace('u', '\u') + '"')
     par = json.dumps(obj, ensure_ascii=False)
     # print(par)
     sql="""UPDATE log SET query_parameter='%s' WHERE log_id=%d""" % (par,idx)
     print sql
-    #execute_write(sql)
+    execute_write(sql)

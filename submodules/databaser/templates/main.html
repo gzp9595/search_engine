@@ -33,7 +33,7 @@
         {% for x in result %}
             <tr>
                 {% for y in x %}
-                    <td>{{ y }}</td>
+                    <td>{{ y|safe }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

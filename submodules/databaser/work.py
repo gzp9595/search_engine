@@ -7,6 +7,14 @@ from flask_login import LoginManager, login_user, login_required, logout_user, U
 
 app = Flask(__name__)
 
+server_dir = os.path.dirname(os.path.realpath(__file__))
+config_file = os.path.join(server_dir, 'config.py')
+local_config_file = os.path.join(server_dir, 'local_config.py')
+
+app.config.from_pyfile(config_file)
+if os.path.exists(local_config_file):
+    app.config.from_pyfile(local_config_file)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -110,7 +118,7 @@ def index():
                     ff_result.append(b)
                 gg_result.append(ff_result[0:2] + ff_result[3:len(result[a])])
             result = gg_result
-        else:
+        if True:
             gg_result = []
             for a in range(0, len(result)):
                 ff_result = []
@@ -124,11 +132,12 @@ def index():
         if where_to_search == "log":
             for a in range(0, len(result)):
                 if result[a][3] == 2:
-                    gg_result = get_by_id("law","big_data",result[a][[4]])
-                    print gg_result
-                    result[a][3] = """
-                        <a href="powerlaw.ai:8888/document?id=%s" target="_blank?">%</a>
-                    """ % ("a","b")
+                    gg_result = get_by_id("law","big_data",result[a][4])
+                    if gg_result is None:
+                        continue
+                    result[a][4] = """
+                        <a href="powerlaw.ai:8888/document?id=%s" target="_blank?">%s</a>
+                    """ % (result[a][4],gg_result["_source"]["Title"])
 
         return render_template("main.html", result=result, column_name=column_name[where_to_search], args=request.form)
 
@@ -136,13 +145,6 @@ def index():
         return render_template("main.html", args={"where_to_search": "user", "condition": ""})
 
 
-server_dir = os.path.dirname(os.path.realpath(__file__))
-config_file = os.path.join(server_dir, 'config.py')
-local_config_file = os.path.join(server_dir, 'local_config.py')
-
-app.config.from_pyfile(config_file)
-if os.path.exists(local_config_file):
-    app.config.from_pyfile(local_config_file)
 
 app.secret_key = app.config["SECRET"]
 
