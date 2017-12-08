@@ -54,7 +54,7 @@ def search():
                     return response
                 log_id = res_add["msg"]
         else:
-            return json.dumps(util.create_error(666, u"用户未登录"),cls=util.CJsonEncoder)
+            return json.dumps(util.create_error(666, u"用户未登录"), cls=util.CJsonEncoder)
 
         body = []
 
@@ -241,6 +241,73 @@ def search():
             result["log_id"] = log_id
 
     response = make_response(json.dumps(result))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET'
+    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+    return response
+
+
+@app.route('/search_temp', methods=["POST", "GET"])
+def search_temp():
+    print "Mission Start"
+    result = []
+    request.args = merge_dict([request.args, request.form])
+    for x in request.args:
+        print x, request.args[x]
+
+    if True:
+        body = []
+
+        args = request.args
+        for x in args:
+            print x, args[x]
+
+        if args["search_content"] != "":
+            match_type = {
+                "0": "content",
+                "1": "WBSB",
+                "2": "AJJBQK",
+                "3": "CPYZ",
+                "4": "PJJG",
+                "5": "WBWB"
+            }
+            search_type = match_type["0"]
+            # expanded = expand(args["search_content"])
+            body.append({"match": {search_type: {"query": args["search_content"]}}})
+        size = 25
+        from_id = 0
+        if "from" in request.args:
+            from_id = int(request.args["from"])
+            if "to" in request.args:
+                size = int(request.args["to"]) - int(request.args["from"]) + 1
+        real_size = size + from_id
+
+        print "Begin to search"
+        print_time()
+        query_string = json.dumps({"query": {"bool": {"must": body}}})
+        print query_string
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
+                                          from_id)
+
+        print "Begin to reranking"
+        print_time()
+        query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        print "Reranking Done"
+        print_time()
+
+        temp = []
+        for x in query_result["hits"][from_id:min(len(query_result["hits"]), from_id + size)]:
+            temp.append(x["_source"])
+
+        print "Tfidf begin"
+        print_time()
+
+        result = []
+        for a in range(0, len(temp)):
+            res = {"id": temp[a]["doc_name"]}
+            result.append(res)
+
+    response = make_response(json.dumps(result, ensure_ascii=False))
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET'
     response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
@@ -438,6 +505,25 @@ def get_doc_byid():
                                PubDate="0000-00-00",  # query_result["_source"]["PubDate"],
                                origin=query_result["_source"]["doc_name"]) \
             .replace('\\b', '<br/>')
+
+    return "Error"
+
+
+@app.route('/doc_temp')
+def get_doc_byid_temp():
+    request.args = merge_dict([request.args, request.form])
+    if "id" in request.args:
+        query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
+        data = {"_source": json.loads(query_result["_source"]["content"])}
+        data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
+        data["code"] = 0
+        data = json.dumps(data)
+        response = make_response(data)
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+        return response
+        return json.dumps(query_result["_source"])
 
     return "Error"
 
