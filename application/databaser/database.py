@@ -97,12 +97,12 @@ def add_user(obj, code_level):
             return create_error(5, u"用户已存在")
 
     success = execute_write("""
-        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity)
-        VALUES (NOW(),'%s','%s','%s','%s','%s',%d,'%s','%s',%d)
+        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity,user_code)
+        VALUES (NOW(),'%s','%s','%s','%s','%s',%d,'%s','%s',%d,'%s')
     """ % (
         obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
         obj["user_photo"],
-        obj["user_org"], obj["user_identity"]))
+        obj["user_org"], obj["user_identity"],obj["user_code"]))
 
     if success:
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
@@ -143,11 +143,14 @@ def move_code(code):
 
 
 def gen_code(args):
-    import random
+    import uuid
     level = 0
     if "type" in args:
         level = int(args["type"])
-    code = str(random.randint(100000, 999999))
+    if "code" in args:
+        code = str(args["code"])
+    else:
+        code = str(uuid.uuid4())
     execute_write("""
         INSERT INTO code(code,leveltype)
         VALUES ('%s',%d)

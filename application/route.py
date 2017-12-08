@@ -286,11 +286,12 @@ def search_temp():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
+        query_result = elastic.search_doc("law","big_data", query_string, 250,
                                           from_id)
 
         print "Begin to reranking"
         print_time()
+        args["type_of_model"]=-2
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
         print "Reranking Done"
         print_time()
@@ -304,7 +305,7 @@ def search_temp():
 
         result = []
         for a in range(0, len(temp)):
-            res = {"id": temp[a]["doc_name"]}
+            res = temp[a]["doc_name"]
             result.append(res)
 
     response = make_response(json.dumps(result, ensure_ascii=False))
@@ -555,9 +556,17 @@ def serve_static(filetype, filename):
 
 @app.route('/gen_code', methods=["POST", "GET"])
 def gen_code():
-    request.args = merge_dict([request.args, request.form])
-    code = database.gen_code(request.args)
-    return code
+    return "gg"
+    f = open ("code.csv","w")
+    import uuid
+    for a in range(0,4):
+        for b in range(0,100):
+            code = str(uuid.uuid4())
+            print >> f,str(a)+","+code
+            database.gen_code({"type":a,"code":code})
+            #request.args = merge_dict([request.args, request.form])
+    #code = database.gen_code(request.args)
+    return "Success"
 
 
 @app.route('/register', methods=["POST", "GET"])
