@@ -633,3 +633,8 @@ def get_history():
 def remove_favor_item():
     request.args = merge_dict([request.args, request.form])
     return json.dumps(database.remove_favor_item(request.args), cls=util.CJsonEncoder)
+
+@app.route('/auth_user',methods = ["POST","GET"])
+def auth_user():
+    request.args = merge_dict([request.args, request.form])
+    return json.dumps(database.auth_user(request.args), cls=util.CJsonEncoder)

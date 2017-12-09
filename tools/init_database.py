@@ -22,9 +22,11 @@ if __name__ == "__main__":
           user_photo VARCHAR(5000) NOT NULL,
           user_org VARCHAR(100),
           user_identity INT,
-          user_code VARCHAR(100) NOT NULL,
           create_time DATETIME NOT NULL,
           last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          user_code VARCHAR(100) NOT NULL,
+          user_authed INT DEFAULT 0,
+          user_mail_auth_code VARCHAR(100) NOT NULL,
           PRIMARY KEY (user_id)
         ) character set = utf8"""
     cursor.execute(sql)

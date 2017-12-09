@@ -5,16 +5,31 @@ from application.cutter import cut
 
 
 def train_tfidf(text):
-    dictionary = corpora.Dictionary(text)
-    corpus = [dictionary.doc2bow(texts) for texts in text]
-    tfidf = models.TfidfModel(corpus)
+    import numpy as np
+    dic = {}
+    cnt = 0
+    for a in range(0, len(text[0])):
+        if not (text[0][a] in dic):
+            dic[text[0][a]] = cnt
+            cnt += 1
+
+    tf = np.array(cnt, dtype=np.int32)
+    idf = np.array(cnt, dtype=np.int32)
+    for a in xrange(0, len(text)):
+        for b in xrange(0, len(text[a])):
+            arr = np.array(cnt,dtype=np.int32)
+            if text[a][b] in dic:
+                tf[dic[text[a][b]]] += 1
+                arr[dic[text[a][b]]] = 1
+            idf += arr
+
 
     return (dictionary, corpus, tfidf)
 
 
 def get_best(search_content, document):
     text = document
-    arr = []
+    arr = [search_content]
     for a in range(0, max(1, len(text) - 100), 63):
         arr.append([])
         now = len(arr) - 1
@@ -31,7 +46,7 @@ def get_best(search_content, document):
         for y in x:
             if y in se:
                 s += 1
-        similarity.append(s)    
+        similarity.append(s)
 
     p = 0
     for a in range(1, len(similarity)):
@@ -45,7 +60,7 @@ def get_best(search_content, document):
             if x == y:
                 find = True
                 break
-        if len(x.decode("utf8"))==1:
+        if len(x.decode("utf8")) == 1:
             find = False
         if find:
             res = res + "<highlight>" + x + "</highlight>"

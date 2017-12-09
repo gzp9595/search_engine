@@ -85,8 +85,10 @@ def login():
 
 column_name = {}
 column_name["user"] = ["user_id", "username", "nickname", "rest_money", "phone_number", "mail", "user_type",
-                       "user_photo", "user_org", "user_identity", "user_code", "create_time", "last_modified"]
-column_name["log"] = ["log_id", "username", "create_time", "type_number", "doc_id", "query_paramenter", "user_ip"]
+                       "user_photo", "user_org", "user_identity", "create_time", "last_modified", "user_code",
+                       "user_authed", "user_mail_auth_code"]
+column_name["log"] = ["log_id", "username", "create_time", "type_number", "doc_id",
+                      "query_paramenter", "user_ip"]
 column_name["code"] = ["code", "leveltype", "create_time"]
 column_name["usertype"] = ["type_id", "search_perminute", "search_perday", "view_perminute", "view_perday"]
 column_name["favorite"] = ["favoite_id", "create_time", "usernmae", "favorite_name"]
@@ -132,18 +134,17 @@ def index():
         if where_to_search == "log":
             for a in range(0, len(result)):
                 if result[a][3] == 2:
-                    gg_result = get_by_id("law","big_data",result[a][4])
+                    gg_result = get_by_id("law", "big_data", result[a][4])
                     if gg_result is None:
                         continue
                     result[a][4] = """
                         <a href="powerlaw.ai:8888/document?id=%s" target="_blank?">%s</a>
-                    """ % (result[a][4],gg_result["_source"]["Title"])
+                    """ % (result[a][4], gg_result["_source"]["Title"])
 
         return render_template("main.html", result=result, column_name=column_name[where_to_search], args=request.form)
 
     else:
         return render_template("main.html", args={"where_to_search": "user", "condition": ""})
-
 
 
 app.secret_key = app.config["SECRET"]

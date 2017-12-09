@@ -78,7 +78,7 @@ def add_user(obj, code_level):
     if not ("user_identity" in obj):
         obj["user_identity"] = 0
     if not ("user_code" in obj):
-        return create_error(999,u"???")
+        return create_error(999, u"???")
 
     if execute_read("""SELECT COUNT(*) FROM user WHERE mail='%s'""" % obj["mail"]).fetchall()[0][0] != 0:
         return create_error(53, u"邮箱已被使用")
@@ -96,15 +96,27 @@ def add_user(obj, code_level):
         if len(cursor.fetchall()) > 0:
             return create_error(5, u"用户已存在")
 
+    import uuid
+    auth_code = str(uuid.uuid4()).replace("-", "")
+
     success = execute_write("""
-        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity,user_code)
-        VALUES (NOW(),'%s','%s','%s','%s','%s',%d,'%s','%s',%d,'%s')
+        INSERT INTO user(create_time,username,password,nickname,phone_number,mail,user_type,user_photo,user_org,user_identity,user_code,user_authed,user_mail_auth_code)
+        VALUES (NOW(),'%s','%s','%s','%s','%s',%d,'%s','%s',%d,'%s',%d,'%s')
     """ % (
         obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
         obj["user_photo"],
-        obj["user_org"], obj["user_identity"],obj["user_code"]))
+        obj["user_org"], obj["user_identity"], obj["user_code"], 0, auth_code))
 
     if success:
+        try:
+            from application import mailer
+            mailer.mailer.send_mail(u"幂律智能邮箱验证",
+                                    u"""
+                                    <a href="http://powerlaw.ai:8888/auth?username=%s&code=%s" target=_blank>点击此处激活邮箱</a>
+                                    """ % (obj["username"], auth_code), obj["mail"])
+        except:
+            return create_error(4444, u"邮箱邮件发送失败")
+
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
         print res
         if res["code"] == 0:
@@ -165,7 +177,7 @@ def check_user(args):
     if not ("password" in args):
         return create_error(2, u"没有密码")
 
-    cursor = execute_read("""SELECT * FROM user WHERE
+    cursor = execute_read("""SELECT user_authed FROM user WHERE
       username='%s' AND password='%s'
     """ % (args["username"], args["password"]))
 
@@ -174,7 +186,11 @@ def check_user(args):
 
     result = cursor.fetchall()
     if len(result) > 0:
-        return create_success("Success")
+        result = cursor.fetchall()
+        if result[0][0] == 1:
+            return create_success("Success")
+        else:
+            return create_error(u"用户未验证")
     else:
         return create_error(3, u"密码不正确")
 
@@ -342,7 +358,7 @@ def add_search_log(args):
     cursor = execute_write_return_cursor("""
         INSERT INTO log(username,type_number,query_parameter)
         VALUES ('%s',1,'%s')
-    """ % (args["username"], json.dumps(args,ensure_ascii = False).replace("'", "\\'").encode("utf8")))
+    """ % (args["username"], json.dumps(args, ensure_ascii=False).replace("'", "\\'").encode("utf8")))
 
     if cursor is None:
         return create_error(255, u"未知错误")
@@ -480,3 +496,26 @@ def get_history(args):
         })
 
     return create_success(arr)
+
+
+def auth_user(args):
+    if not ("username" in args):
+        return create_error(1, u"没有用户名")
+    if not ("code" in args):
+        return create_error(555, u"没有验证码")
+
+    cursor = execute_read(
+        """SELECT user_mail_auth_code FROM user WHERE username='%s' AND user_mail_auth_code='%s'""" % (
+        args["username"], args["code"]))
+
+    if cursor is None:
+        return create_error(255, u"未知错误")
+
+    result = cursor.fetchall()
+    if len(result) > 0:
+        if execute_write("""UPDATE user SET user_authed = 1 WHERE username='%s'""" % args["username"]):
+            return create_success(u"验证通过")
+        else:
+            return create_error(255, u"未知错误")
+    else:
+        return create_error(3, u"验证码不正确")
