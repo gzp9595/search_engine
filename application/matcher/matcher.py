@@ -1,5 +1,5 @@
 # coding=utf-8
-from gensim import corpora, models, similarities
+#from gensim import corpora, models, similarities
 from application.util import print_time
 from application.cutter import cut
 import numpy as np
@@ -29,7 +29,7 @@ def train_tfidf(text):
     for a in xrange(0, cnt):
         idf[a] = 1 + np.log(len(text) / (idf[a] + 1))
     for a in xrange(0,len(tf)):
-        tf[a] = tf[a]*idf[a]
+        tf[a] = tf[a]*idf
 
     similarity = []
     for a in xrange(0,len(tf)):
@@ -48,10 +48,10 @@ def get_best(search_content, document):
             if a + b < len(text):
                 arr[now].append(text[a + b])
 
-    """similarity = []
     se = set()
     for x in search_content:
         se.add(x)
+    """
     for x in arr:
         s = 0
         for y in x:
