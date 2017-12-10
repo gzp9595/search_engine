@@ -112,9 +112,11 @@ def add_user(obj, code_level):
             from application import mailer
             mailer.mailer.send_mail(u"幂律智能邮箱验证",
                                     u"""
-                                    <a href="http://powerlaw.ai:8888/auth?username=%s&code=%s" target=_blank>点击此处激活邮箱</a>
-                                    """ % (obj["username"], auth_code), obj["mail"])
-        except:
+                                    <a href="http://powerlaw.ai:8000/auth_user?username=%s&code=%s" target=_blank>点击此处激活邮箱</a>
+                                    """ % (obj["username"], auth_code), [obj["mail"]])
+        except Exception as e:
+            print e
+            execute_write("""DELETE FROM user WHERE username='%s'""" % obj["username"])
             return create_error(4444, u"邮箱邮件发送失败")
 
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
@@ -186,7 +188,6 @@ def check_user(args):
 
     result = cursor.fetchall()
     if len(result) > 0:
-        result = cursor.fetchall()
         if result[0][0] == 1:
             return create_success("Success")
         else:

@@ -286,7 +286,8 @@ def search_temp():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc("law","big_data", query_string, 250,
+        print real_size
+        query_result = elastic.search_doc("law","big_data", query_string, real_size,
                                           from_id)
 
         print "Begin to reranking"
@@ -574,10 +575,10 @@ def register():
     request.args = merge_dict([request.args, request.form])
 
     if not ("code" in request.args):
-        return json.dumps(util.create_error(100, "Code not found"))
+        return json.dumps(util.create_error(100, u"验证码不存在"))
     data = database.check_code(request.args["code"])
     if data == -1:
-        return json.dumps(util.create_error(101, "Code not correct"))
+        return json.dumps(util.create_error(101, u"验证码不正确"))
 
     request.args["user_code"] = request.args["code"]
     result = database.add_user(request.args, data)
