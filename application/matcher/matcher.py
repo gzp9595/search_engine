@@ -2,29 +2,40 @@
 from gensim import corpora, models, similarities
 from application.util import print_time
 from application.cutter import cut
+import numpy as np
 
 
 def train_tfidf(text):
-    import numpy as np
     dic = {}
     cnt = 0
-    for a in range(0, len(text[0])):
+    for a in xrange(0, len(text[0])):
         if not (text[0][a] in dic):
             dic[text[0][a]] = cnt
             cnt += 1
 
-    tf = np.array(cnt, dtype=np.int32)
-    idf = np.array(cnt, dtype=np.int32)
+    tf = []
+    idf = np.zeros(cnt, dtype=np.float32)
     for a in xrange(0, len(text)):
+        arr1 = np.zeros(cnt, dtype=np.float32)
+        arr2 = np.zeros(cnt, dtype=np.float32)
         for b in xrange(0, len(text[a])):
-            arr = np.array(cnt,dtype=np.int32)
             if text[a][b] in dic:
-                tf[dic[text[a][b]]] += 1
-                arr[dic[text[a][b]]] = 1
-            idf += arr
+                arr1[dic[text[a][b]]] += 1
+                arr2[dic[text[a][b]]] = 1
 
+        idf += arr2
+        tf.append(arr1 / len(text[a]))
 
-    return (dictionary, corpus, tfidf)
+    for a in xrange(0, cnt):
+        idf[a] = 1 + np.log(len(text) / (idf[a] + 1))
+    for a in xrange(0,len(tf)):
+        tf[a] = tf[a]*idf[a]
+
+    similarity = []
+    for a in xrange(0,len(tf)):
+        similarity.append(np.sum(tf[0]*tf[a])/np.sqrt(np.sum(tf[0]*tf[0]))/np.sqrt(np.sum(tf[a]*tf[a])))
+
+    return similarity
 
 
 def get_best(search_content, document):
@@ -37,7 +48,7 @@ def get_best(search_content, document):
             if a + b < len(text):
                 arr[now].append(text[a + b])
 
-    similarity = []
+    """similarity = []
     se = set()
     for x in search_content:
         se.add(x)
@@ -46,7 +57,9 @@ def get_best(search_content, document):
         for y in x:
             if y in se:
                 s += 1
-        similarity.append(s)
+        similarity.append(s)"""
+
+    similarity = train_tfidf(arr)
 
     p = 0
     for a in range(1, len(similarity)):
