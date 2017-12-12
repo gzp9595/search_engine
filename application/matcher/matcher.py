@@ -33,7 +33,10 @@ def train_tfidf(text):
 
     similarity = []
     for a in xrange(0,len(tf)):
-        similarity.append(np.sum(tf[0]*tf[a])/np.sqrt(np.sum(tf[0]*tf[0]))/np.sqrt(np.sum(tf[a]*tf[a])))
+        if (np.sum(tf[a]*tf[a])<=1e-8):
+            similarity.append(0)
+        else:
+            similarity.append(np.sum(tf[0]*tf[a])/np.sqrt(np.sum(tf[0]*tf[0]))/np.sqrt(np.sum(tf[a]*tf[a])))
 
     return similarity
 
@@ -61,8 +64,8 @@ def get_best(search_content, document):
 
     similarity = train_tfidf(arr)
 
-    p = 0
-    for a in range(1, len(similarity)):
+    p = 1
+    for a in range(2, len(similarity)):
         if similarity[a] > similarity[p]:
             p = a
 
