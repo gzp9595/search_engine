@@ -22,23 +22,44 @@ def get_best(search_content, document):
             if a + b < len(text):
                 arr[now].append(text[a + b])
 
-    similarity = []
-    se = set()
-    for x in search_content:
-        se.add(x)
-    for x in arr:
-        s = 0
-        for y in x:
-            if y in se:
-                s += 1
-        similarity.append(s)    
+    # print "Begin tfidf"
+    # print_time()
+    (dictionary, corpus, tfidf) = train_tfidf(arr)
+    corpus_tfidf = tfidf[corpus]
+    # print "End tfidf"
+    # print_time()
 
+    vec_bow = dictionary.doc2bow(search_content)
+    vec_tfidf = tfidf[vec_bow]
+
+    try:
+        index = similarities.MatrixSimilarity(corpus_tfidf)
+    except ValueError:
+        result = ""
+        for a in range(0, min(len(text), 100)):
+            result = result + text[a]
+        return result
+
+    sims = index[vec_tfidf]
+    # print "Begin similarity"
+    # print_time()
+
+    similarity = list(sims)
+    # print "End similarity"
+    # print_time()
+
+    #for a in range(0, len(similarity)):
+    #    print similarity[a],
+    #print
     p = 0
     for a in range(1, len(similarity)):
         if similarity[a] > similarity[p]:
             p = a
 
     res = ""
+    se = set()
+    for x in search_content:
+        se.add(x)
     for x in arr[p]:
         find = False
         for y in se:
