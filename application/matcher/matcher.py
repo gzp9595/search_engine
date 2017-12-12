@@ -1,49 +1,20 @@
 # coding=utf-8
-#from gensim import corpora, models, similarities
+from gensim import corpora, models, similarities
 from application.util import print_time
 from application.cutter import cut
-import numpy as np
 
 
 def train_tfidf(text):
-    dic = {}
-    cnt = 0
-    for a in xrange(0, len(text[0])):
-        if not (text[0][a] in dic):
-            dic[text[0][a]] = cnt
-            cnt += 1
+    dictionary = corpora.Dictionary(text)
+    corpus = [dictionary.doc2bow(texts) for texts in text]
+    tfidf = models.TfidfModel(corpus)
 
-    tf = []
-    idf = np.zeros(cnt, dtype=np.float32)
-    for a in xrange(0, len(text)):
-        arr1 = np.zeros(cnt, dtype=np.float32)
-        arr2 = np.zeros(cnt, dtype=np.float32)
-        for b in xrange(0, len(text[a])):
-            if text[a][b] in dic:
-                arr1[dic[text[a][b]]] += 1
-                arr2[dic[text[a][b]]] = 1
-
-        idf += arr2
-        tf.append(arr1 / len(text[a]))
-
-    for a in xrange(0, cnt):
-        idf[a] = 1 + np.log(len(text) / (idf[a] + 1))
-    for a in xrange(0,len(tf)):
-        tf[a] = tf[a]*idf
-
-    similarity = []
-    for a in xrange(0,len(tf)):
-        if (np.sum(tf[a]*tf[a])<=1e-8):
-            similarity.append(0)
-        else:
-            similarity.append(np.sum(tf[0]*tf[a])/np.sqrt(np.sum(tf[0]*tf[0]))/np.sqrt(np.sum(tf[a]*tf[a])))
-
-    return similarity
+    return (dictionary, corpus, tfidf)
 
 
 def get_best(search_content, document):
     text = document
-    arr = [search_content]
+    arr = []
     for a in range(0, max(1, len(text) - 100), 63):
         arr.append([])
         now = len(arr) - 1
@@ -51,21 +22,19 @@ def get_best(search_content, document):
             if a + b < len(text):
                 arr[now].append(text[a + b])
 
+    similarity = []
     se = set()
     for x in search_content:
         se.add(x)
-    """
     for x in arr:
         s = 0
         for y in x:
             if y in se:
                 s += 1
-        similarity.append(s)"""
+        similarity.append(s)    
 
-    similarity = train_tfidf(arr)
-
-    p = 1
-    for a in range(2, len(similarity)):
+    p = 0
+    for a in range(1, len(similarity)):
         if similarity[a] > similarity[p]:
             p = a
 
@@ -76,7 +45,7 @@ def get_best(search_content, document):
             if x == y:
                 find = True
                 break
-        if len(x.decode("utf8")) == 1:
+        if len(x.decode("utf8"))==1:
             find = False
         if find:
             res = res + "<highlight>" + x + "</highlight>"
@@ -87,7 +56,7 @@ def get_best(search_content, document):
 
 
 if __name__ == "__main__":
-    document = "é‡åº†å¸‚åˆå·åŒºäººæ°‘æ³•æ°‘ äº‹ è£ å®š ï¼ˆ2014ï¼‰åˆæ³•æ°‘åˆå­—ç¬¬07519åŸå‘ŠçŸ³å¿ å¼ºï¼Œç”·ï¼Œ1982å¹´2æœˆ8æ—¥å‡ºç”Ÿï¼Œæ±‰æ—ï¼Œä½é‡åº†å¸‚åˆå·åŒºå§”æ‰˜ä»£ç†äººè’‹ç”²æ´ªï¼Œé‡åº†åˆå·å¾‹å¸ˆäº‹åŠ¡æ‰€å¾‹å¸ˆè¢«å‘Šä½•å®‰å›½ï¼Œç”·ï¼Œ1964å¹´7æœˆ10æ—¥å‡ºç”Ÿï¼Œæ±‰æ—ï¼Œä½é‡åº†å¸‚åˆå·åŒºæœ¬é™¢åœ¨å®¡ç†åŸå‘ŠçŸ³å¿ å¼ºä¸è¢«å‘Šä½•å®‰å›½æ°‘é—´å€Ÿè´·çº çº·ä¸€æ¡ˆä¸­ï¼ŒåŸå‘ŠçŸ³å¿ å¼º2014å¹´11æœˆ14æ—¥å‘æœ¬é™¢æå‡ºæ’¤è¯‰ç”³è¯·æœ¬é™¢è®¤ä¸ºï¼ŒåŸå‘ŠçŸ³å¿ å¼ºåœ¨æœ¬æ¡ˆè¯‰è®¼æœŸé—´ç”³è¯·å¯¹è¢«å‘Šä½•å®‰å›½æ’¤è¯‰ï¼Œæ˜¯åœ¨æ³•å¾‹å…è®¸çš„èŒƒå›´å†…å¯¹è‡ªå·±çš„è¯‰è®¼æƒåˆ©æ‰€ä½œå‡ºçš„å¤„åˆ†ï¼ŒåŸå‘ŠçŸ³å¿ å¼ºæå‡ºçš„æ’¤è¯‰ç”³è¯·ï¼Œç¬¦åˆæ³•å¾‹è§„å®šçš„æ’¤è¯‰æ¡ä»¶ï¼Œæœ¬é™¢äºˆä»¥å‡†è®¸ã€‚æ®æ­¤ï¼Œä¾ç…§ã€Šä¸­åäººæ°‘å…±å’Œå›½æ°‘äº‹è¯‰è®¼æ³•ã€‹ç¬¬ä¸€ç™¾å››åäº”æ¡ç¬¬ä¸€æ¬¾ã€ç¬¬ä¸€ç™¾äº”åå››æ¡ç¬¬ä¸€æ¬¾ç¬¬ï¼ˆäº”ï¼‰é¡¹çš„è§„å®šï¼Œè£å®šå¦‚ä¸‹å‡†è®¸åŸå‘ŠçŸ³å¿ å¼ºæ’¤å›å¯¹è¢«å‘Šä½•å®‰å›½çš„èµ·è¯‰æ¡ˆä»¶å—ç†è´¹50å…ƒï¼Œå‡åŠæ”¶å–25å…ƒï¼Œç”±åŸå‘ŠçŸ³å¿ å¼ºè´Ÿæ‹…å®¡åˆ¤å‘˜ã€€ã€€å†¯é›ªäºŒã€‡ä¸€å››å¹´åä¸€æœˆåå››ä¹¦è®°å‘˜ã€€ã€€åˆ˜ã€€é¢–"
-    data = "å€Ÿè´·çº çº·"
+    document = "ÖØÇìÊĞºÏ´¨ÇøÈËÃñ·¨Ãñ ÊÂ ²Ã ¶¨ £¨2014£©ºÏ·¨Ãñ³õ×ÖµÚ07519Ô­¸æÊ¯ÖÒÇ¿£¬ÄĞ£¬1982Äê2ÔÂ8ÈÕ³öÉú£¬ºº×å£¬×¡ÖØÇìÊĞºÏ´¨ÇøÎ¯ÍĞ´úÀíÈË½¯¼×ºé£¬ÖØÇìºÏÖİÂÉÊ¦ÊÂÎñËùÂÉÊ¦±»¸æºÎ°²¹ú£¬ÄĞ£¬1964Äê7ÔÂ10ÈÕ³öÉú£¬ºº×å£¬×¡ÖØÇìÊĞºÏ´¨Çø±¾ÔºÔÚÉóÀíÔ­¸æÊ¯ÖÒÇ¿Óë±»¸æºÎ°²¹úÃñ¼ä½è´û¾À·×Ò»°¸ÖĞ£¬Ô­¸æÊ¯ÖÒÇ¿2014Äê11ÔÂ14ÈÕÏò±¾ÔºÌá³ö³·ËßÉêÇë±¾ÔºÈÏÎª£¬Ô­¸æÊ¯ÖÒÇ¿ÔÚ±¾°¸ËßËÏÆÚ¼äÉêÇë¶Ô±»¸æºÎ°²¹ú³·Ëß£¬ÊÇÔÚ·¨ÂÉÔÊĞíµÄ·¶Î§ÄÚ¶Ô×Ô¼ºµÄËßËÏÈ¨ÀûËù×÷³öµÄ´¦·Ö£¬Ô­¸æÊ¯ÖÒÇ¿Ìá³öµÄ³·ËßÉêÇë£¬·ûºÏ·¨ÂÉ¹æ¶¨µÄ³·ËßÌõ¼ş£¬±¾ÔºÓèÒÔ×¼Ğí¡£¾İ´Ë£¬ÒÀÕÕ¡¶ÖĞ»ªÈËÃñ¹²ºÍ¹úÃñÊÂËßËÏ·¨¡·µÚÒ»°ÙËÄÊ®ÎåÌõµÚÒ»¿î¡¢µÚÒ»°ÙÎåÊ®ËÄÌõµÚÒ»¿îµÚ£¨Îå£©ÏîµÄ¹æ¶¨£¬²Ã¶¨ÈçÏÂ×¼ĞíÔ­¸æÊ¯ÖÒÇ¿³·»Ø¶Ô±»¸æºÎ°²¹úµÄÆğËß°¸¼şÊÜÀí·Ñ50Ôª£¬¼õ°ëÊÕÈ¡25Ôª£¬ÓÉÔ­¸æÊ¯ÖÒÇ¿¸ºµ£ÉóÅĞÔ±¡¡¡¡·ëÑ©¶ş©–Ò»ËÄÄêÊ®Ò»ÔÂÊ®ËÄÊé¼ÇÔ±¡¡¡¡Áõ¡¡Ó±"
+    data = "½è´û¾À·×"
 
     print get_best(data, document)
