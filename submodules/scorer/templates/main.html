@@ -5,6 +5,14 @@
     <title>Login</title>
 </head>
 <body>
+    <h1>
+        现在是第{{ page }}页
+    </h1>
+    <form method="get">
+        <input type="number" placeholder="0到12页" name="page">
+        <input type="submit" value="跳转">
+    </form
+    </form>
     <form method="post">
         {% for (x,y,z) in arr %}
             <a href = "http://powerlaw.ai:8888/document?id={{ x }}" target="_blank">{{ z }}</a>
@@ -17,7 +25,7 @@
             </select>
 			<br>
         {% endfor %}
-        <input type="submit" value="Search">
+        <input type="submit" value="提交评分">
     </form>
 </body>
 </html>

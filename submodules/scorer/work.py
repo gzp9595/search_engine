@@ -60,17 +60,15 @@ num = 77
 @app.route('/', methods=['GET', 'POST'])
 def index():
     page = 0
-    if request.method == "GET":
-        page = 0
-    else:
-        page = int(request.form["page"])
-        if "score_0" in request.form:
-            for a in range(0, num):
-                arr[page * num + a][1] = int(request.form["score_" + str(a)])
+    if "page" in request.args:
+        page = int(request.args["page"])
+    if "score_0" in request.form:
+        for a in range(0, num):
+            arr[page * num + a][1] = int(request.form["score_" + str(a)])
 
     temp = arr[page * num:(page + 1) * num]
 
-    return render_template("main.html", arr=temp)
+    return render_template("main.html", arr=temp,page=page)
 
 
 app.run(host=app.config["HOST"], port=app.config["PORT"], debug=app.config["DEBUG"], threaded=True)
