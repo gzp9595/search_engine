@@ -6,17 +6,16 @@
 </head>
 <body>
     <form method="post">
-        {% cnt=0 %}
-        {% for (x,y,z) in result %}
-            <a href = "http://powerlaw.ai:8888/document?id={{ x }}" target="_blank">z</a>
-            <select name="score_{{ cnt }}">
+        {% for (x,y,z) in arr %}
+            <a href = "http://powerlaw.ai:8888/document?id={{ x }}" target="_blank">{{ z }}</a>
+            <select name="score_{{ x }}">
                 <option value="0" {% if y == 0 %}selected{% endif %}>0</option>
                 <option value="1" {% if y == 1 %}selected{% endif %}>1</option>
                 <option value="2" {% if y == 2 %}selected{% endif %}>2</option>
                 <option value="3" {% if y == 3 %}selected{% endif %}>3</option>
                 <option value="4" {% if y == 4 %}selected{% endif %}>4</option>
             </select>
-            {% cnt = cnt + 1 %}
+			<br>
         {% endfor %}
         <input type="submit" value="Search">
     </form>

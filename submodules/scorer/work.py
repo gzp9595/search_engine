@@ -35,17 +35,21 @@ def get_by_id(index, doc_type, id):
 arr = []
 f = open("id.txt", "r")
 for line in f:
-    content = line[:-1].split(",")
-    data = get_by_id("law", "big_data", content[0])["_source"]["Title"]
-    arr.append((content[0], int(content[1]), data))
+    content = line[:-1].split(" ")
+    if len(content)>3:
+        print content
+        gg
+    #data = get_by_id("law","big_data",content[0])["_source"]["Title"]
+    #print content[0]
+    arr.append((content[0], int(content[1]), content[2].decode("utf8")))
 f.close()
 
 
 @app.route('/output')
 def output():
-    f = open("id.txt", "w")
+    f = open("idf.txt", "w")
     for (x, y, z) in arr:
-        print >> f, x, y
+        print >> f, x, y, z
     f.close()
     return "gg"
 
