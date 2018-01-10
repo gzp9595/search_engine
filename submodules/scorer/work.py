@@ -33,6 +33,7 @@ def get_by_id(index, doc_type, id):
 
 
 arr = []
+cnt = 0
 f = open("id.txt", "r")
 for line in f:
     content = line[:-1].split(" ")
@@ -41,20 +42,21 @@ for line in f:
         gg
     #data = get_by_id("law","big_data",content[0])["_source"]["Title"]
     #print content[0]
-    arr.append((content[0], int(content[1]), content[2].decode("utf8")))
+    arr.append([content[0], int(content[1]), content[2].decode("utf8"),cnt])
+    cnt += 1
 f.close()
 
 
 @app.route('/output')
 def output():
     f = open("idf.txt", "w")
-    for (x, y, z) in arr:
-        print >> f, x, y, z
+    for (x, y, z,t) in arr:
+        print >> f, x, y, z.encode("utf8")
     f.close()
     return "gg"
 
 
-num = 77
+num = 50
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,11 +64,13 @@ def index():
     page = 0
     if "page" in request.args:
         page = int(request.args["page"])
-    if "score_0" in request.form:
+    if "score_"+arr[page*num][0] in request.form:
         for a in range(0, num):
-            arr[page * num + a][1] = int(request.form["score_" + str(a)])
+            sc = int(request.form["score_" + arr[page*num+a][0]])
+            if sc != -1:
+                arr[page * num + a][1] = sc
 
-    temp = arr[page * num:(page + 1) * num]
+    temp = arr[page * num:min((page + 1) * num,len(arr))]
 
     return render_template("main.html", arr=temp,page=page)
 

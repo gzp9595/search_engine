@@ -105,7 +105,7 @@ def add_user(obj, code_level):
     """ % (
         obj["username"], obj["password"], obj["nickname"], obj["phone_number"], obj["mail"], code_level,
         obj["user_photo"],
-        obj["user_org"], obj["user_identity"], obj["user_code"], 0, auth_code))
+        obj["user_org"], obj["user_identity"], obj["user_code"], 1, auth_code))
 
     if success:
         try:

@@ -9,21 +9,23 @@
         现在是第{{ page }}页
     </h1>
     <form method="get">
-        <input type="number" placeholder="0到12页" name="page">
+        <input type="number" placeholder="0到20页" name="page">
         <input type="submit" value="跳转">
     </form
     </form>
     <form method="post">
-        {% for (x,y,z) in arr %}
-            <a href = "http://powerlaw.ai:8888/document?id={{ x }}" target="_blank">{{ z }}</a>
+        {% for (x,y,z,t) in arr %}
+		    {{ t }}
+            <a href = "http://powerlaw.ai:8888/document/{{ x }}" target="_blank">{{ z }}</a>
             <select name="score_{{ x }}">
+                <option value="-1" {% if y == -1 %}selected{% endif %}></option>
                 <option value="0" {% if y == 0 %}selected{% endif %}>0</option>
                 <option value="1" {% if y == 1 %}selected{% endif %}>1</option>
                 <option value="2" {% if y == 2 %}selected{% endif %}>2</option>
                 <option value="3" {% if y == 3 %}selected{% endif %}>3</option>
                 <option value="4" {% if y == 4 %}selected{% endif %}>4</option>
             </select>
-			<br>
+			<br><br>
         {% endfor %}
         <input type="submit" value="提交评分">
     </form>

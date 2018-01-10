@@ -31,16 +31,22 @@ def get_best(search_content, document):
 
     vec_bow = dictionary.doc2bow(search_content)
     vec_tfidf = tfidf[vec_bow]
+    se = set()
+    for x in search_content:
+        se.add(x)
 
     try:
         index = similarities.MatrixSimilarity(corpus_tfidf)
-    except ValueError:
-        result = ""
-        for a in range(0, min(len(text), 100)):
-            result = result + text[a]
-        return result
+        sims = index[vec_tfidf]
+    except ValueError as e:
+        sims = []
+        for x in arr:
+            s = 0
+            for y in x:
+                if y in se:
+                    s += 1
+            sims.append(s)
 
-    sims = index[vec_tfidf]
     # print "Begin similarity"
     # print_time()
 
@@ -57,9 +63,6 @@ def get_best(search_content, document):
             p = a
 
     res = ""
-    se = set()
-    for x in search_content:
-        se.add(x)
     for x in arr[p]:
         find = False
         for y in se:
@@ -72,7 +75,7 @@ def get_best(search_content, document):
             res = res + "<highlight>" + x + "</highlight>"
         else:
             res = res + x
-
+    
     return res
 
 
