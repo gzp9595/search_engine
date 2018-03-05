@@ -54,9 +54,9 @@ def get_best(search_content, document):
     # print "End similarity"
     # print_time()
 
-    #for a in range(0, len(similarity)):
+    # for a in range(0, len(similarity)):
     #    print similarity[a],
-    #print
+    # print
     p = 0
     for a in range(1, len(similarity)):
         if similarity[a] > similarity[p]:
@@ -69,18 +69,19 @@ def get_best(search_content, document):
             if x == y:
                 find = True
                 break
-        if len(x.decode("utf8"))==1:
+        if len(x.decode("utf8")) == 1:
             find = False
         if find:
             res = res + "<highlight>" + x + "</highlight>"
         else:
             res = res + x
-    
+
     return res
 
 
 if __name__ == "__main__":
-    document = "ÖØÇìÊÐºÏ´¨ÇøÈËÃñ·¨Ãñ ÊÂ ²Ã ¶¨ £¨2014£©ºÏ·¨Ãñ³õ×ÖµÚ07519Ô­¸æÊ¯ÖÒÇ¿£¬ÄÐ£¬1982Äê2ÔÂ8ÈÕ³öÉú£¬ºº×å£¬×¡ÖØÇìÊÐºÏ´¨ÇøÎ¯ÍÐ´úÀíÈË½¯¼×ºé£¬ÖØÇìºÏÖÝÂÉÊ¦ÊÂÎñËùÂÉÊ¦±»¸æºÎ°²¹ú£¬ÄÐ£¬1964Äê7ÔÂ10ÈÕ³öÉú£¬ºº×å£¬×¡ÖØÇìÊÐºÏ´¨Çø±¾ÔºÔÚÉóÀíÔ­¸æÊ¯ÖÒÇ¿Óë±»¸æºÎ°²¹úÃñ¼ä½è´û¾À·×Ò»°¸ÖÐ£¬Ô­¸æÊ¯ÖÒÇ¿2014Äê11ÔÂ14ÈÕÏò±¾ÔºÌá³ö³·ËßÉêÇë±¾ÔºÈÏÎª£¬Ô­¸æÊ¯ÖÒÇ¿ÔÚ±¾°¸ËßËÏÆÚ¼äÉêÇë¶Ô±»¸æºÎ°²¹ú³·Ëß£¬ÊÇÔÚ·¨ÂÉÔÊÐíµÄ·¶Î§ÄÚ¶Ô×Ô¼ºµÄËßËÏÈ¨ÀûËù×÷³öµÄ´¦·Ö£¬Ô­¸æÊ¯ÖÒÇ¿Ìá³öµÄ³·ËßÉêÇë£¬·ûºÏ·¨ÂÉ¹æ¶¨µÄ³·ËßÌõ¼þ£¬±¾ÔºÓèÒÔ×¼Ðí¡£¾Ý´Ë£¬ÒÀÕÕ¡¶ÖÐ»ªÈËÃñ¹²ºÍ¹úÃñÊÂËßËÏ·¨¡·µÚÒ»°ÙËÄÊ®ÎåÌõµÚÒ»¿î¡¢µÚÒ»°ÙÎåÊ®ËÄÌõµÚÒ»¿îµÚ£¨Îå£©ÏîµÄ¹æ¶¨£¬²Ã¶¨ÈçÏÂ×¼ÐíÔ­¸æÊ¯ÖÒÇ¿³·»Ø¶Ô±»¸æºÎ°²¹úµÄÆðËß°¸¼þÊÜÀí·Ñ50Ôª£¬¼õ°ëÊÕÈ¡25Ôª£¬ÓÉÔ­¸æÊ¯ÖÒÇ¿¸ºµ£ÉóÅÐÔ±¡¡¡¡·ëÑ©¶þ©–Ò»ËÄÄêÊ®Ò»ÔÂÊ®ËÄÊé¼ÇÔ±¡¡¡¡Áõ¡¡Ó±"
-    data = "½è´û¾À·×"
+    document = "ï¿½ï¿½ï¿½ï¿½ï¿½ÐºÏ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½2014ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½07519Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½Ð£ï¿½1982ï¿½ï¿½2ï¿½ï¿½8ï¿½Õ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¬×¡ï¿½ï¿½ï¿½ï¿½ï¿½ÐºÏ´ï¿½ï¿½ï¿½Î¯ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½×ºé£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½1964ï¿½ï¿½7ï¿½ï¿½10ï¿½Õ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¬×¡ï¿½ï¿½ï¿½ï¿½ï¿½ÐºÏ´ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½ë±»ï¿½ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ð£ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿2014ï¿½ï¿½11ï¿½ï¿½14ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë±¾Ôºï¿½ï¿½Îªï¿½ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½Î§ï¿½Ú¶ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½Ö£ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½Ï·ï¿½ï¿½É¹æ¶¨ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½Ý´Ë£ï¿½ï¿½ï¿½ï¿½Õ¡ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ñ¹²ºÍ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½î¡¢ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ú£ï¿½ï¿½å£©ï¿½ï¿½Ä¹æ¶¨ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½Ø¶Ô±ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½50Ôªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡25Ôªï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ê¯ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ©ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê®Ò»ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó±"
+    data = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
 
-    print get_best(data, document)
+    print
+    get_best(data, document)

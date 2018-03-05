@@ -2,6 +2,7 @@ import datetime
 import time
 import json
 
+
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
@@ -10,6 +11,7 @@ class CJsonEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d")
         else:
             return json.JSONEncoder.default(self, obj)
+
 
 def form_date(year, month, day):
     month = str(month)
@@ -41,7 +43,7 @@ def create_success(msg):
 
 
 def print_time():
-    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
 
 
 def merge_dict(arr):
@@ -52,14 +54,25 @@ def merge_dict(arr):
             dic[y] = x[y][0]
     return dic
 
+
 def pre_minute():
     now = datetime.datetime.now()
     ph = now - datetime.timedelta(minutes=1)
 
     return time.mktime(ph.timetuple())
 
+
 def pre_day():
     now = datetime.datetime.now()
     ph = now - datetime.timedelta(days=1)
 
     return time.mktime(ph.timetuple())
+
+
+def make_response(data):
+    from flask import make_response
+    response = make_response(data)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET'
+    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+    return response

@@ -1,15 +1,16 @@
 #  -*- coding:utf-8 -*-
 
 from application import app
-import MySQLdb
-from application.util import *
+import pymysql
+from application.util import create_error, create_success, pre_minute, pre_day
+import json
 
-db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                      app.config["DATABASE_NAME"])
 
 
 def execute_write(sql):
-    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+    db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
     db.set_character_set('utf8')
@@ -21,13 +22,13 @@ def execute_write(sql):
         db.commit()
         return True
     except Exception as e:
-        print e
+        print(e)
         db.rollback()
         return False
 
 
 def execute_write_return_cursor(sql):
-    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+    db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
     db.set_character_set('utf8')
@@ -39,13 +40,13 @@ def execute_write_return_cursor(sql):
         db.commit()
         return cursor
     except Exception as e:
-        print e
+        print(e)
         db.rollback()
         return None
 
 
 def execute_read(sql):
-    db = MySQLdb.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
+    db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
     db.set_character_set('utf8')
@@ -56,7 +57,7 @@ def execute_read(sql):
         cursor.execute(sql)
         return cursor
     except Exception as e:
-        print e
+        print(e)
         return None
 
 
@@ -115,12 +116,11 @@ def add_user(obj, code_level):
                                     <a href="http://powerlaw.ai:8000/auth_user?username=%s&code=%s" target=_blank>点击此处激活邮箱</a>
                                     """ % (obj["username"], auth_code), [obj["mail"]])
         except Exception as e:
-            print e
+            print(e)
             execute_write("""DELETE FROM user WHERE username='%s'""" % obj["username"])
             return create_error(4444, u"邮箱邮件发送失败")
 
         res = add_favor_list({"username": obj["username"], "favor_name": "Default"})
-        print res
         if res["code"] == 0:
             return create_success("Success")
         else:
@@ -254,8 +254,6 @@ def check_searchable(args):
     search_perminute = result[0][1]
     search_perday = result[0][2]
 
-    print pre_minute(), pre_day()
-
     cursor1 = execute_read(
         """SELECT COUNT(*) FROM log WHERE UNIX_TIMESTAMP(create_time)>=%d AND type_number=1""" % pre_minute())
     cursor2 = execute_read(
@@ -263,7 +261,6 @@ def check_searchable(args):
 
     count1 = cursor1.fetchall()[0][0]
     count2 = cursor2.fetchall()[0][0]
-    print count1, count2
 
     limit1 = \
         execute_read("""SELECT search_perminute FROM usertype WHERE type_id=%d""" % leveltype).fetchall()[
@@ -507,7 +504,7 @@ def auth_user(args):
 
     cursor = execute_read(
         """SELECT user_mail_auth_code FROM user WHERE username='%s' AND user_mail_auth_code='%s'""" % (
-        args["username"], args["code"]))
+            args["username"], args["code"]))
 
     if cursor is None:
         return create_error(255, u"未知错误")
