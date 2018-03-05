@@ -34,12 +34,13 @@ def get_by_id(index, doc_type, id):
 
 arr = []
 cnt = 0
-f = open("list.txt", "r")
+f = open("list.json", "r")
 arr = json.loads(f.readline())
 f.close()
 for a in range(0, len(arr)):
     data = get_by_id("law", "big_data", arr[a])
-    arr[a] = (arr[a], data["_source"]["Title"])
+    arr[a] = (arr[a], data["_source"]["Title"],len(arr)-a-1)
+arr.reverse()
 
 num = 50
 

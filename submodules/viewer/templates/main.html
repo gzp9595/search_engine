@@ -5,8 +5,9 @@
     <title>Login</title>
 </head>
 <body>
-    {% for (x,y) in arr %}
-        <a href = "http://powerlaw.ai:8888/document/{{ x }}" target="_blank">{{ y }}</a>
+    {% for (x,y,z) in arr %}
+        {{ z }} <a href = "http://powerlaw.ai:8888/document/{{ x }}" target="_blank">{{ y }}</a>
+		<br>
     {% endfor %}
 </body>
 </html>
