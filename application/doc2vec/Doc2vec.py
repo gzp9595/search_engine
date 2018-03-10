@@ -50,7 +50,7 @@ def seg(data, lib):
 
 class Doc2vec(object):
     def __init__(self, save_path):
-        if not(app.config["LOAD_MODEL"]):
+        if not (app.config["LOAD_MODEL"]):
             return
         print("Loading model")
         print_time()
@@ -64,12 +64,12 @@ class Doc2vec(object):
             self.stop_words[unicode(fs_line.strip(), 'utf-8')] = 1
         fs.close()
 
-        #self.lda_m = lda_model(save_path + '/ldamodel')
-        #self.lda_m.load()
+        # self.lda_m = lda_model(save_path + '/ldamodel')
+        # self.lda_m.load()
         self.tfidf_m = tfidf_model(save_path + '/dic', save_path + '/tfidf')
         self.wordembedding_m = wordembedding_model(save_path + '/words.vec')
-        #self.lstm = lstm_model(save_path)
-        #self.cnn = cnn_model(save_path)
+        # self.lstm = lstm_model(save_path)
+        # self.cnn = cnn_model(save_path)
 
         print("Load done")
         print_time()
