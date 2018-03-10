@@ -7,7 +7,7 @@ from flask import request, render_template, send_from_directory
 
 import config
 import elastic
-import util
+from . import util
 from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model

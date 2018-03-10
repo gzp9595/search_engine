@@ -1,8 +1,8 @@
-print 'lda 0'
+print('lda 0')
 from gensim import corpora,models,similarities
-print 'lda 0.5'
+print('lda 0.5')
 import numpy as np
-print 'lda 1'
+print('lda 1')
 class lda_model(object):
 	def __init__(self, save_path):
 
@@ -19,7 +19,7 @@ class lda_model(object):
 			con.append(tmp)
 
 
-		print 'train',len(con)
+		print('train',len(con))
 
 		self.dictionary = corpora.Dictionary(con)
 		corpus = [ self.dictionary.doc2bow(text) for text in con ]
@@ -55,7 +55,7 @@ class lda_model(object):
 		embedding1 = np.array(embedding1)
 		embedding2 = np.array(embedding2)
 		if len(embedding1) != len(embedding2):
-			print "dimension unmatched"
+			print("dimension unmatched")
 			return 0
 		result = 0.0
 		l1 = 0.0
@@ -67,4 +67,4 @@ class lda_model(object):
 		if (l1 == 0 or l2 == 0):
 			return 0.0
 		return result/pow(l1, 0.5)/pow(l2, 0.5)
-print 'lda 2'
+print('lda 2')

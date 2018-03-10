@@ -40,3 +40,5 @@ DATABASE_IP = "135.246.79.80:6666"
 DATABASE_USER = "user"
 DATABASE_PASS = "nopass"
 DATABASE_NAME = "law"
+
+THULAC_MODEL_PATH = "/mnt/thulac/models"

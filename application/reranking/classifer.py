@@ -1,5 +1,5 @@
 from application import app
-import ranking
+from . import ranking
 
 import json
 import os

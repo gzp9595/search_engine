@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lda_model import *
-from wordembedding_model import *
-from tfidf_model import *
-from lawlstm import *
-from lawcnn import *
+from .lda_model import *
+from .wordembedding_model import *
+from .tfidf_model import *
+from .lawlstm import *
+from .lawcnn import *
 from application.util import print_time
 from application import app
 
@@ -52,7 +52,7 @@ class Doc2vec(object):
     def __init__(self, save_path):
         if not(app.config["LOAD_MODEL"]):
             return
-        print "Loading model"
+        print("Loading model")
         print_time()
 
         self.lac_lib = lac_init(model_path=save_path + '/thulac', user_dict_path=save_path + '/thulac/user.txt')
@@ -71,7 +71,7 @@ class Doc2vec(object):
         #self.lstm = lstm_model(save_path)
         #self.cnn = cnn_model(save_path)
 
-        print "Load done"
+        print("Load done")
         print_time()
 
     def get_embedding(self, text, mode=0):
@@ -105,7 +105,7 @@ class Doc2vec(object):
             vec.append(vec1)
             vec.append(vec2)
             return vec
-        print "wrong mode"
+        print("wrong mode")
         return False
 
     def get_similarity(self, embedding1, embedding2, mode=0, rate=[1.0 / 3 for i in range(3)]):
@@ -127,5 +127,5 @@ class Doc2vec(object):
             result += rate[0] * self.lda_m.get_similarity(embedding1[0], embedding2[0])
             result += rate[1] * self.tfidf_m.get_similarity(embedding1[1], embedding2[1])
             result += rate[2] * self.wordembedding_m.get_similarity(embedding1[2], embedding2[2])
-        print "wrong mode"
+        print("wrong mode")
         return False

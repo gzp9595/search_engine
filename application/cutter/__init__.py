@@ -1,1 +1,1 @@
-from cutter import cut
+from .cutter import cut

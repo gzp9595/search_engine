@@ -180,7 +180,7 @@ key_word_list = [u"第", u"条", u"款", u"、", u"，", u"（", u"）"]
 def get_number_from_string(s):
     for x in s:
         if not (x in num_list):
-            print s
+            print(s)
             gg
 
     value = 0
@@ -383,11 +383,11 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
-        print >> fout, x
+        print(x,file=fout)
         for y in content:
             print >> fout, y, content[y].encode('utf8')
-        print >> fout
-        print x
+        print("",file=fout)
+        print(x)
         get_reason(content)
         cnt += 1
         if cnt >= 20:

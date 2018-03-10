@@ -36,7 +36,7 @@ class wordembedding_model(object):
 		embedding1 = np.array(embedding1)
 		embedding2 = np.array(embedding2)
 		if len(embedding1) != len(embedding2):
-			print "dimension unmatched"
+			print("dimension unmatched")
 			return 0
 		result = 0.0
 		l1 = 0.0
