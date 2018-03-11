@@ -177,7 +177,7 @@ def cmp(a, b):
         return -1"""
     return 0
 
-
+from functools import cmp_to_key
 def reranking(result, query):
     model.load_model()
     # random.shuffle(result)
@@ -195,6 +195,6 @@ def reranking(result, query):
     #    else:
     #        nowp += 1
 
-    result.sort(cmp)
+    result.sort(key=cmp_to_key(cmp))
 
     return result

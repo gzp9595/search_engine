@@ -91,7 +91,7 @@ classifiers = {'NB': naive_bayes_classifier,
 
 class model:
     def load_model(self):
-        self.models = pickle.load(open(app.config["MODEL_FILE"], 'r'))
+        pass#self.models = pickle.load(open(app.config["MODEL_FILE"], 'r'))
 
     def train_model(self, X, Y):
         self.models = classifiers[app.config["MODEL_TYPE"]](X, Y)

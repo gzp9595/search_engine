@@ -69,7 +69,7 @@ def get_best(search_content, document):
             if x == y:
                 find = True
                 break
-        if len(x.decode("utf8")) == 1:
+        if len(x) == 1:
             find = False
         if find:
             res = res + "<highlight>" + x + "</highlight>"

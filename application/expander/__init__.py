@@ -1,2 +1,2 @@
-import  expander
-from expander import expand
+from . import expander
+from .expander import expand

@@ -13,7 +13,7 @@ def execute_write(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
-    db.set_character_set('utf8')
+    #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
     cursor.execute('SET CHARACTER SET utf8;')
     cursor.execute('SET character_set_connection=utf8;')
@@ -31,7 +31,7 @@ def execute_write_return_cursor(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
-    db.set_character_set('utf8')
+    #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
     cursor.execute('SET CHARACTER SET utf8;')
     cursor.execute('SET character_set_connection=utf8;')
@@ -49,7 +49,7 @@ def execute_read(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
                          app.config["DATABASE_NAME"])
     cursor = db.cursor()
-    db.set_character_set('utf8')
+    #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
     cursor.execute('SET CHARACTER SET utf8;')
     cursor.execute('SET character_set_connection=utf8;')
@@ -353,10 +353,13 @@ def add_favor_list(args):
 
 
 def add_search_log(args):
-    cursor = execute_write_return_cursor("""
+    print(args)
+    sss = """
         INSERT INTO log(username,type_number,query_parameter)
         VALUES ('%s',1,'%s')
-    """ % (args["username"], json.dumps(args, ensure_ascii=False).replace("'", "\\'").encode("utf8")))
+    """ % (args["username"], json.dumps(args, ensure_ascii=False).replace("'", "\\'"))
+    print(sss)
+    cursor = execute_write_return_cursor(sss)
 
     if cursor is None:
         return create_error(255, u"未知错误")

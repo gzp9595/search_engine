@@ -1,1 +1,1 @@
-from counter import get_info
+from .counter import get_info

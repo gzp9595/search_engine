@@ -28,18 +28,18 @@ def search_doc(index, doc_type, body,size=10,from_=0):
     res = es.search(index=index, doc_type=doc_type, body=body, request_timeout=app.config["ES_TIMEOUT"], scroll="10m",size=size)
     for x in res:
         if x != "hits":
-            print x, res[x]
+            print(x, res[x])
     return res["hits"]
 
 
 def scan_doc(index, doc_type, body):
-    print "gg"
-    print body
+    print( "gg")
+    print( body)
     res = list(
         helpers.scan(es, request_timeout=app.config["ES_TIMEOUT"], query=body, index=index, doc_type=doc_type, size=1,
                      preserve_order=False))
-    print "gg"
-    print res
+    print("gg")
+    print(res)
     return res
 
 

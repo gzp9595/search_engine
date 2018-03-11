@@ -1,1 +1,1 @@
-from matcher import get_best
+from .matcher import get_best

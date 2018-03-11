@@ -5,7 +5,7 @@ import os
 import time
 import datetime
 import random
-from init import *
+from .init import *
 import os
 
 

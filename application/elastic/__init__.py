@@ -1,2 +1,2 @@
 from application import app
-from elastic import *
+from .elastic import *

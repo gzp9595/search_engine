@@ -6,15 +6,15 @@ import uuid
 from flask import request, render_template, send_from_directory
 
 import config
-import elastic
+from . import elastic
 from . import util
 from application.processor import formatter
 from application.reranking import ranking
 from application.reranking.classifer import train_new_model
-from application.util import print_time, form_date, merge_dict
+from application.util import print_time, form_date, merge_dict, make_response
 from application.expander import expand
 from . import app
-from matcher import get_best
+from .matcher import get_best
 from application.cutter import cut
 from application.counter import get_info
 from application.databaser import database
@@ -208,11 +208,11 @@ def search():
         cutted = cut(need_to_cut)
         for x in filter_list:
             for y in range(0, len(cutted[0])):
-                cutted[0][y] = cutted[0][y].replace(x, '')
+                cutted[0][y] = cutted[0][y].replace(chr(x), '')
         fs = []
         for a in range(0, len(cutted[0])):
             # print cutted[0][a], len(cutted[0][a].decode("utf8"))
-            if len(cutted[0][a].decode("utf8")) > 1:
+            if len(cutted[0][a]) > 1:
                 fs.append(cutted[0][a])
         cutted[0] = fs
         # print cutted[0]
