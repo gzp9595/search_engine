@@ -237,6 +237,48 @@ def search():
     return make_response(json.dumps(result))
 
 
+@app.route('/search_new', methods=["POST", "GET"])
+def search():
+    print("Mission Start")
+    result = []
+    request.args = merge_dict([request.args, request.form])
+    for x in request.args:
+        print(x, request.args[x])
+
+    if "doc_type" in request.args and "index" in request.args:
+        args = request.args
+        args["where_to_search"] = "content"
+
+        search_type = "content"
+
+        body = generate_elastic_args(args)
+
+        size = int(args["size"])
+
+        print("Begin to search")
+        print_time()
+        query_string = json.dumps({"query": {"bool": {"must": body}}})
+        print(query_string)
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, size)
+
+        print("Results return:", len(query_result["hits"]))
+
+        print("Begin to reranking")
+        print_time()
+        query_result["hits"] = ranking.reranking(query_result["hits"], args)
+        print("Reranking Done")
+        print_time()
+
+        temp = []
+        for x in query_result["hits"]:
+            temp.append(x["_source"])
+        result = temp
+        print_time()
+        result = {"code": 0, "document": result}
+
+    return make_response(json.dumps(result))
+
+
 @app.route('/doc')
 def get_doc_byid():
     request.args = merge_dict([request.args, request.form])
