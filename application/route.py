@@ -89,11 +89,11 @@ def generate_elastic_args(args):
             "PubDate": {"lte": form_date(args["fabu_to_year"], args["fabu_to_month"], args["fabu_to_day"])}}})
 
     if "name_of_law" in args and args["name_of_law"] != "":
-        new_body = [{"match": {"FLYJ.law_name": args["name_of_law"]}}]
+        new_body = [{"term": {"FLYJ.law_name": args["name_of_law"]}}]
         if "num_of_tiao" in args and args["num_of_tiao"] != "":
-            new_body.append({"match": {"FLYJ.tiao_num": args["num_of_tiao"]}})
+            new_body.append({"match": {"FLYJ.tiao_num": int(args["num_of_tiao"])}})
         if "num_of_kuan" in args and args["num_of_kuan"] != "":
-            new_body.append({"match": {"FLYJ.kuan_num": args["num_of_kuan"]}})
+            new_body.append({"match": {"FLYJ.kuan_num": int(args["num_of_kuan"])}})
         body.append({"nested": {"path": "FLYJ", "query": {"bool": {"must": new_body}}}})
 
     return body
