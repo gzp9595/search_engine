@@ -238,16 +238,19 @@ def search():
 
 
 @app.route('/search_new', methods=["POST", "GET"])
-def search():
+def search_new():
     print("Mission Start")
     result = []
     request.args = merge_dict([request.args, request.form])
     for x in request.args:
         print(x, request.args[x])
+    request.args["doc_type"] = "big_data"
+    request.args["index"] = "law"
+    request.args["type_of_model"] = "-2"
 
     if "doc_type" in request.args and "index" in request.args:
         args = request.args
-        args["where_to_search"] = "content"
+        args["where_to_search"] = "0"
 
         search_type = "content"
 
