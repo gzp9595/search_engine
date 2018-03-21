@@ -226,7 +226,7 @@ def search():
         print_time()
         for a in range(0, len(temp)):
             if "AJJBQK" in temp[a]:
-                ss = temp[a]["AJJBQK"][0:50]
+                ss = temp[a]["AJJBQK"][0:min(200,len(temp[a]["AJJBQK"]))]
             else:
                 ss = ""
             if ss != "":
@@ -234,7 +234,7 @@ def search():
                        "shortcut": "【事实裁定】 <br>%s <br> 【文书内容】<br>" % ss + get_best(cutted[0], cutted[a + 1])}
             else:
                 res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
-                       "shortcut": "【文书内容】<br>" % ss + get_best(cutted[0], cutted[a + 1])}
+                       "shortcut": "【文书内容】<br>" + get_best(cutted[0], cutted[a + 1])}
             result.append(res)
         print("All over again")
         print_time()
