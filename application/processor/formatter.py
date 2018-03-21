@@ -285,26 +285,28 @@ def get_reason(obj):
 
     return result_list
 
+
 def sort_reason(l):
     result_list = []
 
     law_list = {}
 
     for x in l:
-        z=x
+        z = x
         if not (z["law_name"] in law_list):
             law_list[z["law_name"]] = set()
         law_list[z["law_name"]].add((z["tiao_num"], z["kuan_num"]))
 
     for x in law_list:
-        gg=[]
+        gg = []
         for (y, z) in law_list[x]:
-            gg.append((y,z))
+            gg.append((y, z))
         gg.sort()
-        for (y,z) in gg:
+        for (y, z) in gg:
             result_list.append({"law_name": x, "tiao_num": y, "kuan_num": z})
 
     return result_list
+
 
 def parse(obj):
     if not ("content" in obj) or obj["content"] == "":
@@ -383,10 +385,10 @@ def test():
         for line in fin:
             content = json.loads(line)
             break
-        print(x,file=fout)
+        print(x, file=fout)
         for y in content:
             print >> fout, y, content[y].encode('utf8')
-        print("",file=fout)
+        print("", file=fout)
         print(x)
         get_reason(content)
         cnt += 1
