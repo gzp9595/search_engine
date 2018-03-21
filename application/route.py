@@ -225,8 +225,12 @@ def search():
         print("Tfidf begin")
         print_time()
         for a in range(0, len(temp)):
+            if "SSJL" in temp[a]:
+                ss = temp[a]["SSJL"]
+            else:
+                ss = temp[a]["AJJBQK"]
             res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
-                   "shortcut": "【事实裁定】 <br>" + get_best(cutted[0], cutted[a + 1])}
+                   "shortcut": "【事实裁定】 %s <br> 【文书内容】" % ss + get_best(cutted[0], cutted[a + 1])}
             result.append(res)
         print("All over again")
         print_time()
