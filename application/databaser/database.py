@@ -11,7 +11,7 @@ db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app
 
 def execute_write(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
-                         app.config["DATABASE_NAME"])
+                         app.config["DATABASE_NAME"],charset='utf8')
     cursor = db.cursor()
     #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
@@ -29,7 +29,7 @@ def execute_write(sql):
 
 def execute_write_return_cursor(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
-                         app.config["DATABASE_NAME"])
+                         app.config["DATABASE_NAME"],charset='utf8')
     cursor = db.cursor()
     #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
@@ -47,7 +47,7 @@ def execute_write_return_cursor(sql):
 
 def execute_read(sql):
     db = pymysql.connect(app.config["DATABASE_IP"], app.config["DATABASE_USER"], app.config["DATABASE_PASS"],
-                         app.config["DATABASE_NAME"])
+                         app.config["DATABASE_NAME"],charset='utf8')
     cursor = db.cursor()
     #db.set_character_set('utf8')
     cursor.execute('SET NAMES utf8;')
