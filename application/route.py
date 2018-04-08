@@ -226,7 +226,7 @@ def search():
         print_time()
         for a in range(0, len(temp)):
             if "AJJBQK" in temp[a]:
-                ss = temp[a]["AJJBQK"][0:min(200,len(temp[a]["AJJBQK"]))]
+                ss = temp[a]["AJJBQK"][0:min(200, len(temp[a]["AJJBQK"]))]
             else:
                 ss = ""
             if ss != "":
@@ -272,6 +272,8 @@ def search_new():
         print(query_string)
         query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, size)
 
+        inf = get_info(query_result["hits"])
+
         print("Results return:", len(query_result["hits"]))
 
         print("Begin to reranking")
@@ -285,7 +287,7 @@ def search_new():
             temp.append(x["_source"])
         result = temp
         print_time()
-        result = {"code": 0, "document": result}
+        result = {"code": 0, "document": result, "information": inf}
 
     return make_response(json.dumps(result))
 
