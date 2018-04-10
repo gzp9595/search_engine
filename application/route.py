@@ -321,13 +321,15 @@ def search_new():
     print "Mission Start"
     result = []
     request.args = merge_dict([request.args, request.form])
+    request.args["index"] = "law"
+    request.args["doc_type"] = "big_data"
 
     if "doc_type" in request.args and "index" in request.args:
         body = []
 
         args = request.args
 
-        search_type = "content"
+        search_type = "0"
         # body.append({"match": {search_type: expand(args["search_content"])}})
 
         if True:
