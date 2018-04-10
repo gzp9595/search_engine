@@ -326,20 +326,11 @@ def search_new():
         body = []
 
         args = request.args
-        for x in args:
-            print x, args[x]
 
         search_type = "content"
-        expanded = ""
         # body.append({"match": {search_type: expand(args["search_content"])}})
 
-        ratio1 = app.config["EXPAND_RATIO"][0]
-        ratio2 = app.config["EXPAND_RATIO"][1]
-        if "RATIO1" in args and "RATIO2" in args:
-            ratio1 = float(args["RATIO1"])
-            ratio2 = float(args["RATIO2"])
-
-        if "where_to_search" in args and args["search_content"] != "":
+        if True:
             match_type = {
                 "0": "content",
                 "1": "WBSB",
@@ -348,7 +339,7 @@ def search_new():
                 "4": "PJJG",
                 "5": "WBWB"
             }
-            search_type = match_type[args["where_to_search"]]
+            search_type = match_type[search_type]
             # expanded = expand(args["search_content"])
             body.append({"match": {search_type: {"query": args["search_content"]}}})
 
@@ -364,52 +355,14 @@ def search_new():
         print_time()
         query_string = json.dumps({"query": {"bool": {"must": body}}})
         print query_string
-        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
+        query_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, real_size,
                                           from_id)
 
-        for a in range(0, len(query_result["hits"])):
-            query_result["hits"][len(query_result["hits"]) - a - 1]["_score"] /= query_result["hits"][0]["_score"]
-        if "where_to_search" in args and args["search_content"] != "":
-            print "Begin second round search"
-            print_time()
-            match_type = {
-                "0": "content",
-                "1": "WBSB",
-                "2": "AJJBQK",
-                "3": "CPYZ",
-                "4": "PJJG",
-                "5": "WBWB"
-            }
-            search_type = match_type[args["where_to_search"]]
-            expanded = expand(args["search_content"], int(args["EXPAND_K"]), float(args["EXPAND_ALPHA"]))
-            body[0] = {"match": {search_type: {"query": expanded}}}
-            query_string = json.dumps({"query": {"bool": {"must": body}}})
-            print query_string
-            new_result = elastic.search_doc(request.args["index"], request.args["doc_type"], query_string, 250,
-                                            from_id)
-            for a in range(0, len(new_result["hits"])):
-                new_result["hits"][len(new_result["hits"]) - a - 1]["_score"] /= new_result["hits"][0]["_score"]
-            id_list = set()
-            for x in query_result["hits"]:
-                id_list.add(x["_id"])
-            for x in new_result["hits"]:
-                if x["_id"] in id_list:
-                    continue
-                id_list.add(x["_id"])
-                x["_score"] *= float(ratio2) / ratio1
-                query_result["hits"].append(x)
-        print "Results return:"
-        print len(query_result["hits"])
-        inf = {}
-        if from_id == 0:
-            inf = get_info(query_result["hits"])
+        inf = get_info(query_result["hits"])
 
         print "Begin to reranking"
         print_time()
-        fff = args["search_content"]
-        args["search_content"] += expanded
         query_result["hits"] = ranking.reranking(query_result["hits"], args)
-        args["search_content"] = fff
         print "Reranking Done"
         print_time()
 
@@ -417,56 +370,12 @@ def search_new():
         for x in query_result["hits"][from_id:min(len(query_result["hits"]), from_id + size)]:
             temp.append(x["_source"])
 
-        print "Cut begin"
-        print_time()
-        need_to_cut = [args["search_content"] + "," + expanded]
-        print expanded
-        for x in temp:
-            need_to_cut.append(x["content"])
-        filter_list = [65292, 12290, 65311, 65281, 65306, 65307, 8216, 8217, 8220, 8221, 12304, 12305,
-                       12289, 12298, 12299, 126, 183, 64, 124, 35, 65509, 37, 8230, 38, 42, 65288,
-                       65289, 8212, 45, 43, 61, 44, 46, 60, 62, 63, 47, 33, 59, 58, 39, 34, 123, 125,
-                       91, 93, 92, 124, 35, 36, 37, 94, 38, 42, 40, 41, 95, 45, 43, 61, 9700, 9734, 9733]
-        cutted = cut(need_to_cut)
-        for x in filter_list:
-            for y in range(0, len(cutted[0])):
-                cutted[0][y] = cutted[0][y].replace(unichr(x), '')
-        fs = []
-        for a in range(0, len(cutted[0])):
-            # print cutted[0][a], len(cutted[0][a].decode("utf8"))
-            if len(cutted[0][a].decode("utf8")) > 1:
-                fs.append(cutted[0][a])
-        cutted[0] = fs
-        # print cutted[0]
-        # for x in cutted[0]:
-        #    print x,len(x)
-        for a in range(0, len(cutted)):
-            for b in range(0, len(cutted[a])):
-                cutted[a][b] = cutted[a][b].lower()
-
-        print "Tfidf begin"
-        print_time()
-        for a in range(0, len(temp)):
-            res = {"id": temp[a]["doc_name"], "title": temp[a]["Title"],
-                   "shortcut": get_best(cutted[0], cutted[a + 1])}
-            result.append(res)
         print "All over again"
         print_time()
 
-    args = dict(request.args)
-    if not ("search_content" in request.args):
-        args["search_content"] = ""
-    if not ("where_to_search" in request.args):
-        args["where_to_search"] = ""
-    if not ("index" in request.args):
-        args["index"] = ""
-    if not ("doc_type" in request.args):
-        args["doc_type"] = ""
-    response = make_response(json.dumps(result))
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET'
-    response.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
-    return render_template("search_new.html", args=request.args, result=result, query=request.args)
+        return make_response(json.dumps({"inf":inf,"data":temp}))
+
+    return "gg"
 
 
 @app.route('/doc')
