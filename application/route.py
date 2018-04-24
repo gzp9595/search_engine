@@ -292,6 +292,21 @@ def search_new():
     return make_response(json.dumps(result))
 
 
+@app.route('/get_meta')
+def get_meta():
+    request.args = merge_dict([request.args, request.form])
+    if "id" in request.args:
+        query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
+        data = {"source": json.loads(query_result["_source"]["content"])}
+        data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
+        data["code"] = 0
+        data = json.dumps(data)
+        response = make_response(data)
+        return response
+
+    return make_response("Error")
+
+
 @app.route('/doc')
 def get_doc_byid():
     request.args = merge_dict([request.args, request.form])
@@ -308,7 +323,7 @@ def get_doc_byid():
         else:
             return make_response(json.dumps(util.create_error(666, u"用户未登录")))
         query_result = elastic.get_by_id("law_meta", "meta", request.args["id"])
-        data = {"_source": json.loads(query_result["_source"]["content"])}
+        data = {"source": json.loads(query_result["_source"]["content"])}
         data["_source"]["FLYJ"] = formatter.sort_reason(data["_source"]["FLYJ"])
         data["code"] = 0
         data = json.dumps(data)
